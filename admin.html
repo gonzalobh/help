@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helpin Admin</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="section">
+      <div class="header-title">Helpin</div>
+      <div class="header-subtitle">Employee FAQ &amp; Self-Service (Configuration)</div>
+      <div class="helper-text">
+        Define what employees can ask and how the assistant responds.
+      </div>
+      <div class="page-links">
+        <a href="chat.html">Open employee chat</a>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Assistant behavior</h2>
+        <p>Define how the assistant behaves and which boundaries it must follow.</p>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label for="systemPrompt">System prompt</label>
+          <textarea id="systemPrompt"></textarea>
+        </div>
+        <div>
+          <button type="button" id="resetPrompt">Reset to safe default</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Knowledge base</h2>
+        <p>Define what the assistant knows and can cite in responses.</p>
+      </div>
+      <div class="card-actions" style="margin-bottom: 16px;">
+        <button type="button" class="primary" id="addKnowledge">Add knowledge</button>
+      </div>
+      <div class="list" id="knowledgeList"></div>
+      <div class="note">The assistant will only answer using this information.</div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Chat topics</h2>
+        <p>Configure the quick topics shown to employees in the chat.</p>
+      </div>
+      <div class="card-actions" style="margin-bottom: 16px;">
+        <button type="button" class="primary" id="addTopic">Add topic</button>
+      </div>
+      <div class="list" id="topicsList"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Employee preview</h2>
+        <p>Preview the employee chat experience using the current mock configuration.</p>
+      </div>
+      <div class="preview-label">Preview uses mock data and does not persist messages.</div>
+      <div id="previewChat"></div>
+    </section>
+  </main>
+
+  <script src="js/mockData.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helpin Chat</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="section">
+      <div class="header-title">Helpin</div>
+      <div class="header-subtitle">Employee FAQ &amp; Self-Service (Chat)</div>
+      <div class="helper-text">
+        Use the assistant to get answers from approved internal knowledge.
+      </div>
+      <div class="page-links">
+        <a href="admin.html">Back to configuration</a>
+      </div>
+    </header>
+
+    <section class="section">
+      <div id="chatApp"></div>
+    </section>
+  </main>
+
+  <script src="js/mockData.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/chat.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.HelpinChat.initChat({
+        container: document.getElementById('chatApp'),
+        data: window.HelpinData,
+        mode: 'live'
+      });
+    });
+  </script>
+</body>
+</html>
