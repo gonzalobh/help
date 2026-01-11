@@ -14,7 +14,7 @@ Si la respuesta no está disponible de forma explícita, responda:
 
 NO debe:
 
-* dar asesoría legal
+* entregar asesoría legal
 * interpretar contratos
 * tomar decisiones
 * personalizar casos
@@ -28,21 +28,21 @@ Su tono debe ser:
   knowledgeItems: [
     {
       id: 'know-1',
-      title: 'Elegibilidad de vacaciones pagadas',
+      title: 'Elegibilidad para vacaciones pagadas',
       category: 'Beneficios',
       content:
         'Los colaboradores con jornada completa acumulan 1,5 días de vacaciones pagadas por mes. Las solicitudes de vacaciones deben enviarse con al menos dos semanas de anticipación.'
     },
     {
       id: 'know-2',
-      title: 'Lineamientos de trabajo remoto',
+      title: 'Lineamientos para trabajo remoto',
       category: 'Políticas',
       content:
         'El trabajo remoto está disponible hasta dos días por semana con aprobación de su jefatura. Los colaboradores deben mantener un horario núcleo de 10:00 a 16:00 hora local.'
     },
     {
       id: 'know-3',
-      title: 'Reembolso de gastos',
+      title: 'Reembolso de gastos laborales',
       category: 'Procedimientos',
       content:
         'Los gastos laborales deben enviarse dentro de 30 días usando el portal de gastos. Se requieren boletas para todos los gastos superiores a $25.'

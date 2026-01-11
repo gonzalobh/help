@@ -1,6 +1,6 @@
 (function () {
   const defaultWelcome =
-    'Puede hacer consultas sobre políticas internas, beneficios o procedimientos de RR. HH.';
+    'Usted puede realizar consultas sobre políticas internas, beneficios o procedimientos de RR. HH.';
 
   function createMessage(content, role, isStructured) {
     const message = document.createElement('div');
@@ -56,7 +56,7 @@
 
     const header = document.createElement('div');
     header.className = 'chat-header';
-    header.textContent = 'Asistente Helpin';
+    header.textContent = 'Asistente de Helpin';
 
     const body = document.createElement('div');
     body.className = 'chat-body';
@@ -66,7 +66,7 @@
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.placeholder = 'Haga una consulta';
+    input.placeholder = 'Escriba una consulta';
 
     const sendButton = document.createElement('button');
     sendButton.type = 'button';
@@ -85,7 +85,7 @@
       body.appendChild(
         createMessage(
           {
-            title: 'Elegibilidad de vacaciones pagadas',
+            title: 'Elegibilidad para vacaciones pagadas',
             body:
               'Beneficios · Los colaboradores con jornada completa acumulan 1,5 días de vacaciones pagadas por mes. Las solicitudes de vacaciones deben enviarse con al menos dos semanas de anticipación.'
           },
@@ -95,7 +95,7 @@
       );
       body.appendChild(
         createMessage(
-          '¿Puedo trabajar de forma remota dos días a la semana?',
+          '¿Es posible trabajar de forma remota dos días a la semana?',
           'user',
           false
         )
@@ -103,7 +103,7 @@
       body.appendChild(
         createMessage(
           {
-            title: 'Lineamientos de trabajo remoto',
+            title: 'Lineamientos para trabajo remoto',
             body:
               'Políticas · El trabajo remoto está disponible hasta dos días por semana con aprobación de su jefatura. Los colaboradores deben mantener un horario núcleo de 10:00 a 16:00 hora local.'
           },
@@ -158,7 +158,7 @@
     if (mode === 'preview') {
       input.disabled = true;
       sendButton.disabled = true;
-      input.placeholder = 'Haga una consulta';
+      input.placeholder = 'Escriba una consulta';
     }
 
     if (mode === 'preview') {
