@@ -100,19 +100,20 @@ Ejemplo:
           <div class="form-grid">
             <div>
               <label for="hrEmail">Correo de RR. HH.</label>
-              <input id="hrEmail" type="text" />
+              <input id="hrEmail" type="text" placeholder="ejemplo@empresa.com" />
             </div>
             <div>
               <label for="hrUrl">URL de contacto de RR. HH. (opcional)</label>
-              <input id="hrUrl" type="text" />
+              <input id="hrUrl" type="text" placeholder="https://intranet.empresa.com/rrhh o https://empresa.com/contacto-rrhh" />
             </div>
             <div>
               <label for="hrFallback">Mensaje alternativo mostrado a los colaboradores</label>
-              <textarea id="hrFallback"></textarea>
+              <textarea id="hrFallback">Para consultas específicas o casos personales, por favor contacte directamente al equipo de RR. HH.</textarea>
             </div>
             <div>
               <label for="assistantDisclaimer">Texto de descargo de responsabilidad</label>
-              <textarea id="assistantDisclaimer"></textarea>
+              <textarea id="assistantDisclaimer">Este asistente entrega información general basada en políticas internas.
+Para casos particulares, confirme siempre con RR. HH.</textarea>
             </div>
             <div>
               <button type="button" class="secondary small" id="resetDisclaimer">Restablecer a predeterminado</button>
@@ -170,14 +171,17 @@ Ejemplo:
         <div class="settings-block">
           <div class="settings-header">
             <h3>Idioma</h3>
-            <p>Idioma principal de las respuestas.</p>
+            <p>El asistente responde en el idioma en que escribe el colaborador.</p>
           </div>
           <div class="form-grid">
             <div>
               <label for="assistantLanguage">Idioma</label>
               <select id="assistantLanguage">
-                <option value="Inglés">Inglés</option>
                 <option value="Español">Español</option>
+                <option value="Inglés">Inglés</option>
+                <option value="Francés">Francés</option>
+                <option value="Alemán">Alemán</option>
+                <option value="Portugués">Portugués</option>
               </select>
             </div>
           </div>
