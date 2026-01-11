@@ -1,13 +1,13 @@
 :root {
   color-scheme: light;
   --bg: #ffffff;
-  --border: #e1e4e8;
-  --text: #3b3f45;
+  --border: #e7ebf0;
+  --text: #2f343a;
   --title: #111111;
-  --muted: #6c727a;
-  --panel: #f9fafb;
+  --muted: #6b7078;
+  --panel: #f4f5f7;
   --button: #ffffff;
-  --button-border: #cfd4da;
+  --button-border: #d6dbe1;
 }
 
 * {
@@ -17,7 +17,7 @@
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
@@ -30,18 +30,22 @@ body {
 }
 
 .section {
-  border: 1px solid var(--border);
   background: #fff;
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: 28px;
+  margin-bottom: 28px;
+  border-radius: 10px;
+}
+
+.section-hero {
+  background: var(--panel);
 }
 
 .section-header {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .section-header h2 {
-  font-size: 20px;
+  font-size: 22px;
   color: var(--title);
   margin-bottom: 6px;
 }
@@ -70,7 +74,7 @@ body {
 
 .form-grid {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 label {
@@ -84,26 +88,26 @@ input[type="text"],
 select,
 textarea {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  padding: 12px 14px;
+  border: 1px solid #e3e7ec;
+  border-radius: 8px;
   font-size: 14px;
   color: var(--text);
   background: #fff;
 }
 
 textarea {
-  min-height: 120px;
+  min-height: 140px;
   resize: vertical;
 }
 
 button {
   border: 1px solid var(--button-border);
   background: var(--button);
-  padding: 8px 14px;
+  padding: 8px 12px;
   font-size: 13px;
   color: var(--text);
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
@@ -113,7 +117,12 @@ button.primary {
 }
 
 button.secondary {
-  background: #f4f5f7;
+  background: #f3f4f6;
+}
+
+button.small {
+  padding: 6px 10px;
+  font-size: 12px;
 }
 
 button.icon {
@@ -127,20 +136,21 @@ button:disabled {
 
 .list {
   display: grid;
-  gap: 16px;
+  gap: 18px;
 }
 
 .card {
-  border: 1px solid var(--border);
-  padding: 16px;
-  background: var(--panel);
+  border: 1px solid #eceff3;
+  padding: 18px;
+  background: #fbfcfd;
+  border-radius: 10px;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .card-actions {
@@ -148,24 +158,8 @@ button:disabled {
   gap: 8px;
 }
 
-.inline-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.topic-row {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: 80px 1fr 1fr;
-}
-
-.toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--muted);
+.subtle-actions {
+  margin-bottom: 16px;
 }
 
 .note {
@@ -175,41 +169,44 @@ button:disabled {
 }
 
 .chat-shell {
-  border: 1px solid var(--border);
+  border: 1px solid #eceff3;
   background: #fff;
   display: flex;
   flex-direction: column;
   height: 520px;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .chat-header {
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
+  padding: 18px;
+  border-bottom: 1px solid #eceff3;
   font-weight: 600;
   color: var(--title);
+  background: #fafbfc;
 }
 
 .chat-body {
   flex: 1;
-  padding: 16px;
+  padding: 18px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .message {
   max-width: 80%;
   padding: 12px 14px;
-  border-radius: 6px;
-  background: #f1f3f5;
+  border-radius: 10px;
+  background: #f5f6f8;
   color: var(--text);
-  border: 1px solid var(--border);
 }
 
 .message.user {
   align-self: flex-end;
   background: #ffffff;
+  border: 1px solid #eceff3;
 }
 
 .message-title {
@@ -218,30 +215,11 @@ button:disabled {
   color: var(--title);
 }
 
-.chat-topics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  background: #fafbfc;
-}
-
-.topic-button {
-  border: 1px solid var(--border);
-  background: #fff;
-  padding: 6px 10px;
-  font-size: 12px;
-  color: var(--text);
-  border-radius: 4px;
-  cursor: pointer;
-}
-
 .chat-input {
   display: flex;
   gap: 10px;
-  padding: 12px 16px;
+  padding: 14px 18px 18px;
+  border-top: 1px solid #eceff3;
 }
 
 .chat-input input {
@@ -269,4 +247,36 @@ button:disabled {
 
 .page-links a:hover {
   border-bottom-color: var(--text);
+}
+
+.knowledge-title {
+  font-weight: 600;
+  color: var(--title);
+}
+
+.knowledge-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.knowledge-content {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.edit-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }

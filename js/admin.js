@@ -28,58 +28,89 @@
 
     data.knowledgeItems.forEach((item) => {
       const card = document.createElement('div');
-      card.className = 'card';
+      card.className = 'card content-card';
 
       const header = document.createElement('div');
       header.className = 'card-header';
 
       const title = document.createElement('div');
-      title.textContent = 'Knowledge item';
-      title.className = 'helper-text';
+      title.textContent = item.title;
+      title.className = 'knowledge-title';
 
       const actions = document.createElement('div');
       actions.className = 'card-actions';
 
+      const editButton = document.createElement('button');
+      editButton.type = 'button';
+      editButton.className = 'secondary small';
+      editButton.textContent = item.isEditing ? 'Done' : 'Edit';
+      editButton.addEventListener('click', () => {
+        item.isEditing = !item.isEditing;
+        renderKnowledgeItems();
+      });
+
       const deleteButton = document.createElement('button');
       deleteButton.type = 'button';
-      deleteButton.className = 'secondary';
+      deleteButton.className = 'secondary small';
       deleteButton.textContent = 'Delete';
       deleteButton.addEventListener('click', () => {
         data.knowledgeItems = data.knowledgeItems.filter(
           (entry) => entry.id !== item.id
         );
         renderKnowledgeItems();
+        refreshPreview();
       });
 
-      actions.appendChild(deleteButton);
+      actions.append(editButton, deleteButton);
       header.append(title, actions);
 
-      const grid = document.createElement('div');
-      grid.className = 'form-grid';
+      const body = document.createElement('div');
+      body.className = 'knowledge-body';
 
-      const titleField = createLabeledInput('Title', item.title, (value) => {
-        item.title = value;
-      });
+      if (item.isEditing) {
+        const grid = document.createElement('div');
+        grid.className = 'edit-grid';
 
-      const categoryField = createSelect('Category', item.category, [
-        'Policies',
-        'Benefits',
-        'Procedures',
-        'Documents'
-      ], (value) => {
-        item.category = value;
-      });
+        const titleField = createLabeledInput('Title', item.title, (value) => {
+          item.title = value;
+          title.textContent = value;
+          refreshPreview();
+        });
 
-      const contentField = createLabeledTextarea(
-        'Content',
-        item.content,
-        (value) => {
-          item.content = value;
-        }
-      );
+        const categoryField = createSelect(
+          'Category',
+          item.category,
+          ['Policies', 'Benefits', 'Procedures', 'Documents'],
+          (value) => {
+            item.category = value;
+            refreshPreview();
+          }
+        );
 
-      grid.append(titleField, categoryField, contentField);
-      card.append(header, grid);
+        const contentField = createLabeledTextarea(
+          'Content',
+          item.content,
+          (value) => {
+            item.content = value;
+            refreshPreview();
+          }
+        );
+
+        grid.append(titleField, categoryField, contentField);
+        body.appendChild(grid);
+      } else {
+        const category = document.createElement('div');
+        category.className = 'knowledge-meta';
+        category.textContent = item.category;
+
+        const content = document.createElement('p');
+        content.className = 'knowledge-content';
+        content.textContent = item.content;
+
+        body.append(category, content);
+      }
+
+      card.append(header, body);
       list.appendChild(card);
     });
   }
@@ -88,9 +119,12 @@
     const wrapper = document.createElement('div');
     const label = document.createElement('label');
     label.textContent = labelText;
+    label.className = 'sr-only';
     const input = document.createElement('input');
     input.type = 'text';
     input.value = value;
+    input.placeholder = labelText;
+    input.setAttribute('aria-label', labelText);
     input.addEventListener('input', (event) => onChange(event.target.value));
     wrapper.append(label, input);
     return wrapper;
@@ -100,7 +134,9 @@
     const wrapper = document.createElement('div');
     const label = document.createElement('label');
     label.textContent = labelText;
+    label.className = 'sr-only';
     const select = document.createElement('select');
+    select.setAttribute('aria-label', labelText);
     options.forEach((optionValue) => {
       const option = document.createElement('option');
       option.value = optionValue;
@@ -119,8 +155,11 @@
     const wrapper = document.createElement('div');
     const label = document.createElement('label');
     label.textContent = labelText;
+    label.className = 'sr-only';
     const textarea = document.createElement('textarea');
     textarea.value = value;
+    textarea.placeholder = labelText;
+    textarea.setAttribute('aria-label', labelText);
     textarea.addEventListener('input', (event) => onChange(event.target.value));
     wrapper.append(label, textarea);
     return wrapper;
@@ -136,124 +175,6 @@
         content: 'Describe the policy, benefit, or procedure here.'
       });
       renderKnowledgeItems();
-    });
-  }
-
-  function renderTopics() {
-    const list = document.querySelector('#topicsList');
-    list.innerHTML = '';
-
-    data.chatTopics.forEach((topic, index) => {
-      const card = document.createElement('div');
-      card.className = 'card';
-
-      const header = document.createElement('div');
-      header.className = 'card-header';
-
-      const label = document.createElement('div');
-      label.className = 'helper-text';
-      label.textContent = `Topic ${index + 1}`;
-
-      const actions = document.createElement('div');
-      actions.className = 'card-actions';
-
-      const upButton = document.createElement('button');
-      upButton.type = 'button';
-      upButton.className = 'icon';
-      upButton.textContent = 'Up';
-      upButton.disabled = index === 0;
-      upButton.addEventListener('click', () => {
-        reorderTopic(index, index - 1);
-      });
-
-      const downButton = document.createElement('button');
-      downButton.type = 'button';
-      downButton.className = 'icon';
-      downButton.textContent = 'Down';
-      downButton.disabled = index === data.chatTopics.length - 1;
-      downButton.addEventListener('click', () => {
-        reorderTopic(index, index + 1);
-      });
-
-      const deleteButton = document.createElement('button');
-      deleteButton.type = 'button';
-      deleteButton.className = 'secondary';
-      deleteButton.textContent = 'Delete';
-      deleteButton.addEventListener('click', () => {
-        data.chatTopics = data.chatTopics.filter((item) => item.id !== topic.id);
-        renderTopics();
-        refreshPreview();
-      });
-
-      actions.append(upButton, downButton, deleteButton);
-      header.append(label, actions);
-
-      const grid = document.createElement('div');
-      grid.className = 'form-grid';
-
-      const row = document.createElement('div');
-      row.className = 'topic-row';
-
-      const iconField = createLabeledInput('Icon', topic.icon, (value) => {
-        topic.icon = value;
-        refreshPreview();
-      });
-
-      const titleField = createLabeledInput('Title', topic.title, (value) => {
-        topic.title = value;
-        refreshPreview();
-      });
-
-      const promptField = createLabeledTextarea(
-        'Internal prompt',
-        topic.prompt,
-        (value) => {
-          topic.prompt = value;
-        }
-      );
-
-      row.append(iconField, titleField);
-      grid.append(row, promptField);
-
-      const toggleRow = document.createElement('div');
-      toggleRow.className = 'toggle';
-      const toggle = document.createElement('input');
-      toggle.type = 'checkbox';
-      toggle.checked = topic.visible;
-      toggle.addEventListener('change', (event) => {
-        topic.visible = event.target.checked;
-        refreshPreview();
-      });
-      const toggleLabel = document.createElement('span');
-      toggleLabel.textContent = 'Visible to employees';
-      toggleRow.append(toggle, toggleLabel);
-
-      card.append(header, grid, toggleRow);
-      list.appendChild(card);
-    });
-  }
-
-  function reorderTopic(fromIndex, toIndex) {
-    if (toIndex < 0 || toIndex >= data.chatTopics.length) {
-      return;
-    }
-    const [moved] = data.chatTopics.splice(fromIndex, 1);
-    data.chatTopics.splice(toIndex, 0, moved);
-    renderTopics();
-    refreshPreview();
-  }
-
-  function renderTopicActions() {
-    const addButton = document.querySelector('#addTopic');
-    addButton.addEventListener('click', () => {
-      data.chatTopics.push({
-        id: createId('topic'),
-        icon: '❔',
-        title: 'New topic',
-        prompt: 'Describe the question employees will ask.',
-        visible: true
-      });
-      renderTopics();
       refreshPreview();
     });
   }
@@ -273,8 +194,6 @@
     renderSystemPrompt();
     renderKnowledgeItems();
     renderKnowledgeActions();
-    renderTopics();
-    renderTopicActions();
     refreshPreview();
   }
 
