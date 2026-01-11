@@ -7,53 +7,154 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <main class="page">
-    <header class="section">
-      <div class="header-title">Helpin</div>
-      <div class="header-subtitle">Employee FAQ &amp; Self-Service (Configuration)</div>
-      <div class="helper-text">
-        Define what employees can ask and how the assistant responds.
-      </div>
-      <div class="page-links">
-        <a href="chat.html">Open employee chat</a>
-      </div>
-    </header>
-
-    <section class="section section-hero">
-      <div class="section-header">
-        <h2>Assistant behavior</h2>
-        <p>Define the boundaries and tone the assistant must follow.</p>
-      </div>
-      <div class="form-grid">
-        <div>
-          <textarea id="systemPrompt" aria-label="System prompt"></textarea>
+  <main class="page admin-layout">
+    <aside class="admin-sidebar">
+      <div class="sidebar-title">Helpin</div>
+      <div class="sidebar-subtitle">Configuration</div>
+      <nav class="sidebar-nav" aria-label="Admin tabs">
+        <button class="tab-button" type="button" data-tab-target="dashboard">Dashboard</button>
+        <button class="tab-button active" type="button" data-tab-target="assistant">Assistant behavior</button>
+        <button class="tab-button" type="button" data-tab-target="knowledge">Knowledge base</button>
+        <button class="tab-button" type="button" data-tab-target="preview">Employee preview</button>
+        <button class="tab-button" type="button" data-tab-target="settings">Settings</button>
+      </nav>
+    </aside>
+    <div class="admin-content">
+      <header class="section">
+        <div class="header-title">Helpin</div>
+        <div class="header-subtitle">Employee FAQ &amp; Self-Service (Configuration)</div>
+        <div class="helper-text">
+          Define what employees can ask and how the assistant responds.
         </div>
-        <div>
-          <button type="button" class="secondary small" id="resetPrompt">Reset to safe default</button>
+        <div class="page-links">
+          <a href="chat.html">Open employee chat</a>
         </div>
-      </div>
-    </section>
+      </header>
 
-    <section class="section">
-      <div class="section-header">
-        <h2>Knowledge base</h2>
-        <p>Curate the approved knowledge the assistant can reference.</p>
-      </div>
-      <div class="card-actions subtle-actions">
-        <button type="button" class="secondary small" id="addKnowledge">Add knowledge</button>
-      </div>
-      <div class="list" id="knowledgeList"></div>
-      <div class="note">The assistant will only answer using this information.</div>
-    </section>
+      <section class="section tab-panel" data-tab-panel="dashboard">
+        <div class="section-header">
+          <h2>Dashboard</h2>
+          <p>Quick access to the core Helpin configuration.</p>
+        </div>
+        <div class="note">Use the navigation to review behavior, knowledge, preview, and settings.</div>
+      </section>
 
-    <section class="section">
-      <div class="section-header">
-        <h2>Employee preview</h2>
-        <p>Preview the employee experience using the current mock configuration.</p>
-      </div>
-      <div class="preview-label">Preview uses mock data and does not persist messages.</div>
-      <div id="previewChat"></div>
-    </section>
+      <section class="section section-hero tab-panel active" data-tab-panel="assistant">
+        <div class="section-header">
+          <h2>Assistant behavior</h2>
+          <p>Define the boundaries and tone the assistant must follow.</p>
+        </div>
+        <div class="form-grid">
+          <div>
+            <textarea id="systemPrompt" aria-label="System prompt"></textarea>
+          </div>
+          <div>
+            <button type="button" class="secondary small" id="resetPrompt">Reset to safe default</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section tab-panel" data-tab-panel="knowledge">
+        <div class="section-header">
+          <h2>Knowledge base</h2>
+          <p>Curate the approved knowledge the assistant can reference.</p>
+        </div>
+        <div class="card-actions subtle-actions">
+          <button type="button" class="secondary small" id="addKnowledge">Add knowledge</button>
+        </div>
+        <div class="list" id="knowledgeList"></div>
+        <div class="note">The assistant will only answer using this information.</div>
+      </section>
+
+      <section class="section tab-panel" data-tab-panel="preview">
+        <div class="section-header">
+          <h2>Employee preview</h2>
+          <p>Preview the employee experience using the current mock configuration.</p>
+        </div>
+        <div class="preview-label">Preview uses mock data and does not persist messages.</div>
+        <div id="previewChat"></div>
+      </section>
+
+      <section class="section tab-panel" data-tab-panel="settings">
+        <div class="section-header">
+          <h2>Settings</h2>
+          <p>Set safety, boundaries, and trust defaults.</p>
+        </div>
+        <div class="settings-block">
+          <div class="section-header">
+            <h3>HR contact</h3>
+            <p>Define how employees can contact HR when the assistant cannot answer.</p>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label for="hrEmail">HR email</label>
+              <input id="hrEmail" type="text" />
+            </div>
+            <div>
+              <label for="hrUrl">HR contact URL (optional)</label>
+              <input id="hrUrl" type="text" />
+            </div>
+            <div>
+              <label for="hrFallback">Fallback message shown to employees</label>
+              <textarea id="hrFallback"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="section-header">
+            <h3>Assistant boundaries</h3>
+            <p>Set clear limits on what the assistant is allowed to answer.</p>
+          </div>
+          <div class="settings-options">
+            <label class="option-row"><input id="boundaryPersonal" type="checkbox" />Do not answer personal cases</label>
+            <label class="option-row"><input id="boundaryContracts" type="checkbox" />Do not interpret contracts</label>
+            <label class="option-row"><input id="boundaryLegal" type="checkbox" />Do not answer legal questions</label>
+            <label class="option-row"><input id="boundaryEscalate" type="checkbox" />Always suggest contacting HR for exceptions</label>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="section-header">
+            <h3>Tone</h3>
+            <p>Choose how the assistant communicates.</p>
+          </div>
+          <div class="settings-options">
+            <label class="option-row"><input type="radio" name="tone" value="Neutral" />Neutral</label>
+            <label class="option-row"><input type="radio" name="tone" value="Formal" />Formal</label>
+            <label class="option-row"><input type="radio" name="tone" value="Friendly" />Friendly</label>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="section-header">
+            <h3>Language</h3>
+            <p>Select the language used by the assistant.</p>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label for="assistantLanguage">Language</label>
+              <select id="assistantLanguage">
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="section-header">
+            <h3>Disclaimer</h3>
+            <p>This text is shown to employees below the chat.</p>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label for="assistantDisclaimer">Disclaimer text</label>
+              <textarea id="assistantDisclaimer"></textarea>
+            </div>
+            <div>
+              <button type="button" class="secondary small" id="resetDisclaimer">Reset to default</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <script src="js/mockData.js"></script>

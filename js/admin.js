@@ -179,6 +179,138 @@
     });
   }
 
+  function initTabs() {
+    const buttons = Array.from(document.querySelectorAll('.tab-button'));
+    const panels = Array.from(document.querySelectorAll('.tab-panel'));
+
+    if (!buttons.length || !panels.length) {
+      return;
+    }
+
+    function setActiveTab(target) {
+      buttons.forEach((button) => {
+        button.classList.toggle(
+          'active',
+          button.dataset.tabTarget === target
+        );
+      });
+      panels.forEach((panel) => {
+        panel.classList.toggle('active', panel.dataset.tabPanel === target);
+      });
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        setActiveTab(button.dataset.tabTarget);
+      });
+    });
+  }
+
+  function renderSettings() {
+    const settings = data.settings;
+    if (!settings) {
+      return;
+    }
+
+    const hrEmailInput = document.querySelector('#hrEmail');
+    const hrUrlInput = document.querySelector('#hrUrl');
+    const hrFallbackTextarea = document.querySelector('#hrFallback');
+
+    if (hrEmailInput) {
+      hrEmailInput.value = settings.hrContact.email;
+      hrEmailInput.addEventListener('input', (event) => {
+        settings.hrContact.email = event.target.value;
+      });
+    }
+
+    if (hrUrlInput) {
+      hrUrlInput.value = settings.hrContact.url;
+      hrUrlInput.addEventListener('input', (event) => {
+        settings.hrContact.url = event.target.value;
+      });
+    }
+
+    if (hrFallbackTextarea) {
+      hrFallbackTextarea.value = settings.hrContact.fallbackMessage;
+      hrFallbackTextarea.addEventListener('input', (event) => {
+        settings.hrContact.fallbackMessage = event.target.value;
+        data.sampleResponses.fallback = event.target.value;
+      });
+    }
+
+    const boundaries = settings.assistantBoundaries;
+    const boundaryPersonal = document.querySelector('#boundaryPersonal');
+    const boundaryContracts = document.querySelector('#boundaryContracts');
+    const boundaryLegal = document.querySelector('#boundaryLegal');
+    const boundaryEscalate = document.querySelector('#boundaryEscalate');
+
+    if (boundaryPersonal) {
+      boundaryPersonal.checked = boundaries.noPersonalCases;
+      boundaryPersonal.addEventListener('change', (event) => {
+        boundaries.noPersonalCases = event.target.checked;
+      });
+    }
+
+    if (boundaryContracts) {
+      boundaryContracts.checked = boundaries.noContractInterpretation;
+      boundaryContracts.addEventListener('change', (event) => {
+        boundaries.noContractInterpretation = event.target.checked;
+      });
+    }
+
+    if (boundaryLegal) {
+      boundaryLegal.checked = boundaries.noLegalQuestions;
+      boundaryLegal.addEventListener('change', (event) => {
+        boundaries.noLegalQuestions = event.target.checked;
+      });
+    }
+
+    if (boundaryEscalate) {
+      boundaryEscalate.checked = boundaries.alwaysEscalate;
+      boundaryEscalate.addEventListener('change', (event) => {
+        boundaries.alwaysEscalate = event.target.checked;
+      });
+    }
+
+    const toneOptions = Array.from(
+      document.querySelectorAll('input[name="tone"]')
+    );
+    toneOptions.forEach((option) => {
+      option.checked = option.value === settings.tone;
+      option.addEventListener('change', (event) => {
+        if (event.target.checked) {
+          settings.tone = event.target.value;
+        }
+      });
+    });
+
+    const languageSelect = document.querySelector('#assistantLanguage');
+    if (languageSelect) {
+      languageSelect.value = settings.language;
+      languageSelect.addEventListener('change', (event) => {
+        settings.language = event.target.value;
+      });
+    }
+
+    const disclaimerTextarea = document.querySelector('#assistantDisclaimer');
+    const resetDisclaimer = document.querySelector('#resetDisclaimer');
+    const disclaimerDefault = settings.disclaimer;
+
+    if (disclaimerTextarea) {
+      disclaimerTextarea.value = settings.disclaimer;
+      disclaimerTextarea.addEventListener('input', (event) => {
+        settings.disclaimer = event.target.value;
+      });
+    }
+
+    if (resetDisclaimer && disclaimerTextarea) {
+      resetDisclaimer.addEventListener('click', () => {
+        settings.disclaimer = disclaimerDefault;
+        disclaimerTextarea.value = disclaimerDefault;
+      });
+    }
+  }
+
   function refreshPreview() {
     const previewContainer = document.querySelector('#previewChat');
     if (window.HelpinChat && previewContainer) {
@@ -191,9 +323,11 @@
   }
 
   function init() {
+    initTabs();
     renderSystemPrompt();
     renderKnowledgeItems();
     renderKnowledgeActions();
+    renderSettings();
     refreshPreview();
   }
 
