@@ -462,6 +462,33 @@ button:disabled {
   font-size: 13px;
 }
 
+.knowledge-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.knowledge-editor textarea {
+  min-height: 280px;
+  width: 100%;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid #eef1f4;
+  background: #fff;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+  resize: vertical;
+}
+
+.knowledge-editor textarea::placeholder {
+  color: var(--muted);
+}
+
+.knowledge-status {
+  font-size: 12px;
+  color: var(--muted);
+}
+
 .preview-chat .chat-shell {
   border: 1px solid #e9edf2;
   background: #f9fafb;

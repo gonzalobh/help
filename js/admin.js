@@ -1,19 +1,10 @@
 (function () {
   const data = window.HelpinData;
-  const knowledgeDrafts = new Map();
-  const knowledgeFilters = {
-    search: '',
-    category: 'Todas'
-  };
   let previewReviewed = false;
   let activeTab = 'dashboard';
   let isDirty = false;
   let saveTimer = null;
   let setActiveTab = () => {};
-
-  function createId(prefix) {
-    return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-  }
 
   function updateSaveStatus() {
     const status = document.querySelector('#saveStatus');
@@ -57,9 +48,10 @@
     const settings = data.settings || {};
     const boundaries = settings.assistantBoundaries || {};
     const boundariesSet = Object.values(boundaries).some(Boolean);
+    const knowledgeContent = data.knowledgeContent || '';
 
     const completion = {
-      knowledge: data.knowledgeItems.length > 0,
+      knowledge: knowledgeContent.trim().length > 0,
       preview: previewReviewed,
       settings: Boolean(settings.hrContact?.email?.trim()) && boundariesSet
     };
@@ -70,248 +62,32 @@
     });
   }
 
-  function renderKnowledgeItems() {
-    const list = document.querySelector('#knowledgeList');
-    list.innerHTML = '';
-
-    const searchTerm = knowledgeFilters.search.trim().toLowerCase();
-    const filteredItems = data.knowledgeItems.filter((item) => {
-      const matchesCategory =
-        knowledgeFilters.category === 'Todas' ||
-        item.category === knowledgeFilters.category;
-      if (!matchesCategory) {
-        return false;
-      }
-      if (!searchTerm) {
-        return true;
-      }
-      const haystack = `${item.title} ${item.category} ${item.content}`.toLowerCase();
-      return haystack.includes(searchTerm);
-    });
-
-    filteredItems.forEach((item) => {
-      const card = document.createElement('div');
-      card.className = 'card content-card';
-
-      const header = document.createElement('div');
-      header.className = 'card-header';
-
-      const title = document.createElement('div');
-      title.textContent = item.title;
-      title.className = 'knowledge-title';
-
-      const actions = document.createElement('div');
-      actions.className = 'card-actions';
-
-      if (item.isEditing) {
-        const saveButton = document.createElement('button');
-        saveButton.type = 'button';
-        saveButton.className = 'secondary small';
-        saveButton.textContent = 'Guardar';
-        saveButton.addEventListener('click', () => {
-          const draft = knowledgeDrafts.get(item.id);
-          if (draft) {
-            item.title = draft.title;
-            item.category = draft.category;
-            item.content = draft.content;
-          }
-          item.isEditing = false;
-          knowledgeDrafts.delete(item.id);
-          renderKnowledgeItems();
-          refreshPreview();
-          markDirty();
-          updateChecklist();
-        });
-
-        const cancelButton = document.createElement('button');
-        cancelButton.type = 'button';
-        cancelButton.className = 'secondary small';
-        cancelButton.textContent = 'Cancelar';
-        cancelButton.addEventListener('click', () => {
-          item.isEditing = false;
-          knowledgeDrafts.delete(item.id);
-          renderKnowledgeItems();
-        });
-
-        actions.append(saveButton, cancelButton);
-      } else {
-        const editButton = document.createElement('button');
-        editButton.type = 'button';
-        editButton.className = 'secondary small';
-        editButton.textContent = 'Editar';
-        editButton.addEventListener('click', () => {
-          knowledgeDrafts.set(item.id, {
-            title: item.title,
-            category: item.category,
-            content: item.content
-          });
-          item.isEditing = true;
-          renderKnowledgeItems();
-        });
-
-        const deleteButton = document.createElement('button');
-        deleteButton.type = 'button';
-        deleteButton.className = 'secondary small';
-        deleteButton.textContent = 'Eliminar';
-        deleteButton.addEventListener('click', () => {
-          data.knowledgeItems = data.knowledgeItems.filter(
-            (entry) => entry.id !== item.id
-          );
-          knowledgeDrafts.delete(item.id);
-          renderKnowledgeItems();
-          refreshPreview();
-          markDirty();
-          updateChecklist();
-        });
-
-        actions.append(editButton, deleteButton);
-      }
-      header.append(title, actions);
-
-      const body = document.createElement('div');
-      body.className = 'knowledge-body';
-
-      if (item.isEditing) {
-        const grid = document.createElement('div');
-        grid.className = 'edit-grid';
-        const draft = knowledgeDrafts.get(item.id) || {
-          title: item.title,
-          category: item.category,
-          content: item.content
-        };
-
-        const titleField = createLabeledInput('Título', draft.title, (value) => {
-          const nextDraft = knowledgeDrafts.get(item.id);
-          if (nextDraft) {
-            nextDraft.title = value;
-          }
-        });
-
-        const categoryField = createSelect(
-          'Categoría',
-          draft.category,
-          ['Políticas', 'Beneficios', 'Procedimientos', 'Documentos'],
-          (value) => {
-            const nextDraft = knowledgeDrafts.get(item.id);
-            if (nextDraft) {
-              nextDraft.category = value;
-            }
-          }
-        );
-
-        const contentField = createLabeledTextarea(
-          'Contenido',
-          draft.content,
-          (value) => {
-            const nextDraft = knowledgeDrafts.get(item.id);
-            if (nextDraft) {
-              nextDraft.content = value;
-            }
-          }
-        );
-
-        grid.append(titleField, categoryField, contentField);
-        body.appendChild(grid);
-      } else {
-        const category = document.createElement('div');
-        category.className = 'knowledge-meta';
-        category.textContent = item.category;
-
-        const content = document.createElement('p');
-        content.className = 'knowledge-content';
-        content.textContent = item.content;
-
-        body.append(category, content);
-      }
-
-      card.append(header, body);
-      list.appendChild(card);
-    });
+  function updateKnowledgeStatus() {
+    const status = document.querySelector('#knowledgeStatus');
+    if (!status) {
+      return;
+    }
+    if (data.knowledgeContent && data.knowledgeContent.trim().length > 0) {
+      status.textContent = 'Last updated: just now';
+    } else {
+      status.textContent = 'No content added yet';
+    }
   }
 
-  function createLabeledInput(labelText, value, onChange) {
-    const wrapper = document.createElement('div');
-    const label = document.createElement('label');
-    label.textContent = labelText;
-    label.className = 'sr-only';
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = value;
-    input.placeholder = labelText;
-    input.setAttribute('aria-label', labelText);
-    input.addEventListener('input', (event) => onChange(event.target.value));
-    wrapper.append(label, input);
-    return wrapper;
-  }
-
-  function createSelect(labelText, value, options, onChange) {
-    const wrapper = document.createElement('div');
-    const label = document.createElement('label');
-    label.textContent = labelText;
-    label.className = 'sr-only';
-    const select = document.createElement('select');
-    select.setAttribute('aria-label', labelText);
-    options.forEach((optionValue) => {
-      const option = document.createElement('option');
-      option.value = optionValue;
-      option.textContent = optionValue;
-      if (optionValue === value) {
-        option.selected = true;
-      }
-      select.appendChild(option);
-    });
-    select.addEventListener('change', (event) => onChange(event.target.value));
-    wrapper.append(label, select);
-    return wrapper;
-  }
-
-  function createLabeledTextarea(labelText, value, onChange) {
-    const wrapper = document.createElement('div');
-    const label = document.createElement('label');
-    label.textContent = labelText;
-    label.className = 'sr-only';
-    const textarea = document.createElement('textarea');
-    textarea.value = value;
-    textarea.placeholder = labelText;
-    textarea.setAttribute('aria-label', labelText);
-    textarea.addEventListener('input', (event) => onChange(event.target.value));
-    wrapper.append(label, textarea);
-    return wrapper;
-  }
-
-  function renderKnowledgeActions() {
-    const addButton = document.querySelector('#addKnowledge');
-    addButton.addEventListener('click', () => {
-      data.knowledgeItems.push({
-        id: createId('know'),
-        title: 'Nuevo título de conocimiento',
-        category: 'Políticas',
-        content: 'Describa aquí la política, el beneficio o el procedimiento.'
-      });
-      renderKnowledgeItems();
-      refreshPreview();
+  function initKnowledgeEditor() {
+    const textarea = document.querySelector('#knowledgeContent');
+    if (!textarea) {
+      return;
+    }
+    textarea.value = data.knowledgeContent || '';
+    updateKnowledgeStatus();
+    textarea.addEventListener('input', (event) => {
+      data.knowledgeContent = event.target.value;
       markDirty();
       updateChecklist();
+      updateKnowledgeStatus();
+      refreshPreview();
     });
-  }
-
-  function initKnowledgeFilters() {
-    const searchInput = document.querySelector('#knowledgeSearch');
-    const filterSelect = document.querySelector('#knowledgeFilter');
-
-    if (searchInput) {
-      searchInput.addEventListener('input', (event) => {
-        knowledgeFilters.search = event.target.value;
-        renderKnowledgeItems();
-      });
-    }
-
-    if (filterSelect) {
-      filterSelect.addEventListener('change', (event) => {
-        knowledgeFilters.category = event.target.value;
-        renderKnowledgeItems();
-      });
-    }
   }
 
   function initTabs() {
@@ -492,9 +268,7 @@
     initTabs();
     updateSaveStatus();
     updateChecklist();
-    renderKnowledgeItems();
-    renderKnowledgeActions();
-    initKnowledgeFilters();
+    initKnowledgeEditor();
     renderSettings();
     refreshPreview();
 
