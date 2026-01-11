@@ -2,6 +2,15 @@
   const data = window.HelpinData;
   const systemPromptDefault = data.systemPrompt;
   const knowledgeDrafts = new Map();
+  const knowledgeFilters = {
+    search: '',
+    category: 'All'
+  };
+  let previewReviewed = false;
+  let activeTab = 'dashboard';
+  let isDirty = false;
+  let saveTimer = null;
+  let setActiveTab = () => {};
 
   function createId(prefix) {
     return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -15,11 +24,71 @@
 
     textarea.addEventListener('input', (event) => {
       data.systemPrompt = event.target.value;
+      markDirty();
+      updateChecklist();
     });
 
     resetButton.addEventListener('click', () => {
       data.systemPrompt = systemPromptDefault;
       textarea.value = systemPromptDefault;
+      markDirty();
+      updateChecklist();
+    });
+  }
+
+  function updateSaveStatus() {
+    const status = document.querySelector('#saveStatus');
+    if (!status) {
+      return;
+    }
+    if (isDirty) {
+      status.textContent = 'Unsaved changes';
+      status.classList.add('unsaved');
+    } else {
+      status.textContent = '✓ Saved';
+      status.classList.remove('unsaved');
+    }
+  }
+
+  function markDirty() {
+    isDirty = true;
+    updateSaveStatus();
+    if (saveTimer) {
+      window.clearTimeout(saveTimer);
+    }
+    saveTimer = window.setTimeout(() => {
+      isDirty = false;
+      updateSaveStatus();
+    }, 1200);
+  }
+
+  function updateTopbar() {
+    const chatLink = document.querySelector('#employeeChatLink');
+    if (chatLink) {
+      chatLink.hidden = activeTab !== 'dashboard';
+    }
+  }
+
+  function updateChecklist() {
+    const checklist = document.querySelector('#setupChecklist');
+    if (!checklist) {
+      return;
+    }
+    const steps = checklist.querySelectorAll('.checklist-item');
+    const settings = data.settings || {};
+    const boundaries = settings.assistantBoundaries || {};
+    const boundariesSet = Object.values(boundaries).some(Boolean);
+
+    const completion = {
+      assistant: data.systemPrompt.trim().length > 0,
+      knowledge: data.knowledgeItems.length > 0,
+      preview: previewReviewed,
+      settings: Boolean(settings.hrContact?.email?.trim()) && boundariesSet
+    };
+
+    steps.forEach((step) => {
+      const key = step.dataset.tabLink;
+      step.classList.toggle('completed', Boolean(completion[key]));
     });
   }
 
@@ -27,7 +96,22 @@
     const list = document.querySelector('#knowledgeList');
     list.innerHTML = '';
 
-    data.knowledgeItems.forEach((item) => {
+    const searchTerm = knowledgeFilters.search.trim().toLowerCase();
+    const filteredItems = data.knowledgeItems.filter((item) => {
+      const matchesCategory =
+        knowledgeFilters.category === 'All' ||
+        item.category === knowledgeFilters.category;
+      if (!matchesCategory) {
+        return false;
+      }
+      if (!searchTerm) {
+        return true;
+      }
+      const haystack = `${item.title} ${item.category} ${item.content}`.toLowerCase();
+      return haystack.includes(searchTerm);
+    });
+
+    filteredItems.forEach((item) => {
       const card = document.createElement('div');
       card.className = 'card content-card';
 
@@ -57,6 +141,8 @@
           knowledgeDrafts.delete(item.id);
           renderKnowledgeItems();
           refreshPreview();
+          markDirty();
+          updateChecklist();
         });
 
         const cancelButton = document.createElement('button');
@@ -96,6 +182,8 @@
           knowledgeDrafts.delete(item.id);
           renderKnowledgeItems();
           refreshPreview();
+          markDirty();
+          updateChecklist();
         });
 
         actions.append(editButton, deleteButton);
@@ -224,7 +312,28 @@
       });
       renderKnowledgeItems();
       refreshPreview();
+      markDirty();
+      updateChecklist();
     });
+  }
+
+  function initKnowledgeFilters() {
+    const searchInput = document.querySelector('#knowledgeSearch');
+    const filterSelect = document.querySelector('#knowledgeFilter');
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (event) => {
+        knowledgeFilters.search = event.target.value;
+        renderKnowledgeItems();
+      });
+    }
+
+    if (filterSelect) {
+      filterSelect.addEventListener('change', (event) => {
+        knowledgeFilters.category = event.target.value;
+        renderKnowledgeItems();
+      });
+    }
   }
 
   function initTabs() {
@@ -235,7 +344,7 @@
       return;
     }
 
-    function setActiveTab(target) {
+    setActiveTab = (target) => {
       buttons.forEach((button) => {
         button.classList.toggle(
           'active',
@@ -245,13 +354,21 @@
       panels.forEach((panel) => {
         panel.classList.toggle('active', panel.dataset.tabPanel === target);
       });
-    }
+      activeTab = target;
+      if (target === 'preview') {
+        previewReviewed = true;
+      }
+      updateTopbar();
+      updateChecklist();
+    };
 
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         setActiveTab(button.dataset.tabTarget);
       });
     });
+
+    setActiveTab(activeTab);
   }
 
   function renderSettings() {
@@ -268,6 +385,8 @@
       hrEmailInput.value = settings.hrContact.email;
       hrEmailInput.addEventListener('input', (event) => {
         settings.hrContact.email = event.target.value;
+        markDirty();
+        updateChecklist();
       });
     }
 
@@ -275,6 +394,7 @@
       hrUrlInput.value = settings.hrContact.url;
       hrUrlInput.addEventListener('input', (event) => {
         settings.hrContact.url = event.target.value;
+        markDirty();
       });
     }
 
@@ -283,6 +403,8 @@
       hrFallbackTextarea.addEventListener('input', (event) => {
         settings.hrContact.fallbackMessage = event.target.value;
         data.sampleResponses.fallback = event.target.value;
+        markDirty();
+        refreshPreview();
       });
     }
 
@@ -296,6 +418,9 @@
       boundaryPersonal.checked = boundaries.noPersonalCases;
       boundaryPersonal.addEventListener('change', (event) => {
         boundaries.noPersonalCases = event.target.checked;
+        markDirty();
+        updateChecklist();
+        refreshPreview();
       });
     }
 
@@ -303,6 +428,9 @@
       boundaryContracts.checked = boundaries.noContractInterpretation;
       boundaryContracts.addEventListener('change', (event) => {
         boundaries.noContractInterpretation = event.target.checked;
+        markDirty();
+        updateChecklist();
+        refreshPreview();
       });
     }
 
@@ -310,6 +438,9 @@
       boundaryLegal.checked = boundaries.noLegalQuestions;
       boundaryLegal.addEventListener('change', (event) => {
         boundaries.noLegalQuestions = event.target.checked;
+        markDirty();
+        updateChecklist();
+        refreshPreview();
       });
     }
 
@@ -317,6 +448,9 @@
       boundaryEscalate.checked = boundaries.alwaysEscalate;
       boundaryEscalate.addEventListener('change', (event) => {
         boundaries.alwaysEscalate = event.target.checked;
+        markDirty();
+        updateChecklist();
+        refreshPreview();
       });
     }
 
@@ -328,6 +462,7 @@
       option.addEventListener('change', (event) => {
         if (event.target.checked) {
           settings.tone = event.target.value;
+          markDirty();
         }
       });
     });
@@ -337,6 +472,7 @@
       languageSelect.value = settings.language;
       languageSelect.addEventListener('change', (event) => {
         settings.language = event.target.value;
+        markDirty();
       });
     }
 
@@ -348,6 +484,8 @@
       disclaimerTextarea.value = settings.disclaimer;
       disclaimerTextarea.addEventListener('input', (event) => {
         settings.disclaimer = event.target.value;
+        markDirty();
+        refreshPreview();
       });
     }
 
@@ -355,6 +493,8 @@
       resetDisclaimer.addEventListener('click', () => {
         settings.disclaimer = disclaimerDefault;
         disclaimerTextarea.value = disclaimerDefault;
+        markDirty();
+        refreshPreview();
       });
     }
   }
@@ -372,11 +512,23 @@
 
   function init() {
     initTabs();
+    updateSaveStatus();
+    updateChecklist();
     renderSystemPrompt();
     renderKnowledgeItems();
     renderKnowledgeActions();
+    initKnowledgeFilters();
     renderSettings();
     refreshPreview();
+
+    const checklistButtons = document.querySelectorAll(
+      '#setupChecklist .checklist-item'
+    );
+    checklistButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        setActiveTab(button.dataset.tabLink);
+      });
+    });
   }
 
   window.addEventListener('DOMContentLoaded', init);

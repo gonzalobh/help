@@ -10,7 +10,8 @@
   <header class="admin-topbar">
     <div class="topbar-logo">Helpin</div>
     <div class="topbar-actions">
-      <a class="topbar-button" href="chat.html">Open employee chat</a>
+      <div class="save-status" id="saveStatus" aria-live="polite">✓ Saved</div>
+      <a class="topbar-button small" id="employeeChatLink" href="chat.html">Open employee chat</a>
     </div>
   </header>
   <main class="page admin-layout">
@@ -41,10 +42,27 @@
     <div class="admin-content">
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
-          <h2>Dashboard</h2>
-          <p>Review the current configuration at a glance.</p>
+          <h2>Welcome to Helpin</h2>
+          <p>Set up your internal assistant in a few simple steps.</p>
         </div>
-        <div class="note">Use the sidebar to adjust assistant policy, knowledge, preview, and settings.</div>
+        <div class="checklist" id="setupChecklist">
+          <button class="checklist-item" type="button" data-tab-link="assistant">
+            <span class="checkmark" aria-hidden="true">✓</span>
+            <span class="checklist-title">Define assistant behavior</span>
+          </button>
+          <button class="checklist-item" type="button" data-tab-link="knowledge">
+            <span class="checkmark" aria-hidden="true">✓</span>
+            <span class="checklist-title">Add approved knowledge</span>
+          </button>
+          <button class="checklist-item" type="button" data-tab-link="preview">
+            <span class="checkmark" aria-hidden="true">✓</span>
+            <span class="checklist-title">Review employee preview</span>
+          </button>
+          <button class="checklist-item" type="button" data-tab-link="settings">
+            <span class="checkmark" aria-hidden="true">✓</span>
+            <span class="checklist-title">Set HR contact & boundaries</span>
+          </button>
+        </div>
       </section>
 
       <section class="section section-hero policy-section tab-panel" data-tab-panel="assistant">
@@ -67,6 +85,18 @@
           <h2>Knowledge base</h2>
           <p>Keep key policies and answers in plain language.</p>
         </div>
+        <div class="knowledge-toolbar">
+          <label class="sr-only" for="knowledgeSearch">Search knowledge</label>
+          <input id="knowledgeSearch" type="text" placeholder="Search knowledge…" />
+          <label class="sr-only" for="knowledgeFilter">Category filter</label>
+          <select id="knowledgeFilter">
+            <option value="All">All</option>
+            <option value="Policies">Policies</option>
+            <option value="Benefits">Benefits</option>
+            <option value="Procedures">Procedures</option>
+            <option value="Documents">Documents</option>
+          </select>
+        </div>
         <div class="card-actions subtle-actions">
           <button type="button" class="secondary small" id="addKnowledge">Add item</button>
         </div>
@@ -78,7 +108,6 @@
           <h2>Employee preview</h2>
           <p>A live preview of the employee experience.</p>
         </div>
-        <div class="preview-label">Preview only.</div>
         <div id="previewChat" class="preview-chat"></div>
       </section>
 
@@ -89,8 +118,8 @@
         </div>
         <div class="settings-block">
           <div class="settings-header">
-            <h3>HR contact</h3>
-            <p>How employees reach HR when needed.</p>
+            <h3>Escalation & legal</h3>
+            <p>Where employees go when answers need HR review.</p>
           </div>
           <div class="form-grid">
             <div>
@@ -105,12 +134,19 @@
               <label for="hrFallback">Fallback message shown to employees</label>
               <textarea id="hrFallback"></textarea>
             </div>
+            <div>
+              <label for="assistantDisclaimer">Disclaimer text</label>
+              <textarea id="assistantDisclaimer"></textarea>
+            </div>
+            <div>
+              <button type="button" class="secondary small" id="resetDisclaimer">Reset to default</button>
+            </div>
           </div>
         </div>
         <div class="settings-block">
           <div class="settings-header">
             <h3>Assistant boundaries</h3>
-            <p>Limits on what the assistant can answer.</p>
+            <p>Limits for sensitive or exception cases.</p>
           </div>
           <div class="settings-options">
             <label class="option-row">
@@ -140,21 +176,18 @@
             <h3>Tone</h3>
             <p>Default voice for responses.</p>
           </div>
-          <div class="settings-options">
-            <label class="option-row">
-              <span class="option-label">Neutral</span>
-              <input class="toggle-input" type="radio" name="tone" value="Neutral" />
-              <span class="toggle-switch" aria-hidden="true"></span>
+          <div class="segmented-control" role="radiogroup" aria-label="Tone">
+            <label class="segment">
+              <input type="radio" name="tone" value="Neutral" />
+              <span>Neutral</span>
             </label>
-            <label class="option-row">
-              <span class="option-label">Formal</span>
-              <input class="toggle-input" type="radio" name="tone" value="Formal" />
-              <span class="toggle-switch" aria-hidden="true"></span>
+            <label class="segment">
+              <input type="radio" name="tone" value="Formal" />
+              <span>Formal</span>
             </label>
-            <label class="option-row">
-              <span class="option-label">Friendly</span>
-              <input class="toggle-input" type="radio" name="tone" value="Friendly" />
-              <span class="toggle-switch" aria-hidden="true"></span>
+            <label class="segment">
+              <input type="radio" name="tone" value="Friendly" />
+              <span>Friendly</span>
             </label>
           </div>
         </div>
@@ -170,21 +203,6 @@
                 <option value="English">English</option>
                 <option value="Spanish">Spanish</option>
               </select>
-            </div>
-          </div>
-        </div>
-        <div class="settings-block">
-          <div class="settings-header">
-            <h3>Disclaimer</h3>
-            <p>Shown below the employee chat.</p>
-          </div>
-          <div class="form-grid">
-            <div>
-              <label for="assistantDisclaimer">Disclaimer text</label>
-              <textarea id="assistantDisclaimer"></textarea>
-            </div>
-            <div>
-              <button type="button" class="secondary small" id="resetDisclaimer">Reset to default</button>
             </div>
           </div>
         </div>
