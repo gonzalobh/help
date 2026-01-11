@@ -48,29 +48,6 @@ Your tone must be:
         'Business expenses must be submitted within 30 days using the expense portal. Receipts are required for all expenses over $25.'
     }
   ],
-  chatTopics: [
-    {
-      id: 'topic-1',
-      icon: '📄',
-      title: 'PTO policy',
-      prompt: 'What is the paid time off policy?',
-      visible: true
-    },
-    {
-      id: 'topic-2',
-      icon: '🏠',
-      title: 'Remote work',
-      prompt: 'What are the guidelines for remote work?',
-      visible: true
-    },
-    {
-      id: 'topic-3',
-      icon: '💳',
-      title: 'Expenses',
-      prompt: 'How do I submit expenses for reimbursement?',
-      visible: true
-    }
-  ],
   sampleResponses: {
     fallback: 'Please contact the HR team for confirmation.'
   }

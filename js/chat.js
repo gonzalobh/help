@@ -44,27 +44,6 @@
     });
   }
 
-  function renderTopics(topics, container, onSelect) {
-    container.innerHTML = '';
-    const visibleTopics = topics.filter((topic) => topic.visible);
-    if (visibleTopics.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'note';
-      empty.textContent = 'No topics are currently available.';
-      container.appendChild(empty);
-      return;
-    }
-
-    visibleTopics.forEach((topic) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'topic-button';
-      button.textContent = `${topic.icon ? `${topic.icon} ` : ''}${topic.title}`;
-      button.addEventListener('click', () => onSelect(topic.prompt));
-      container.appendChild(button);
-    });
-  }
-
   function initChat({ container, data, mode }) {
     if (!container || !data) {
       return;
@@ -82,9 +61,6 @@
     const body = document.createElement('div');
     body.className = 'chat-body';
 
-    const topics = document.createElement('div');
-    topics.className = 'chat-topics';
-
     const inputRow = document.createElement('div');
     inputRow.className = 'chat-input';
 
@@ -98,10 +74,42 @@
     sendButton.textContent = 'Send';
 
     inputRow.append(input, sendButton);
-    shell.append(header, body, topics, inputRow);
+    shell.append(header, body, inputRow);
     container.appendChild(shell);
 
     body.appendChild(createMessage(defaultWelcome, 'assistant', false));
+    if (mode === 'preview') {
+      body.appendChild(createMessage('What is the PTO policy?', 'user', false));
+      body.appendChild(
+        createMessage(
+          {
+            title: 'Paid time off eligibility',
+            body:
+              'Benefits · Full-time employees accrue 1.5 days of paid time off per month.'
+          },
+          'assistant',
+          true
+        )
+      );
+      body.appendChild(
+        createMessage(
+          'Can I work remotely two days a week?',
+          'user',
+          false
+        )
+      );
+      body.appendChild(
+        createMessage(
+          {
+            title: 'Remote work guidelines',
+            body:
+              'Policies · Remote work is available up to two days per week with manager approval.'
+          },
+          'assistant',
+          true
+        )
+      );
+    }
 
     function respond(message) {
       const match = findKnowledgeMatch(message, data.knowledgeItems);
@@ -138,14 +146,18 @@
       }
     }
 
-    renderTopics(data.chatTopics, topics, (prompt) => sendMessage(prompt));
-
     sendButton.addEventListener('click', () => sendMessage(input.value));
     input.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
         sendMessage(input.value);
       }
     });
+
+    if (mode === 'preview') {
+      input.disabled = true;
+      sendButton.disabled = true;
+      input.placeholder = 'Preview only';
+    }
   }
 
   window.HelpinChat = { initChat };
