@@ -1,63 +1,63 @@
 window.HelpinData = {
-  systemPrompt: `You are an internal Employee FAQ & Self-Service assistant.
+  systemPrompt: `Usted es un asistente interno de preguntas frecuentes y autoservicio para colaboradores.
 
-You ONLY answer questions related to:
+SOLO responde preguntas relacionadas con:
 
-* internal policies
-* employee benefits
-* HR procedures
-* company guidelines
+* políticas internas
+* beneficios para colaboradores
+* procedimientos de RR. HH.
+* lineamientos de la empresa
 
-You MUST only use the provided internal knowledge.
-If the answer is not explicitly available, respond:
-“Please contact the HR team for confirmation.”
+DEBE usar únicamente el conocimiento interno proporcionado.
+Si la respuesta no está disponible de forma explícita, responda:
+“Por favor, contacte al equipo de RR. HH. para confirmación.”
 
-You do NOT:
+NO debe:
 
-* give legal advice
-* interpret contracts
-* make decisions
-* personalize cases
+* dar asesoría legal
+* interpretar contratos
+* tomar decisiones
+* personalizar casos
 
-Your tone must be:
+Su tono debe ser:
 
-* professional
-* clear
+* profesional
+* claro
 * neutral
-* concise`,
+* conciso`,
   knowledgeItems: [
     {
       id: 'know-1',
-      title: 'Paid time off eligibility',
-      category: 'Benefits',
+      title: 'Elegibilidad de vacaciones pagadas',
+      category: 'Beneficios',
       content:
-        'Full-time employees accrue 1.5 days of paid time off per month. PTO requests should be submitted at least two weeks in advance.'
+        'Los colaboradores con jornada completa acumulan 1,5 días de vacaciones pagadas por mes. Las solicitudes de vacaciones deben enviarse con al menos dos semanas de anticipación.'
     },
     {
       id: 'know-2',
-      title: 'Remote work guidelines',
-      category: 'Policies',
+      title: 'Lineamientos de trabajo remoto',
+      category: 'Políticas',
       content:
-        'Remote work is available up to two days per week with manager approval. Employees must maintain core hours from 10:00 to 16:00 local time.'
+        'El trabajo remoto está disponible hasta dos días por semana con aprobación de su jefatura. Los colaboradores deben mantener un horario núcleo de 10:00 a 16:00 hora local.'
     },
     {
       id: 'know-3',
-      title: 'Expense reimbursement',
-      category: 'Procedures',
+      title: 'Reembolso de gastos',
+      category: 'Procedimientos',
       content:
-        'Business expenses must be submitted within 30 days using the expense portal. Receipts are required for all expenses over $25.'
+        'Los gastos laborales deben enviarse dentro de 30 días usando el portal de gastos. Se requieren boletas para todos los gastos superiores a $25.'
     }
   ],
   sampleResponses: {
     fallback:
-      'When the assistant cannot answer, please contact HR at [hr@company.com](mailto:hr@company.com).'
+      'Cuando el asistente no pueda responder, por favor contacte a RR. HH. en [hr@company.com](mailto:hr@company.com).'
   },
   settings: {
     hrContact: {
       email: 'hr@company.com',
       url: '',
       fallbackMessage:
-        'When the assistant cannot answer, please contact HR at [hr@company.com](mailto:hr@company.com).'
+        'Cuando el asistente no pueda responder, por favor contacte a RR. HH. en [hr@company.com](mailto:hr@company.com).'
     },
     assistantBoundaries: {
       noPersonalCases: true,
@@ -66,8 +66,8 @@ Your tone must be:
       alwaysEscalate: true
     },
     tone: 'Neutral',
-    language: 'English',
+    language: 'Español',
     disclaimer:
-      'This assistant provides informational guidance only.\nFor specific cases, please contact HR.'
+      'Este asistente entrega solo orientación informativa.\nPara casos específicos, por favor contacte a RR. HH.'
   }
 };

@@ -1,6 +1,6 @@
 (function () {
   const defaultWelcome =
-    'You can ask questions about internal policies, benefits or HR procedures.';
+    'Puede hacer consultas sobre políticas internas, beneficios o procedimientos de RR. HH.';
 
   function createMessage(content, role, isStructured) {
     const message = document.createElement('div');
@@ -27,7 +27,7 @@
   function extractKeywords(item) {
     const parts = `${item.title} ${item.category}`.split(/\s+/);
     return parts
-      .map((part) => part.replace(/[^a-zA-Z]/g, '').toLowerCase())
+      .map((part) => part.replace(/[^a-zA-ZÁÉÍÓÚÜÑáéíóúüñ]/g, '').toLowerCase())
       .filter((word) => word.length > 3);
   }
 
@@ -56,7 +56,7 @@
 
     const header = document.createElement('div');
     header.className = 'chat-header';
-    header.textContent = 'Helpin Assistant';
+    header.textContent = 'Asistente Helpin';
 
     const body = document.createElement('div');
     body.className = 'chat-body';
@@ -66,12 +66,12 @@
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.placeholder = 'Ask a question';
+    input.placeholder = 'Haga una consulta';
 
     const sendButton = document.createElement('button');
     sendButton.type = 'button';
     sendButton.className = 'primary';
-    sendButton.textContent = 'Send';
+    sendButton.textContent = 'Enviar';
 
     inputRow.append(input, sendButton);
     shell.append(header, body, inputRow);
@@ -79,13 +79,15 @@
 
     body.appendChild(createMessage(defaultWelcome, 'assistant', false));
     if (mode === 'preview') {
-      body.appendChild(createMessage('What is the PTO policy?', 'user', false));
+      body.appendChild(
+        createMessage('¿Cuál es la política de vacaciones pagadas?', 'user', false)
+      );
       body.appendChild(
         createMessage(
           {
-            title: 'Paid time off eligibility',
+            title: 'Elegibilidad de vacaciones pagadas',
             body:
-              'Benefits · Full-time employees accrue 1.5 days of paid time off per month.'
+              'Beneficios · Los colaboradores con jornada completa acumulan 1,5 días de vacaciones pagadas por mes. Las solicitudes de vacaciones deben enviarse con al menos dos semanas de anticipación.'
           },
           'assistant',
           true
@@ -93,7 +95,7 @@
       );
       body.appendChild(
         createMessage(
-          'Can I work remotely two days a week?',
+          '¿Puedo trabajar de forma remota dos días a la semana?',
           'user',
           false
         )
@@ -101,9 +103,9 @@
       body.appendChild(
         createMessage(
           {
-            title: 'Remote work guidelines',
+            title: 'Lineamientos de trabajo remoto',
             body:
-              'Policies · Remote work is available up to two days per week with manager approval.'
+              'Políticas · El trabajo remoto está disponible hasta dos días por semana con aprobación de su jefatura. Los colaboradores deben mantener un horario núcleo de 10:00 a 16:00 hora local.'
           },
           'assistant',
           true
@@ -156,7 +158,7 @@
     if (mode === 'preview') {
       input.disabled = true;
       sendButton.disabled = true;
-      input.placeholder = 'Ask a question';
+      input.placeholder = 'Haga una consulta';
     }
 
     if (mode === 'preview') {
@@ -168,7 +170,7 @@
         const hrButton = document.createElement('button');
         hrButton.type = 'button';
         hrButton.className = 'secondary small';
-        hrButton.textContent = 'Contact HR';
+        hrButton.textContent = 'Contactar a RR. HH.';
         actions.appendChild(hrButton);
       }
 

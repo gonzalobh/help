@@ -1,171 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-CL">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Helpin Admin</title>
+  <title>Administración de Helpin</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body class="admin-ui">
   <header class="admin-topbar">
     <div class="topbar-logo">Helpin</div>
     <div class="topbar-actions">
-      <div class="save-status" id="saveStatus" aria-live="polite">✓ Saved</div>
-      <a class="topbar-button small" id="employeeChatLink" href="chat.html">Open employee chat</a>
+      <div class="save-status" id="saveStatus" aria-live="polite">✓ Guardado</div>
+      <a class="topbar-button small" id="employeeChatLink" href="chat.html">Abrir chat de colaboradores</a>
     </div>
   </header>
   <main class="page admin-layout">
     <aside class="admin-sidebar">
-      <nav class="sidebar-nav" aria-label="Admin tabs">
+      <nav class="sidebar-nav" aria-label="Pestañas de administración">
         <button class="tab-button active" type="button" data-tab-target="dashboard">
           <i data-lucide="layout-dashboard" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Dashboard</span>
+          <span class="nav-label">Panel</span>
         </button>
         <button class="tab-button" type="button" data-tab-target="assistant">
           <i data-lucide="bot" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Assistant</span>
+          <span class="nav-label">Asistente</span>
         </button>
         <button class="tab-button" type="button" data-tab-target="knowledge">
           <i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Knowledge</span>
+          <span class="nav-label">Conocimiento</span>
         </button>
         <button class="tab-button" type="button" data-tab-target="preview">
           <i data-lucide="message-square" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Preview</span>
+          <span class="nav-label">Vista previa</span>
         </button>
         <button class="tab-button" type="button" data-tab-target="settings">
           <i data-lucide="settings" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Settings</span>
+          <span class="nav-label">Configuración</span>
         </button>
       </nav>
     </aside>
     <div class="admin-content">
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
-          <h2>Welcome to Helpin</h2>
-          <p>Set up your internal assistant in a few simple steps.</p>
+          <h2>Bienvenido a Helpin</h2>
+          <p>Configure su asistente interno en unos pocos pasos simples.</p>
         </div>
         <div class="checklist" id="setupChecklist">
           <button class="checklist-item" type="button" data-tab-link="assistant">
             <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Define assistant behavior</span>
+            <span class="checklist-title">Definir el comportamiento del asistente</span>
           </button>
           <button class="checklist-item" type="button" data-tab-link="knowledge">
             <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Add approved knowledge</span>
+            <span class="checklist-title">Agregar conocimiento aprobado</span>
           </button>
           <button class="checklist-item" type="button" data-tab-link="preview">
             <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Review employee preview</span>
+            <span class="checklist-title">Revisar la vista previa para colaboradores</span>
           </button>
           <button class="checklist-item" type="button" data-tab-link="settings">
             <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Set HR contact & boundaries</span>
+            <span class="checklist-title">Definir contacto de RR. HH. y límites</span>
           </button>
         </div>
       </section>
 
       <section class="section section-hero policy-section tab-panel" data-tab-panel="assistant">
         <div class="section-header">
-          <h2>Assistant behavior</h2>
-          <p>Write the internal policy the assistant should follow.</p>
+          <h2>Comportamiento del asistente</h2>
+          <p>Redacte la política interna que debe seguir el asistente.</p>
         </div>
         <div class="form-grid">
           <div>
-            <textarea id="systemPrompt" class="policy-textarea" aria-label="System prompt"></textarea>
+            <textarea id="systemPrompt" class="policy-textarea" aria-label="Instrucción del sistema"></textarea>
           </div>
           <div>
-            <button type="button" class="secondary small" id="resetPrompt">Reset to safe default</button>
+            <button type="button" class="secondary small" id="resetPrompt">Restablecer a valores seguros predeterminados</button>
           </div>
         </div>
       </section>
 
       <section class="section tab-panel" data-tab-panel="knowledge">
         <div class="section-header">
-          <h2>Knowledge base</h2>
-          <p>Keep key policies and answers in plain language.</p>
+          <h2>Base de conocimiento</h2>
+          <p>Mantenga las políticas y respuestas clave en lenguaje claro.</p>
         </div>
         <div class="knowledge-toolbar">
-          <label class="sr-only" for="knowledgeSearch">Search knowledge</label>
-          <input id="knowledgeSearch" type="text" placeholder="Search knowledge…" />
-          <label class="sr-only" for="knowledgeFilter">Category filter</label>
+          <label class="sr-only" for="knowledgeSearch">Buscar conocimiento</label>
+          <input id="knowledgeSearch" type="text" placeholder="Buscar conocimiento…" />
+          <label class="sr-only" for="knowledgeFilter">Filtro de categoría</label>
           <select id="knowledgeFilter">
-            <option value="All">All</option>
-            <option value="Policies">Policies</option>
-            <option value="Benefits">Benefits</option>
-            <option value="Procedures">Procedures</option>
-            <option value="Documents">Documents</option>
+            <option value="Todas">Todas</option>
+            <option value="Políticas">Políticas</option>
+            <option value="Beneficios">Beneficios</option>
+            <option value="Procedimientos">Procedimientos</option>
+            <option value="Documentos">Documentos</option>
           </select>
         </div>
         <div class="card-actions subtle-actions">
-          <button type="button" class="secondary small" id="addKnowledge">Add item</button>
+          <button type="button" class="secondary small" id="addKnowledge">Agregar elemento</button>
         </div>
         <div class="list" id="knowledgeList"></div>
       </section>
 
       <section class="section tab-panel" data-tab-panel="preview">
         <div class="section-header">
-          <h2>Employee preview</h2>
-          <p>A live preview of the employee experience.</p>
+          <h2>Vista previa para colaboradores</h2>
+          <p>Vista previa en vivo de la experiencia de los colaboradores.</p>
         </div>
         <div id="previewChat" class="preview-chat"></div>
       </section>
 
       <section class="section tab-panel" data-tab-panel="settings">
         <div class="section-header">
-          <h2>Settings</h2>
-          <p>Keep core preferences consistent and safe.</p>
+          <h2>Configuración</h2>
+          <p>Mantenga las preferencias clave coherentes y seguras.</p>
         </div>
         <div class="settings-block">
           <div class="settings-header">
-            <h3>Escalation & legal</h3>
-            <p>Where employees go when answers need HR review.</p>
+            <h3>Escalamiento y asuntos legales</h3>
+            <p>Dónde acuden los colaboradores cuando las respuestas requieren revisión de RR. HH.</p>
           </div>
           <div class="form-grid">
             <div>
-              <label for="hrEmail">HR email</label>
+              <label for="hrEmail">Correo de RR. HH.</label>
               <input id="hrEmail" type="text" />
             </div>
             <div>
-              <label for="hrUrl">HR contact URL (optional)</label>
+              <label for="hrUrl">URL de contacto de RR. HH. (opcional)</label>
               <input id="hrUrl" type="text" />
             </div>
             <div>
-              <label for="hrFallback">Fallback message shown to employees</label>
+              <label for="hrFallback">Mensaje alternativo mostrado a los colaboradores</label>
               <textarea id="hrFallback"></textarea>
             </div>
             <div>
-              <label for="assistantDisclaimer">Disclaimer text</label>
+              <label for="assistantDisclaimer">Texto de descargo de responsabilidad</label>
               <textarea id="assistantDisclaimer"></textarea>
             </div>
             <div>
-              <button type="button" class="secondary small" id="resetDisclaimer">Reset to default</button>
+              <button type="button" class="secondary small" id="resetDisclaimer">Restablecer a predeterminado</button>
             </div>
           </div>
         </div>
         <div class="settings-block">
           <div class="settings-header">
-            <h3>Assistant boundaries</h3>
-            <p>Limits for sensitive or exception cases.</p>
+            <h3>Límites del asistente</h3>
+            <p>Límites para casos sensibles o excepcionales.</p>
           </div>
           <div class="settings-options">
             <label class="option-row">
-              <span class="option-label">Do not answer personal cases</span>
+              <span class="option-label">No responder casos personales</span>
               <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
               <span class="toggle-switch" aria-hidden="true"></span>
             </label>
             <label class="option-row">
-              <span class="option-label">Do not interpret contracts</span>
+              <span class="option-label">No interpretar contratos</span>
               <input id="boundaryContracts" class="toggle-input" type="checkbox" />
               <span class="toggle-switch" aria-hidden="true"></span>
             </label>
             <label class="option-row">
-              <span class="option-label">Do not answer legal questions</span>
+              <span class="option-label">No responder consultas legales</span>
               <input id="boundaryLegal" class="toggle-input" type="checkbox" />
               <span class="toggle-switch" aria-hidden="true"></span>
             </label>
             <label class="option-row">
-              <span class="option-label">Always suggest contacting HR for exceptions</span>
+              <span class="option-label">Sugerir siempre contactar a RR. HH. para excepciones</span>
               <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
               <span class="toggle-switch" aria-hidden="true"></span>
             </label>
@@ -173,10 +173,10 @@
         </div>
         <div class="settings-block">
           <div class="settings-header">
-            <h3>Tone</h3>
-            <p>Default voice for responses.</p>
+            <h3>Tono</h3>
+            <p>Voz predeterminada de las respuestas.</p>
           </div>
-          <div class="segmented-control" role="radiogroup" aria-label="Tone">
+          <div class="segmented-control" role="radiogroup" aria-label="Tono">
             <label class="segment">
               <input type="radio" name="tone" value="Neutral" />
               <span>Neutral</span>
@@ -186,22 +186,22 @@
               <span>Formal</span>
             </label>
             <label class="segment">
-              <input type="radio" name="tone" value="Friendly" />
-              <span>Friendly</span>
+              <input type="radio" name="tone" value="Amable" />
+              <span>Amable</span>
             </label>
           </div>
         </div>
         <div class="settings-block">
           <div class="settings-header">
-            <h3>Language</h3>
-            <p>Primary language for responses.</p>
+            <h3>Idioma</h3>
+            <p>Idioma principal de las respuestas.</p>
           </div>
           <div class="form-grid">
             <div>
-              <label for="assistantLanguage">Language</label>
+              <label for="assistantLanguage">Idioma</label>
               <select id="assistantLanguage">
-                <option value="English">English</option>
-                <option value="Spanish">Spanish</option>
+                <option value="Inglés">Inglés</option>
+                <option value="Español">Español</option>
               </select>
             </div>
           </div>
