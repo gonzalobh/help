@@ -221,12 +221,24 @@
       });
     });
 
-    const languageSelect = document.querySelector('#assistantLanguage');
-    if (languageSelect) {
-      languageSelect.value = settings.language;
-      languageSelect.addEventListener('change', (event) => {
-        settings.language = event.target.value;
-        markDirty();
+    const languageOptions = Array.from(
+      document.querySelectorAll('input[name="assistantLanguage"]')
+    );
+    if (languageOptions.length) {
+      const selectedLanguages = Array.isArray(settings.languages)
+        ? settings.languages
+        : settings.language
+        ? [settings.language]
+        : [];
+
+      languageOptions.forEach((option) => {
+        option.checked = selectedLanguages.includes(option.value);
+        option.addEventListener('change', () => {
+          settings.languages = languageOptions
+            .filter((input) => input.checked)
+            .map((input) => input.value);
+          markDirty();
+        });
       });
     }
 
