@@ -21,10 +21,6 @@
           <i data-lucide="layout-dashboard" class="nav-icon" aria-hidden="true"></i>
           <span class="nav-label">Panel</span>
         </button>
-        <button class="tab-button" type="button" data-tab-target="assistant">
-          <i data-lucide="bot" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Asistente</span>
-        </button>
         <button class="tab-button" type="button" data-tab-target="knowledge">
           <i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i>
           <span class="nav-label">Conocimiento</span>
@@ -43,13 +39,9 @@
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
           <h2>Bienvenido a Helpin</h2>
-          <p>Configure su asistente interno en unos pocos pasos simples.</p>
+          <p>Helpin ofrece un asistente interno seguro para las dudas de los colaboradores. Usted controla lo que sabe y cuándo debe involucrarse RR. HH.</p>
         </div>
         <div class="checklist" id="setupChecklist">
-          <button class="checklist-item" type="button" data-tab-link="assistant">
-            <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Definir el comportamiento del asistente</span>
-          </button>
           <button class="checklist-item" type="button" data-tab-link="knowledge">
             <span class="checkmark" aria-hidden="true">✓</span>
             <span class="checklist-title">Agregar conocimiento aprobado</span>
@@ -65,25 +57,10 @@
         </div>
       </section>
 
-      <section class="section section-hero policy-section tab-panel" data-tab-panel="assistant">
-        <div class="section-header">
-          <h2>Comportamiento del asistente</h2>
-          <p>Redacte la política interna que debe seguir el asistente.</p>
-        </div>
-        <div class="form-grid">
-          <div>
-            <textarea id="systemPrompt" class="policy-textarea" aria-label="Instrucción del sistema"></textarea>
-          </div>
-          <div>
-            <button type="button" class="secondary small" id="resetPrompt">Restablecer a valores seguros predeterminados</button>
-          </div>
-        </div>
-      </section>
-
       <section class="section tab-panel" data-tab-panel="knowledge">
         <div class="section-header">
           <h2>Base de conocimiento</h2>
-          <p>Mantenga las políticas y respuestas clave en lenguaje claro.</p>
+          <p>El asistente responde estrictamente según el conocimiento que mantenga aquí.</p>
         </div>
         <div class="knowledge-toolbar">
           <label class="sr-only" for="knowledgeSearch">Buscar conocimiento</label>
@@ -106,7 +83,7 @@
       <section class="section tab-panel" data-tab-panel="preview">
         <div class="section-header">
           <h2>Vista previa para colaboradores</h2>
-          <p>Vista previa en vivo de la experiencia de los colaboradores.</p>
+          <p>Revise cómo se verá para los colaboradores con el conocimiento y los ajustes actuales.</p>
         </div>
         <div id="previewChat" class="preview-chat"></div>
       </section>
@@ -114,7 +91,7 @@
       <section class="section tab-panel" data-tab-panel="settings">
         <div class="section-header">
           <h2>Configuración</h2>
-          <p>Mantenga las preferencias clave coherentes y seguras.</p>
+          <p>Estas opciones definen cuándo el asistente responde y cuándo interviene RR. HH.</p>
         </div>
         <div class="settings-block">
           <div class="settings-header">
