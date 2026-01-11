@@ -4,7 +4,7 @@
   const knowledgeDrafts = new Map();
   const knowledgeFilters = {
     search: '',
-    category: 'All'
+    category: 'Todas'
   };
   let previewReviewed = false;
   let activeTab = 'dashboard';
@@ -42,10 +42,10 @@
       return;
     }
     if (isDirty) {
-      status.textContent = 'Unsaved changes';
+      status.textContent = 'Cambios sin guardar';
       status.classList.add('unsaved');
     } else {
-      status.textContent = '✓ Saved';
+      status.textContent = '✓ Guardado';
       status.classList.remove('unsaved');
     }
   }
@@ -99,7 +99,7 @@
     const searchTerm = knowledgeFilters.search.trim().toLowerCase();
     const filteredItems = data.knowledgeItems.filter((item) => {
       const matchesCategory =
-        knowledgeFilters.category === 'All' ||
+        knowledgeFilters.category === 'Todas' ||
         item.category === knowledgeFilters.category;
       if (!matchesCategory) {
         return false;
@@ -129,7 +129,7 @@
         const saveButton = document.createElement('button');
         saveButton.type = 'button';
         saveButton.className = 'secondary small';
-        saveButton.textContent = 'Save';
+        saveButton.textContent = 'Guardar';
         saveButton.addEventListener('click', () => {
           const draft = knowledgeDrafts.get(item.id);
           if (draft) {
@@ -148,7 +148,7 @@
         const cancelButton = document.createElement('button');
         cancelButton.type = 'button';
         cancelButton.className = 'secondary small';
-        cancelButton.textContent = 'Cancel';
+        cancelButton.textContent = 'Cancelar';
         cancelButton.addEventListener('click', () => {
           item.isEditing = false;
           knowledgeDrafts.delete(item.id);
@@ -160,7 +160,7 @@
         const editButton = document.createElement('button');
         editButton.type = 'button';
         editButton.className = 'secondary small';
-        editButton.textContent = 'Edit';
+        editButton.textContent = 'Editar';
         editButton.addEventListener('click', () => {
           knowledgeDrafts.set(item.id, {
             title: item.title,
@@ -174,7 +174,7 @@
         const deleteButton = document.createElement('button');
         deleteButton.type = 'button';
         deleteButton.className = 'secondary small';
-        deleteButton.textContent = 'Delete';
+        deleteButton.textContent = 'Eliminar';
         deleteButton.addEventListener('click', () => {
           data.knowledgeItems = data.knowledgeItems.filter(
             (entry) => entry.id !== item.id
@@ -202,7 +202,7 @@
           content: item.content
         };
 
-        const titleField = createLabeledInput('Title', draft.title, (value) => {
+        const titleField = createLabeledInput('Título', draft.title, (value) => {
           const nextDraft = knowledgeDrafts.get(item.id);
           if (nextDraft) {
             nextDraft.title = value;
@@ -210,9 +210,9 @@
         });
 
         const categoryField = createSelect(
-          'Category',
+          'Categoría',
           draft.category,
-          ['Policies', 'Benefits', 'Procedures', 'Documents'],
+          ['Políticas', 'Beneficios', 'Procedimientos', 'Documentos'],
           (value) => {
             const nextDraft = knowledgeDrafts.get(item.id);
             if (nextDraft) {
@@ -222,7 +222,7 @@
         );
 
         const contentField = createLabeledTextarea(
-          'Content',
+          'Contenido',
           draft.content,
           (value) => {
             const nextDraft = knowledgeDrafts.get(item.id);
@@ -306,9 +306,9 @@
     addButton.addEventListener('click', () => {
       data.knowledgeItems.push({
         id: createId('know'),
-        title: 'New knowledge title',
-        category: 'Policies',
-        content: 'Describe the policy, benefit, or procedure here.'
+        title: 'Nuevo título de conocimiento',
+        category: 'Políticas',
+        content: 'Describa aquí la política, el beneficio o el procedimiento.'
       });
       renderKnowledgeItems();
       refreshPreview();
