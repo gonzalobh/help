@@ -113,10 +113,26 @@
             <p>Limits on what the assistant can answer.</p>
           </div>
           <div class="settings-options">
-            <label class="option-row"><input id="boundaryPersonal" type="checkbox" />Do not answer personal cases</label>
-            <label class="option-row"><input id="boundaryContracts" type="checkbox" />Do not interpret contracts</label>
-            <label class="option-row"><input id="boundaryLegal" type="checkbox" />Do not answer legal questions</label>
-            <label class="option-row"><input id="boundaryEscalate" type="checkbox" />Always suggest contacting HR for exceptions</label>
+            <label class="option-row">
+              <span class="option-label">Do not answer personal cases</span>
+              <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">Do not interpret contracts</span>
+              <input id="boundaryContracts" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">Do not answer legal questions</span>
+              <input id="boundaryLegal" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">Always suggest contacting HR for exceptions</span>
+              <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
           </div>
         </div>
         <div class="settings-block">
@@ -125,9 +141,21 @@
             <p>Default voice for responses.</p>
           </div>
           <div class="settings-options">
-            <label class="option-row"><input type="radio" name="tone" value="Neutral" />Neutral</label>
-            <label class="option-row"><input type="radio" name="tone" value="Formal" />Formal</label>
-            <label class="option-row"><input type="radio" name="tone" value="Friendly" />Friendly</label>
+            <label class="option-row">
+              <span class="option-label">Neutral</span>
+              <input class="toggle-input" type="radio" name="tone" value="Neutral" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">Formal</span>
+              <input class="toggle-input" type="radio" name="tone" value="Formal" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">Friendly</span>
+              <input class="toggle-input" type="radio" name="tone" value="Friendly" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
           </div>
         </div>
         <div class="settings-block">
