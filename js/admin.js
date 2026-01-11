@@ -1,6 +1,7 @@
 (function () {
   const data = window.HelpinData;
   const systemPromptDefault = data.systemPrompt;
+  const knowledgeDrafts = new Map();
 
   function createId(prefix) {
     return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -40,28 +41,65 @@
       const actions = document.createElement('div');
       actions.className = 'card-actions';
 
-      const editButton = document.createElement('button');
-      editButton.type = 'button';
-      editButton.className = 'secondary small';
-      editButton.textContent = item.isEditing ? 'Done' : 'Edit';
-      editButton.addEventListener('click', () => {
-        item.isEditing = !item.isEditing;
-        renderKnowledgeItems();
-      });
+      if (item.isEditing) {
+        const saveButton = document.createElement('button');
+        saveButton.type = 'button';
+        saveButton.className = 'secondary small';
+        saveButton.textContent = 'Save';
+        saveButton.addEventListener('click', () => {
+          const draft = knowledgeDrafts.get(item.id);
+          if (draft) {
+            item.title = draft.title;
+            item.category = draft.category;
+            item.content = draft.content;
+          }
+          item.isEditing = false;
+          knowledgeDrafts.delete(item.id);
+          renderKnowledgeItems();
+          refreshPreview();
+        });
 
-      const deleteButton = document.createElement('button');
-      deleteButton.type = 'button';
-      deleteButton.className = 'secondary small';
-      deleteButton.textContent = 'Delete';
-      deleteButton.addEventListener('click', () => {
-        data.knowledgeItems = data.knowledgeItems.filter(
-          (entry) => entry.id !== item.id
-        );
-        renderKnowledgeItems();
-        refreshPreview();
-      });
+        const cancelButton = document.createElement('button');
+        cancelButton.type = 'button';
+        cancelButton.className = 'secondary small';
+        cancelButton.textContent = 'Cancel';
+        cancelButton.addEventListener('click', () => {
+          item.isEditing = false;
+          knowledgeDrafts.delete(item.id);
+          renderKnowledgeItems();
+        });
 
-      actions.append(editButton, deleteButton);
+        actions.append(saveButton, cancelButton);
+      } else {
+        const editButton = document.createElement('button');
+        editButton.type = 'button';
+        editButton.className = 'secondary small';
+        editButton.textContent = 'Edit';
+        editButton.addEventListener('click', () => {
+          knowledgeDrafts.set(item.id, {
+            title: item.title,
+            category: item.category,
+            content: item.content
+          });
+          item.isEditing = true;
+          renderKnowledgeItems();
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'secondary small';
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', () => {
+          data.knowledgeItems = data.knowledgeItems.filter(
+            (entry) => entry.id !== item.id
+          );
+          knowledgeDrafts.delete(item.id);
+          renderKnowledgeItems();
+          refreshPreview();
+        });
+
+        actions.append(editButton, deleteButton);
+      }
       header.append(title, actions);
 
       const body = document.createElement('div');
@@ -70,29 +108,39 @@
       if (item.isEditing) {
         const grid = document.createElement('div');
         grid.className = 'edit-grid';
+        const draft = knowledgeDrafts.get(item.id) || {
+          title: item.title,
+          category: item.category,
+          content: item.content
+        };
 
-        const titleField = createLabeledInput('Title', item.title, (value) => {
-          item.title = value;
-          title.textContent = value;
-          refreshPreview();
+        const titleField = createLabeledInput('Title', draft.title, (value) => {
+          const nextDraft = knowledgeDrafts.get(item.id);
+          if (nextDraft) {
+            nextDraft.title = value;
+          }
         });
 
         const categoryField = createSelect(
           'Category',
-          item.category,
+          draft.category,
           ['Policies', 'Benefits', 'Procedures', 'Documents'],
           (value) => {
-            item.category = value;
-            refreshPreview();
+            const nextDraft = knowledgeDrafts.get(item.id);
+            if (nextDraft) {
+              nextDraft.category = value;
+            }
           }
         );
 
         const contentField = createLabeledTextarea(
           'Content',
-          item.content,
+          draft.content,
           (value) => {
-            item.content = value;
-            refreshPreview();
+            const nextDraft = knowledgeDrafts.get(item.id);
+            if (nextDraft) {
+              nextDraft.content = value;
+            }
           }
         );
 
