@@ -44,7 +44,7 @@
         <div class="checklist" id="setupChecklist">
           <button class="checklist-item" type="button" data-tab-link="knowledge">
             <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Agregar conocimiento aprobado</span>
+            <span class="checklist-title">Pegar contenido aprobado</span>
           </button>
           <button class="checklist-item" type="button" data-tab-link="preview">
             <span class="checkmark" aria-hidden="true">✓</span>
@@ -60,30 +60,29 @@
       <section class="section tab-panel" data-tab-panel="knowledge">
         <div class="section-header">
           <h2>Base de conocimiento</h2>
-          <p>El asistente responde estrictamente según el conocimiento que mantenga aquí.</p>
+          <p>The assistant will answer strictly based on the information you paste here.</p>
         </div>
-        <div class="knowledge-toolbar">
-          <label class="sr-only" for="knowledgeSearch">Buscar conocimiento</label>
-          <input id="knowledgeSearch" type="text" placeholder="Buscar conocimiento…" />
-          <label class="sr-only" for="knowledgeFilter">Filtro de categoría</label>
-          <select id="knowledgeFilter">
-            <option value="Todas">Todas</option>
-            <option value="Políticas">Políticas</option>
-            <option value="Beneficios">Beneficios</option>
-            <option value="Procedimientos">Procedimientos</option>
-            <option value="Documentos">Documentos</option>
-          </select>
+        <div class="knowledge-editor">
+          <label class="sr-only" for="knowledgeContent">Contenido de conocimiento</label>
+          <textarea
+            id="knowledgeContent"
+            placeholder="Paste internal policies, benefits, procedures, and official HR information here.
+
+Examples:
+• Vacation policy
+• Sick leave
+• Benefits
+• Work hours
+• Internal rules"
+          ></textarea>
+          <div class="knowledge-status" id="knowledgeStatus">No content added yet</div>
         </div>
-        <div class="card-actions subtle-actions">
-          <button type="button" class="secondary small" id="addKnowledge">Agregar elemento</button>
-        </div>
-        <div class="list" id="knowledgeList"></div>
       </section>
 
       <section class="section tab-panel" data-tab-panel="preview">
         <div class="section-header">
           <h2>Vista previa para colaboradores</h2>
-          <p>Revise cómo se verá para los colaboradores con el conocimiento y los ajustes actuales.</p>
+          <p>Revise cómo se verá para los colaboradores con el contenido actual y los ajustes actuales.</p>
         </div>
         <div id="previewChat" class="preview-chat"></div>
       </section>

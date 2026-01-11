@@ -2,20 +2,9 @@
   const defaultWelcome =
     'Usted puede realizar consultas sobre políticas internas, beneficios o procedimientos de RR. HH.';
 
-  function createMessage(content, role, isStructured) {
+  function createMessage(content, role) {
     const message = document.createElement('div');
     message.className = `message ${role}`;
-
-    if (isStructured) {
-      const title = document.createElement('div');
-      title.className = 'message-title';
-      title.textContent = content.title;
-      const body = document.createElement('div');
-      body.textContent = content.body;
-      message.append(title, body);
-      return message;
-    }
-
     message.textContent = content;
     return message;
   }
@@ -24,24 +13,24 @@
     return text.toLowerCase();
   }
 
-  function extractKeywords(item) {
-    const parts = `${item.title} ${item.category}`.split(/\s+/);
+  function extractKeywords(message) {
+    const parts = message.split(/\s+/);
     return parts
       .map((part) => part.replace(/[^a-zA-ZÁÉÍÓÚÜÑáéíóúüñ]/g, '').toLowerCase())
       .filter((word) => word.length > 3);
   }
 
-  function findKnowledgeMatch(message, items) {
-    const normalized = normalize(message);
-    return items.find((item) => {
-      const keywords = extractKeywords(item);
-      return (
-        normalized.includes(normalize(item.title)) ||
-        normalized.includes(normalize(item.category)) ||
-        keywords.some((keyword) => normalized.includes(keyword)) ||
-        normalized.includes(normalize(item.content))
-      );
-    });
+  function hasRelevantKnowledge(message, content) {
+    if (!content || !content.trim()) {
+      return false;
+    }
+    const normalizedMessage = normalize(message);
+    const normalizedContent = normalize(content);
+    if (normalizedContent.includes(normalizedMessage)) {
+      return true;
+    }
+    const keywords = extractKeywords(message);
+    return keywords.some((keyword) => normalizedContent.includes(keyword));
   }
 
   function initChat({ container, data, mode }) {
@@ -77,60 +66,37 @@
     shell.append(header, body, inputRow);
     container.appendChild(shell);
 
-    body.appendChild(createMessage(defaultWelcome, 'assistant', false));
+    body.appendChild(createMessage(defaultWelcome, 'assistant'));
     if (mode === 'preview') {
-      body.appendChild(
-        createMessage('¿Cuál es la política de vacaciones pagadas?', 'user', false)
-      );
-      body.appendChild(
-        createMessage(
-          {
-            title: 'Elegibilidad para vacaciones pagadas',
-            body:
-              'Beneficios · Los colaboradores con jornada completa acumulan 1,5 días de vacaciones pagadas por mes. Las solicitudes de vacaciones deben enviarse con al menos dos semanas de anticipación.'
-          },
-          'assistant',
-          true
-        )
-      );
-      body.appendChild(
-        createMessage(
-          '¿Es posible trabajar de forma remota dos días a la semana?',
-          'user',
-          false
-        )
-      );
-      body.appendChild(
-        createMessage(
-          {
-            title: 'Lineamientos para trabajo remoto',
-            body:
-              'Políticas · El trabajo remoto está disponible hasta dos días por semana con aprobación de su jefatura. Los colaboradores deben mantener un horario núcleo de 10:00 a 16:00 hora local.'
-          },
-          'assistant',
-          true
-        )
-      );
+      const previewQuestion =
+        '¿Qué debo saber sobre vacaciones, beneficios o políticas internas?';
+      body.appendChild(createMessage(previewQuestion, 'user'));
+      if (data.knowledgeContent && data.knowledgeContent.trim()) {
+        body.appendChild(createMessage(data.knowledgeContent, 'assistant'));
+      } else {
+        body.appendChild(
+          createMessage(
+            data.sampleResponses?.fallback ||
+              'Please contact the HR team for confirmation.',
+            'assistant'
+          )
+        );
+      }
     }
 
     function respond(message) {
-      const match = findKnowledgeMatch(message, data.knowledgeItems);
-      if (!match) {
+      const fallbackMessage =
+        data.sampleResponses?.fallback ||
+        'Please contact the HR team for confirmation.';
+      if (!hasRelevantKnowledge(message, data.knowledgeContent || '')) {
         body.appendChild(
-          createMessage(data.sampleResponses.fallback, 'assistant', false)
+          createMessage(fallbackMessage, 'assistant')
         );
         return;
       }
 
       body.appendChild(
-        createMessage(
-          {
-            title: match.title,
-            body: `${match.category} · ${match.content}`
-          },
-          'assistant',
-          true
-        )
+        createMessage(data.knowledgeContent.trim(), 'assistant')
       );
     }
 
@@ -139,7 +105,7 @@
       if (!trimmed) {
         return;
       }
-      body.appendChild(createMessage(trimmed, 'user', false));
+      body.appendChild(createMessage(trimmed, 'user'));
       respond(trimmed);
       body.scrollTop = body.scrollHeight;
       input.value = '';
