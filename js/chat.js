@@ -156,7 +156,36 @@
     if (mode === 'preview') {
       input.disabled = true;
       sendButton.disabled = true;
-      input.placeholder = 'Preview only';
+      input.placeholder = 'Ask a question';
+    }
+
+    if (mode === 'preview') {
+      const footer = document.createElement('div');
+      footer.className = 'preview-footer';
+      const actions = document.createElement('div');
+      actions.className = 'preview-actions';
+      if (data.settings?.assistantBoundaries?.alwaysEscalate) {
+        const hrButton = document.createElement('button');
+        hrButton.type = 'button';
+        hrButton.className = 'secondary small';
+        hrButton.textContent = 'Contact HR';
+        actions.appendChild(hrButton);
+      }
+
+      const disclaimerText = data.settings?.disclaimer;
+      if (actions.children.length) {
+        footer.appendChild(actions);
+      }
+      if (disclaimerText) {
+        const disclaimer = document.createElement('div');
+        disclaimer.className = 'preview-disclaimer';
+        disclaimer.textContent = disclaimerText;
+        footer.appendChild(disclaimer);
+      }
+
+      if (footer.children.length) {
+        container.appendChild(footer);
+      }
     }
   }
 
