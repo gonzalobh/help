@@ -59,6 +59,17 @@ body {
   transition: margin-left 0.2s ease;
 }
 
+.admin-content .section {
+  width: 100%;
+  max-width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-content .tab-panel[data-tab-panel="preview"] {
+  max-width: 768px;
+}
+
 .sidebar-nav {
   display: grid;
   gap: 8px;
@@ -494,4 +505,14 @@ button:disabled {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+@media (max-width: 720px) {
+  .admin-layout {
+    padding: 88px 20px 60px;
+  }
+
+  .section {
+    padding: 24px;
+  }
 }
