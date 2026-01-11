@@ -9,6 +9,9 @@
 <body class="admin-ui">
   <header class="admin-topbar">
     <div class="topbar-logo">Helpin</div>
+    <div class="topbar-actions">
+      <a class="topbar-button" href="chat.html">Open employee chat</a>
+    </div>
   </header>
   <main class="page admin-layout">
     <aside class="admin-sidebar">
@@ -19,15 +22,15 @@
         </button>
         <button class="tab-button" type="button" data-tab-target="assistant">
           <i data-lucide="bot" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Assistant behavior</span>
+          <span class="nav-label">Assistant</span>
         </button>
         <button class="tab-button" type="button" data-tab-target="knowledge">
           <i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Knowledge base</span>
+          <span class="nav-label">Knowledge</span>
         </button>
         <button class="tab-button" type="button" data-tab-target="preview">
           <i data-lucide="message-square" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Employee preview</span>
+          <span class="nav-label">Preview</span>
         </button>
         <button class="tab-button" type="button" data-tab-target="settings">
           <i data-lucide="settings" class="nav-icon" aria-hidden="true"></i>
@@ -36,33 +39,22 @@
       </nav>
     </aside>
     <div class="admin-content">
-      <header class="section">
-        <div class="header-title">Helpin</div>
-        <div class="header-subtitle">Employee FAQ &amp; Self-Service (Configuration)</div>
-        <div class="helper-text">
-          Define what employees can ask and how the assistant responds.
-        </div>
-        <div class="page-links">
-          <a href="chat.html">Open employee chat</a>
-        </div>
-      </header>
-
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
           <h2>Dashboard</h2>
-          <p>Quick access to the core Helpin configuration.</p>
+          <p>Review the current configuration at a glance.</p>
         </div>
-        <div class="note">Use the navigation to review behavior, knowledge, preview, and settings.</div>
+        <div class="note">Use the sidebar to adjust assistant policy, knowledge, preview, and settings.</div>
       </section>
 
-      <section class="section section-hero tab-panel" data-tab-panel="assistant">
+      <section class="section section-hero policy-section tab-panel" data-tab-panel="assistant">
         <div class="section-header">
           <h2>Assistant behavior</h2>
-          <p>Define the boundaries and tone the assistant must follow.</p>
+          <p>Write the internal policy the assistant should follow.</p>
         </div>
         <div class="form-grid">
           <div>
-            <textarea id="systemPrompt" aria-label="System prompt"></textarea>
+            <textarea id="systemPrompt" class="policy-textarea" aria-label="System prompt"></textarea>
           </div>
           <div>
             <button type="button" class="secondary small" id="resetPrompt">Reset to safe default</button>
@@ -73,33 +65,32 @@
       <section class="section tab-panel" data-tab-panel="knowledge">
         <div class="section-header">
           <h2>Knowledge base</h2>
-          <p>Curate the approved knowledge the assistant can reference.</p>
+          <p>Keep key policies and answers in plain language.</p>
         </div>
         <div class="card-actions subtle-actions">
-          <button type="button" class="secondary small" id="addKnowledge">Add knowledge</button>
+          <button type="button" class="secondary small" id="addKnowledge">Add item</button>
         </div>
         <div class="list" id="knowledgeList"></div>
-        <div class="note">The assistant will only answer using this information.</div>
       </section>
 
       <section class="section tab-panel" data-tab-panel="preview">
         <div class="section-header">
           <h2>Employee preview</h2>
-          <p>Preview the employee experience using the current mock configuration.</p>
+          <p>A live preview of the employee experience.</p>
         </div>
-        <div class="preview-label">Preview uses mock data and does not persist messages.</div>
-        <div id="previewChat"></div>
+        <div class="preview-label">Preview only.</div>
+        <div id="previewChat" class="preview-chat"></div>
       </section>
 
       <section class="section tab-panel" data-tab-panel="settings">
         <div class="section-header">
           <h2>Settings</h2>
-          <p>Set safety, boundaries, and trust defaults.</p>
+          <p>Keep core preferences consistent and safe.</p>
         </div>
         <div class="settings-block">
-          <div class="section-header">
+          <div class="settings-header">
             <h3>HR contact</h3>
-            <p>Define how employees can contact HR when the assistant cannot answer.</p>
+            <p>How employees reach HR when needed.</p>
           </div>
           <div class="form-grid">
             <div>
@@ -117,9 +108,9 @@
           </div>
         </div>
         <div class="settings-block">
-          <div class="section-header">
+          <div class="settings-header">
             <h3>Assistant boundaries</h3>
-            <p>Set clear limits on what the assistant is allowed to answer.</p>
+            <p>Limits on what the assistant can answer.</p>
           </div>
           <div class="settings-options">
             <label class="option-row"><input id="boundaryPersonal" type="checkbox" />Do not answer personal cases</label>
@@ -129,9 +120,9 @@
           </div>
         </div>
         <div class="settings-block">
-          <div class="section-header">
+          <div class="settings-header">
             <h3>Tone</h3>
-            <p>Choose how the assistant communicates.</p>
+            <p>Default voice for responses.</p>
           </div>
           <div class="settings-options">
             <label class="option-row"><input type="radio" name="tone" value="Neutral" />Neutral</label>
@@ -140,9 +131,9 @@
           </div>
         </div>
         <div class="settings-block">
-          <div class="section-header">
+          <div class="settings-header">
             <h3>Language</h3>
-            <p>Select the language used by the assistant.</p>
+            <p>Primary language for responses.</p>
           </div>
           <div class="form-grid">
             <div>
@@ -155,9 +146,9 @@
           </div>
         </div>
         <div class="settings-block">
-          <div class="section-header">
+          <div class="settings-header">
             <h3>Disclaimer</h3>
-            <p>This text is shown to employees below the chat.</p>
+            <p>Shown below the employee chat.</p>
           </div>
           <div class="form-grid">
             <div>
