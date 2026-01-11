@@ -49,6 +49,25 @@ Your tone must be:
     }
   ],
   sampleResponses: {
-    fallback: 'Please contact the HR team for confirmation.'
+    fallback:
+      'When the assistant cannot answer, please contact HR at [hr@company.com](mailto:hr@company.com).'
+  },
+  settings: {
+    hrContact: {
+      email: 'hr@company.com',
+      url: '',
+      fallbackMessage:
+        'When the assistant cannot answer, please contact HR at [hr@company.com](mailto:hr@company.com).'
+    },
+    assistantBoundaries: {
+      noPersonalCases: true,
+      noContractInterpretation: true,
+      noLegalQuestions: true,
+      alwaysEscalate: true
+    },
+    tone: 'Neutral',
+    language: 'English',
+    disclaimer:
+      'This assistant provides informational guidance only.\nFor specific cases, please contact HR.'
   }
 };
