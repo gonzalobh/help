@@ -77,7 +77,7 @@
         body.appendChild(
           createMessage(
             data.sampleResponses?.fallback ||
-              'Please contact the HR team for confirmation.',
+              'Por favor, contacte a RR. HH. para confirmación.',
             'assistant'
           )
         );
@@ -87,7 +87,7 @@
     function respond(message) {
       const fallbackMessage =
         data.sampleResponses?.fallback ||
-        'Please contact the HR team for confirmation.';
+        'Por favor, contacte a RR. HH. para confirmación.';
       if (!hasRelevantKnowledge(message, data.knowledgeContent || '')) {
         body.appendChild(
           createMessage(fallbackMessage, 'assistant')
