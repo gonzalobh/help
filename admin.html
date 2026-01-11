@@ -6,17 +6,33 @@
   <title>Helpin Admin</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body class="admin-ui">
+  <header class="admin-topbar">
+    <div class="topbar-logo">Helpin</div>
+  </header>
   <main class="page admin-layout">
     <aside class="admin-sidebar">
-      <div class="sidebar-title">Helpin</div>
-      <div class="sidebar-subtitle">Configuration</div>
       <nav class="sidebar-nav" aria-label="Admin tabs">
-        <button class="tab-button" type="button" data-tab-target="dashboard">Dashboard</button>
-        <button class="tab-button active" type="button" data-tab-target="assistant">Assistant behavior</button>
-        <button class="tab-button" type="button" data-tab-target="knowledge">Knowledge base</button>
-        <button class="tab-button" type="button" data-tab-target="preview">Employee preview</button>
-        <button class="tab-button" type="button" data-tab-target="settings">Settings</button>
+        <button class="tab-button active" type="button" data-tab-target="dashboard">
+          <i data-lucide="layout-dashboard" class="nav-icon" aria-hidden="true"></i>
+          <span class="nav-label">Dashboard</span>
+        </button>
+        <button class="tab-button" type="button" data-tab-target="assistant">
+          <i data-lucide="bot" class="nav-icon" aria-hidden="true"></i>
+          <span class="nav-label">Assistant behavior</span>
+        </button>
+        <button class="tab-button" type="button" data-tab-target="knowledge">
+          <i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i>
+          <span class="nav-label">Knowledge base</span>
+        </button>
+        <button class="tab-button" type="button" data-tab-target="preview">
+          <i data-lucide="message-square" class="nav-icon" aria-hidden="true"></i>
+          <span class="nav-label">Employee preview</span>
+        </button>
+        <button class="tab-button" type="button" data-tab-target="settings">
+          <i data-lucide="settings" class="nav-icon" aria-hidden="true"></i>
+          <span class="nav-label">Settings</span>
+        </button>
       </nav>
     </aside>
     <div class="admin-content">
@@ -31,7 +47,7 @@
         </div>
       </header>
 
-      <section class="section tab-panel" data-tab-panel="dashboard">
+      <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
           <h2>Dashboard</h2>
           <p>Quick access to the core Helpin configuration.</p>
@@ -39,7 +55,7 @@
         <div class="note">Use the navigation to review behavior, knowledge, preview, and settings.</div>
       </section>
 
-      <section class="section section-hero tab-panel active" data-tab-panel="assistant">
+      <section class="section section-hero tab-panel" data-tab-panel="assistant">
         <div class="section-header">
           <h2>Assistant behavior</h2>
           <p>Define the boundaries and tone the assistant must follow.</p>
@@ -157,9 +173,17 @@
     </div>
   </main>
 
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/mockData.js"></script>
   <script src="js/router.js"></script>
   <script src="js/chat.js"></script>
   <script src="js/admin.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    });
+  </script>
 </body>
 </html>

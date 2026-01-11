@@ -32,34 +32,31 @@ body {
 .admin-layout {
   display: flex;
   gap: 24px;
+  max-width: none;
+  margin: 0;
+  padding: 88px 32px 80px;
+  min-height: calc(100vh - 56px);
 }
 
 .admin-sidebar {
-  width: 220px;
+  width: 56px;
   flex-shrink: 0;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  height: fit-content;
+  border-right: 1px solid var(--border);
+  padding: 12px 8px;
   background: #ffffff;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  height: calc(100vh - 56px);
+  transition: width 0.2s ease;
+  z-index: 5;
 }
 
 .admin-content {
   flex: 1;
   min-width: 0;
-}
-
-.sidebar-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--title);
-  margin-bottom: 4px;
-}
-
-.sidebar-subtitle {
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 16px;
+  margin-left: 56px;
+  transition: margin-left 0.2s ease;
 }
 
 .sidebar-nav {
@@ -70,18 +67,78 @@ body {
 .tab-button {
   width: 100%;
   text-align: left;
-  background: #ffffff;
+  background: transparent;
   border: 1px solid transparent;
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 13px;
   color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
 }
 
 .tab-button.active {
-  border-color: var(--border);
+  border-color: #e3e7ec;
   background: #f5f6f8;
   font-weight: 600;
+  border-left: 2px solid #2f343a;
+}
+
+.tab-button:hover {
+  background: #f7f8fa;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--muted);
+}
+
+.nav-label {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.2s ease, max-width 0.2s ease;
+}
+
+.admin-sidebar:hover {
+  width: 220px;
+}
+
+.admin-sidebar:hover .tab-button {
+  justify-content: flex-start;
+}
+
+.admin-sidebar:hover .nav-label {
+  opacity: 1;
+  max-width: 160px;
+}
+
+.admin-sidebar:hover ~ .admin-content {
+  margin-left: 220px;
+}
+
+.admin-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  z-index: 10;
+}
+
+.topbar-logo {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--title);
 }
 
 .section {
