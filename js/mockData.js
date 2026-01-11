@@ -43,7 +43,7 @@ Su tono debe ser:
       alwaysEscalate: true
     },
     tone: 'Neutral',
-    language: 'Español',
+    languages: ['Español'],
     disclaimer:
       'Este asistente entrega solo orientación informativa.\nPara casos específicos, por favor contacte a RR. HH.'
   }

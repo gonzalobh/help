@@ -632,6 +632,26 @@ button:disabled {
   gap: 12px;
 }
 
+.language-options {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.language-option input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--title);
+}
+
 .option-row {
   position: relative;
   display: flex;
