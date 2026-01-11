@@ -10,7 +10,7 @@ SOLO responde preguntas relacionadas con:
 
 DEBE usar únicamente el conocimiento interno proporcionado.
 Si la respuesta no está disponible de forma explícita, responda:
-“Por favor, contacte al equipo de RR. HH. para confirmación.”
+“Por favor, contacte a RR. HH. para confirmación.”
 
 NO debe:
 
@@ -27,7 +27,7 @@ Su tono debe ser:
 * conciso`,
   knowledgeContent: '',
   sampleResponses: {
-    fallback: 'Please contact the HR team for confirmation.'
+    fallback: 'Por favor, contacte a RR. HH. para confirmación.'
   },
   settings: {
     hrContact: {

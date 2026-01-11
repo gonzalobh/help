@@ -68,9 +68,9 @@
       return;
     }
     if (data.knowledgeContent && data.knowledgeContent.trim().length > 0) {
-      status.textContent = 'Last updated: just now';
+      status.textContent = 'Actualizado recién';
     } else {
-      status.textContent = 'No content added yet';
+      status.textContent = 'Sin contenido aún';
     }
   }
 
