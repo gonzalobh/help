@@ -8,6 +8,8 @@
   --panel: #f7f8fa;
   --button: #ffffff;
   --button-border: #d6dbe1;
+  --radius-md: 10px;
+  --radius-lg: 12px;
 }
 
 * {
@@ -179,9 +181,9 @@ body {
 
 .section {
   background: #fff;
-  padding: 32px;
-  margin-bottom: 24px;
-  border-radius: 10px;
+  padding: 28px 32px;
+  margin-bottom: 32px;
+  border-radius: var(--radius-lg);
 }
 
 .section-hero {
@@ -189,21 +191,23 @@ body {
 }
 
 .policy-section {
-  padding: 36px;
+  padding: 32px;
 }
 
 .section-header {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .section-header h2 {
-  font-size: 22px;
+  font-size: 24px;
+  font-weight: 600;
   color: var(--title);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .section-header h3 {
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: 600;
   color: var(--title);
   margin-bottom: 6px;
 }
@@ -211,21 +215,24 @@ body {
 .section-header p {
   color: var(--muted);
   font-size: 14px;
+  line-height: 1.6;
 }
 
 .settings-header {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .settings-header h3 {
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--title);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .settings-header p {
   font-size: 13px;
   color: var(--muted);
+  line-height: 1.6;
 }
 
 .header-title {
@@ -247,12 +254,13 @@ body {
 
 .form-grid {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 label {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--muted);
   margin-bottom: 6px;
 }
@@ -270,7 +278,8 @@ textarea {
 }
 
 textarea {
-  min-height: 140px;
+  min-height: 160px;
+  padding: 14px 16px;
   resize: vertical;
 }
 
@@ -292,10 +301,10 @@ textarea {
 button {
   border: 1px solid var(--button-border);
   background: var(--button);
-  padding: 7px 11px;
+  padding: 8px 12px;
   font-size: 13px;
   color: var(--text);
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
@@ -310,8 +319,9 @@ button.secondary {
 }
 
 button.small {
-  padding: 6px 10px;
+  padding: 6px 12px;
   font-size: 12px;
+  border-radius: 7px;
 }
 
 button.icon {
@@ -325,14 +335,14 @@ button:disabled {
 
 .list {
   display: grid;
-  gap: 18px;
+  gap: 16px;
 }
 
 .card {
-  border: 1px solid #eef1f4;
-  padding: 18px;
+  border: 1px solid #edf1f5;
+  padding: 20px;
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
 }
 
 .card-header {
@@ -345,6 +355,7 @@ button:disabled {
 .card-actions {
   display: flex;
   gap: 8px;
+  justify-content: flex-end;
 }
 
 .card-actions button {
@@ -357,7 +368,9 @@ button:disabled {
 }
 
 .subtle-actions {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .note {
@@ -381,12 +394,12 @@ button:disabled {
   display: flex;
   flex-direction: column;
   height: 520px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
 .chat-header {
-  padding: 18px;
+  padding: 16px 18px;
   border-bottom: 1px solid #e9edf2;
   font-weight: 600;
   color: var(--title);
@@ -395,19 +408,20 @@ button:disabled {
 
 .chat-body {
   flex: 1;
-  padding: 18px;
+  padding: 16px 18px 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .message {
-  max-width: 80%;
-  padding: 12px 14px;
-  border-radius: 10px;
+  max-width: 72%;
+  padding: 10px 12px;
+  border-radius: 12px;
   background: #f5f6f8;
   color: var(--text);
+  line-height: 1.6;
 }
 
 .message.user {
@@ -425,7 +439,7 @@ button:disabled {
 .chat-input {
   display: flex;
   gap: 10px;
-  padding: 14px 18px 18px;
+  padding: 12px 18px 16px;
   border-top: 1px solid #e9edf2;
 }
 
@@ -436,7 +450,7 @@ button:disabled {
 .preview-label {
   font-size: 12px;
   color: var(--muted);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .page-links {
@@ -474,18 +488,18 @@ button:disabled {
 
 .edit-grid {
   display: grid;
-  gap: 12px;
+  gap: 16px;
 }
 
 .settings-block + .settings-block {
-  border-top: none;
-  margin-top: 20px;
-  padding-top: 0;
+  border-top: 1px solid var(--border);
+  margin-top: 24px;
+  padding-top: 24px;
 }
 
 .settings-options {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .option-row {
@@ -514,5 +528,6 @@ button:disabled {
 
   .section {
     padding: 24px;
+    margin-bottom: 24px;
   }
 }
