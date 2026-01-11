@@ -1,6 +1,5 @@
 (function () {
   const data = window.HelpinData;
-  const systemPromptDefault = data.systemPrompt;
   const knowledgeDrafts = new Map();
   const knowledgeFilters = {
     search: '',
@@ -14,26 +13,6 @@
 
   function createId(prefix) {
     return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-  }
-
-  function renderSystemPrompt() {
-    const textarea = document.querySelector('#systemPrompt');
-    const resetButton = document.querySelector('#resetPrompt');
-
-    textarea.value = data.systemPrompt;
-
-    textarea.addEventListener('input', (event) => {
-      data.systemPrompt = event.target.value;
-      markDirty();
-      updateChecklist();
-    });
-
-    resetButton.addEventListener('click', () => {
-      data.systemPrompt = systemPromptDefault;
-      textarea.value = systemPromptDefault;
-      markDirty();
-      updateChecklist();
-    });
   }
 
   function updateSaveStatus() {
@@ -80,7 +59,6 @@
     const boundariesSet = Object.values(boundaries).some(Boolean);
 
     const completion = {
-      assistant: data.systemPrompt.trim().length > 0,
       knowledge: data.knowledgeItems.length > 0,
       preview: previewReviewed,
       settings: Boolean(settings.hrContact?.email?.trim()) && boundariesSet
@@ -514,7 +492,6 @@
     initTabs();
     updateSaveStatus();
     updateChecklist();
-    renderSystemPrompt();
     renderKnowledgeItems();
     renderKnowledgeActions();
     initKnowledgeFilters();
