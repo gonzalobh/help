@@ -33,6 +33,25 @@
     return keywords.some((keyword) => normalizedContent.includes(keyword));
   }
 
+  function getFallbackMessage(data) {
+    return (
+      data.settings?.noInfoMessage ||
+      data.sampleResponses?.fallback ||
+      'Por favor, contacte a RR. HH. para confirmación.'
+    );
+  }
+
+  function getContextPrefix(data) {
+    const country = data.settings?.countryContext;
+    if (!country) {
+      return '';
+    }
+    if (country === 'Genérico') {
+      return 'Según las políticas internas de la empresa:\n';
+    }
+    return `Según las políticas internas de la empresa, alineadas con la legislación de ${country}:\n`;
+  }
+
   function initChat({ container, data, mode }) {
     if (!container || !data) {
       return;
@@ -72,12 +91,16 @@
         '¿Qué debo saber sobre vacaciones, beneficios o políticas internas?';
       body.appendChild(createMessage(previewQuestion, 'user'));
       if (data.knowledgeContent && data.knowledgeContent.trim()) {
-        body.appendChild(createMessage(data.knowledgeContent, 'assistant'));
+        body.appendChild(
+          createMessage(
+            `${getContextPrefix(data)}${data.knowledgeContent.trim()}`,
+            'assistant'
+          )
+        );
       } else {
         body.appendChild(
           createMessage(
-            data.sampleResponses?.fallback ||
-              'Por favor, contacte a RR. HH. para confirmación.',
+            getFallbackMessage(data),
             'assistant'
           )
         );
@@ -85,18 +108,17 @@
     }
 
     function respond(message) {
-      const fallbackMessage =
-        data.sampleResponses?.fallback ||
-        'Por favor, contacte a RR. HH. para confirmación.';
+      const fallbackMessage = getFallbackMessage(data);
       if (!hasRelevantKnowledge(message, data.knowledgeContent || '')) {
-        body.appendChild(
-          createMessage(fallbackMessage, 'assistant')
-        );
+        body.appendChild(createMessage(fallbackMessage, 'assistant'));
         return;
       }
 
       body.appendChild(
-        createMessage(data.knowledgeContent.trim(), 'assistant')
+        createMessage(
+          `${getContextPrefix(data)}${data.knowledgeContent.trim()}`,
+          'assistant'
+        )
       );
     }
 
