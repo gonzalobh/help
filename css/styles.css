@@ -316,6 +316,7 @@ textarea {
 
 .tab-panel.active {
   display: block;
+  background: #f6f7f9;
 }
 
 button {
