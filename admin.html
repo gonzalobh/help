@@ -39,28 +39,51 @@
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
           <h2>Bienvenido a Helpin</h2>
-          <p>Helpin ofrece un asistente interno seguro para las dudas de los colaboradores. Usted controla lo que sabe y cuándo debe involucrarse RR. HH.</p>
+          <p>Helpin centraliza respuestas oficiales para colaboradores. RR. HH. controla la información disponible y decide cuándo intervenir.</p>
         </div>
         <div class="checklist" id="setupChecklist">
-          <button class="checklist-item" type="button" data-tab-link="knowledge">
+          <button class="checklist-item" type="button" data-tab-link="knowledge" data-check-key="knowledge">
             <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Pegar contenido aprobado</span>
+            <span class="checklist-title">Pegar políticas internas oficiales</span>
           </button>
-          <button class="checklist-item" type="button" data-tab-link="preview">
+          <button class="checklist-item" type="button" data-tab-link="settings" data-check-key="hr">
             <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Revisar la vista previa para colaboradores</span>
+            <span class="checklist-title">Definir contacto de RR. HH.</span>
           </button>
-          <button class="checklist-item" type="button" data-tab-link="settings">
+          <button class="checklist-item" type="button" data-tab-link="preview" data-check-key="preview">
             <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Definir contacto de RR. HH. y límites</span>
+            <span class="checklist-title">Probar preguntas sensibles en la vista previa</span>
           </button>
+          <button class="checklist-item" type="button" data-tab-link="settings" data-check-key="activation">
+            <span class="checkmark" aria-hidden="true">✓</span>
+            <span class="checklist-title">Activar el asistente para colaboradores</span>
+          </button>
+        </div>
+        <div class="card activity-panel">
+          <div class="card-header">
+            <div>
+              <h3>Actividad del asistente (anónima)</h3>
+              <p>Resumen agregado de consultas recientes para monitorear el uso.</p>
+            </div>
+          </div>
+          <div class="activity-stats">
+            <div class="activity-stat">
+              <span class="activity-label">Consultas en los últimos 7 días</span>
+              <span class="activity-value" id="activityCount">0</span>
+            </div>
+          </div>
+          <div class="activity-topics">
+            <h4>Top 5 temas más consultados</h4>
+            <ol id="activityTopics"></ol>
+          </div>
+          <p class="activity-note">Helpin no almacena conversaciones personales ni datos sensibles.</p>
         </div>
       </section>
 
       <section class="section tab-panel" data-tab-panel="knowledge">
         <div class="section-header">
           <h2>Base de conocimiento</h2>
-          <p>El asistente responderá únicamente con la información que usted pegue aquí.</p>
+          <p>El asistente responderá únicamente con la información oficial que RR. HH. pegue aquí.</p>
         </div>
         <div class="knowledge-editor">
           <label class="sr-only" for="knowledgeContent">Contenido de conocimiento</label>
@@ -122,10 +145,28 @@ Para casos particulares, confirme siempre con RR. HH.</textarea>
         </div>
         <div class="settings-block">
           <div class="settings-header">
+            <h3>Respuestas cuando no existe información oficial</h3>
+            <p>Este mensaje se muestra solo cuando el tema consultado no está cubierto por la base de conocimiento.</p>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label for="noInfoMessage">Mensaje cuando no existe información oficial</label>
+              <textarea id="noInfoMessage">No tengo información oficial sobre este tema.
+Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="settings-header">
             <h3>Límites del asistente</h3>
             <p>Límites para casos sensibles o excepcionales.</p>
           </div>
           <div class="settings-options">
+            <label class="option-row">
+              <span class="option-label">Responder solo con información oficial pegada por RR. HH. (recomendado)</span>
+              <input id="boundaryOfficialOnly" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
             <label class="option-row">
               <span class="option-label">No responder casos personales</span>
               <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
@@ -150,28 +191,65 @@ Para casos particulares, confirme siempre con RR. HH.</textarea>
         </div>
         <div class="settings-block">
           <div class="settings-header">
-            <h3>Tono</h3>
-            <p>Voz predeterminada de las respuestas.</p>
+            <h3>Contexto país o marco laboral de referencia</h3>
+            <p>Este contexto es declarativo y no implica interpretación legal.</p>
           </div>
-          <div class="segmented-control" role="radiogroup" aria-label="Tono">
-            <label class="segment">
-              <input type="radio" name="tone" value="Neutral" />
-              <span>Neutral</span>
-            </label>
-            <label class="segment">
-              <input type="radio" name="tone" value="Formal" />
-              <span>Formal</span>
-            </label>
-            <label class="segment">
-              <input type="radio" name="tone" value="Amable" />
-              <span>Amable</span>
+          <div class="form-grid">
+            <div>
+              <label for="countryContext">País o marco laboral de referencia</label>
+              <select id="countryContext">
+                <option value="Chile">Chile</option>
+                <option value="España">España</option>
+                <option value="Francia">Francia</option>
+                <option value="Polonia">Polonia</option>
+                <option value="Genérico">Genérico</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="settings-header">
+            <h3>Activación</h3>
+            <p>El asistente no quedará disponible para colaboradores hasta activar esta opción.</p>
+          </div>
+          <div class="settings-options">
+            <label class="option-row">
+              <span class="option-label">Activar el asistente para colaboradores</span>
+              <input id="assistantActive" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
             </label>
           </div>
         </div>
         <div class="settings-block">
           <div class="settings-header">
+            <h3>Opciones avanzadas</h3>
+            <p>Configuraciones opcionales para ajustar el estilo de las respuestas.</p>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label>Tono (opcional)</label>
+              <div class="segmented-control" role="radiogroup" aria-label="Tono">
+                <label class="segment">
+                  <input type="radio" name="tone" value="Neutral" />
+                  <span>Neutral</span>
+                </label>
+                <label class="segment">
+                  <input type="radio" name="tone" value="Formal" />
+                  <span>Formal</span>
+                </label>
+                <label class="segment">
+                  <input type="radio" name="tone" value="Amable" />
+                  <span>Amable</span>
+                </label>
+              </div>
+              <p class="note">El tono es opcional y no afecta las políticas oficiales.</p>
+            </div>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="settings-header">
             <h3>Idioma</h3>
-            <p>Seleccione los idiomas disponibles para el asistente.</p>
+            <p>El asistente responderá automáticamente en el idioma en que escriba el colaborador.</p>
           </div>
           <div class="form-grid">
             <div>

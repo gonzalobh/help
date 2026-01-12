@@ -46,18 +46,19 @@
     }
     const steps = checklist.querySelectorAll('.checklist-item');
     const settings = data.settings || {};
-    const boundaries = settings.assistantBoundaries || {};
-    const boundariesSet = Object.values(boundaries).some(Boolean);
     const knowledgeContent = data.knowledgeContent || '';
+    const hrEmail = settings.hrContact?.email?.trim() || '';
+    const hrUrl = settings.hrContact?.url?.trim() || '';
 
     const completion = {
       knowledge: knowledgeContent.trim().length > 0,
       preview: previewReviewed,
-      settings: Boolean(settings.hrContact?.email?.trim()) && boundariesSet
+      hr: Boolean(hrEmail || hrUrl),
+      activation: Boolean(settings.assistantActive)
     };
 
     steps.forEach((step) => {
-      const key = step.dataset.tabLink;
+      const key = step.dataset.checkKey || step.dataset.tabLink;
       step.classList.toggle('completed', Boolean(completion[key]));
     });
   }
@@ -134,6 +135,9 @@
     const hrEmailInput = document.querySelector('#hrEmail');
     const hrUrlInput = document.querySelector('#hrUrl');
     const hrFallbackTextarea = document.querySelector('#hrFallback');
+    const noInfoMessageTextarea = document.querySelector('#noInfoMessage');
+    const countryContextSelect = document.querySelector('#countryContext');
+    const assistantActiveToggle = document.querySelector('#assistantActive');
 
     if (hrEmailInput) {
       hrEmailInput.value = settings.hrContact.email;
@@ -149,6 +153,7 @@
       hrUrlInput.addEventListener('input', (event) => {
         settings.hrContact.url = event.target.value;
         markDirty();
+        updateChecklist();
       });
     }
 
@@ -162,18 +167,55 @@
       });
     }
 
+    if (noInfoMessageTextarea) {
+      noInfoMessageTextarea.value = settings.noInfoMessage;
+      noInfoMessageTextarea.addEventListener('input', (event) => {
+        settings.noInfoMessage = event.target.value;
+        data.sampleResponses.fallback = event.target.value;
+        markDirty();
+        refreshPreview();
+      });
+    }
+
+    if (countryContextSelect) {
+      countryContextSelect.value = settings.countryContext;
+      countryContextSelect.addEventListener('change', (event) => {
+        settings.countryContext = event.target.value;
+        markDirty();
+        refreshPreview();
+      });
+    }
+
+    if (assistantActiveToggle) {
+      assistantActiveToggle.checked = settings.assistantActive;
+      assistantActiveToggle.addEventListener('change', (event) => {
+        settings.assistantActive = event.target.checked;
+        markDirty();
+        updateChecklist();
+      });
+    }
+
     const boundaries = settings.assistantBoundaries;
+    const boundaryOfficialOnly = document.querySelector('#boundaryOfficialOnly');
     const boundaryPersonal = document.querySelector('#boundaryPersonal');
     const boundaryContracts = document.querySelector('#boundaryContracts');
     const boundaryLegal = document.querySelector('#boundaryLegal');
     const boundaryEscalate = document.querySelector('#boundaryEscalate');
+
+    if (boundaryOfficialOnly) {
+      boundaryOfficialOnly.checked = boundaries.onlyOfficialInfo;
+      boundaryOfficialOnly.addEventListener('change', (event) => {
+        boundaries.onlyOfficialInfo = event.target.checked;
+        markDirty();
+        refreshPreview();
+      });
+    }
 
     if (boundaryPersonal) {
       boundaryPersonal.checked = boundaries.noPersonalCases;
       boundaryPersonal.addEventListener('change', (event) => {
         boundaries.noPersonalCases = event.target.checked;
         markDirty();
-        updateChecklist();
         refreshPreview();
       });
     }
@@ -183,7 +225,6 @@
       boundaryContracts.addEventListener('change', (event) => {
         boundaries.noContractInterpretation = event.target.checked;
         markDirty();
-        updateChecklist();
         refreshPreview();
       });
     }
@@ -193,7 +234,6 @@
       boundaryLegal.addEventListener('change', (event) => {
         boundaries.noLegalQuestions = event.target.checked;
         markDirty();
-        updateChecklist();
         refreshPreview();
       });
     }
@@ -203,7 +243,6 @@
       boundaryEscalate.addEventListener('change', (event) => {
         boundaries.alwaysEscalate = event.target.checked;
         markDirty();
-        updateChecklist();
         refreshPreview();
       });
     }
@@ -265,6 +304,27 @@
     }
   }
 
+  function renderActivity() {
+    const activity = data.activity;
+    if (!activity) {
+      return;
+    }
+    const count = document.querySelector('#activityCount');
+    const topics = document.querySelector('#activityTopics');
+
+    if (count) {
+      count.textContent = activity.last7DaysCount;
+    }
+    if (topics) {
+      topics.innerHTML = '';
+      activity.topTopics.forEach((topic) => {
+        const item = document.createElement('li');
+        item.textContent = topic;
+        topics.appendChild(item);
+      });
+    }
+  }
+
   function refreshPreview() {
     const previewContainer = document.querySelector('#previewChat');
     if (window.HelpinChat && previewContainer) {
@@ -282,6 +342,7 @@
     updateChecklist();
     initKnowledgeEditor();
     renderSettings();
+    renderActivity();
     refreshPreview();
 
     const checklistButtons = document.querySelectorAll(
