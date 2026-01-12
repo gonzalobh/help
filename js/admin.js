@@ -61,6 +61,39 @@
       const key = step.dataset.checkKey || step.dataset.tabLink;
       step.classList.toggle('completed', Boolean(completion[key]));
     });
+
+    const activationStep = checklist.querySelector(
+      '[data-check-key="activation"]'
+    );
+    const activationText = document.querySelector('#activationChecklistText');
+    if (activationStep && activationText) {
+      if (settings.assistantActive) {
+        activationText.textContent = 'Helpin está activo para colaboradores';
+        activationStep.classList.add('confirmed');
+        activationStep.classList.remove('primary-action');
+      } else {
+        activationText.textContent = 'Activar el asistente para colaboradores';
+        activationStep.classList.remove('confirmed');
+        activationStep.classList.add('primary-action');
+      }
+    }
+
+    const totalSteps = Object.keys(completion).length;
+    const completedSteps = Object.values(completion).filter(Boolean).length;
+    const progressText = document.querySelector('#setupProgressText');
+    const progressBar = document.querySelector('#setupProgressBar');
+    const progressTrack = document.querySelector('.progress-bar');
+    const progressValue = Math.round((completedSteps / totalSteps) * 100);
+
+    if (progressText) {
+      progressText.textContent = `Configuración completada: ${completedSteps} de ${totalSteps}`;
+    }
+    if (progressBar) {
+      progressBar.style.width = `${progressValue}%`;
+    }
+    if (progressTrack) {
+      progressTrack.setAttribute('aria-valuenow', String(completedSteps));
+    }
   }
 
   function updateKnowledgeStatus() {
@@ -72,6 +105,42 @@
       status.textContent = 'Actualizado recién';
     } else {
       status.textContent = 'Sin contenido aún';
+    }
+    updateStatusCards();
+  }
+
+  function updateStatusCards() {
+    const assistantStatusValue = document.querySelector(
+      '#assistantStatusValue'
+    );
+    const assistantStatusSubtitle = document.querySelector(
+      '#assistantStatusSubtitle'
+    );
+    const knowledgeStatusValue = document.querySelector('#knowledgeStatusValue');
+    const knowledgeStatusSubtitle = document.querySelector(
+      '#knowledgeStatusSubtitle'
+    );
+    const knowledgeContent = data.knowledgeContent || '';
+    const assistantActive = Boolean(data.settings?.assistantActive);
+
+    if (assistantStatusValue) {
+      assistantStatusValue.textContent = assistantActive ? 'Activo' : 'Inactivo';
+    }
+    if (assistantStatusSubtitle) {
+      assistantStatusSubtitle.textContent = assistantActive
+        ? 'Disponible para colaboradores'
+        : 'Listo para activar cuando RR. HH. lo apruebe';
+    }
+
+    if (knowledgeStatusValue) {
+      knowledgeStatusValue.textContent =
+        knowledgeContent.trim().length > 0 ? 'Con contenido' : 'Vacía';
+    }
+    if (knowledgeStatusSubtitle) {
+      knowledgeStatusSubtitle.textContent =
+        knowledgeContent.trim().length > 0
+          ? 'Última actualización: hoy'
+          : 'Pendiente de carga oficial';
     }
   }
 
@@ -192,6 +261,7 @@
         settings.assistantActive = event.target.checked;
         markDirty();
         updateChecklist();
+        updateStatusCards();
       });
     }
 
@@ -310,18 +380,26 @@
       return;
     }
     const count = document.querySelector('#activityCount');
+    const countSummary = document.querySelector('#activityCountSummary');
     const topics = document.querySelector('#activityTopics');
+    const topTopic = document.querySelector('#activityTopTopic');
 
     if (count) {
       count.textContent = activity.last7DaysCount;
     }
+    if (countSummary) {
+      countSummary.textContent = activity.last7DaysCount;
+    }
     if (topics) {
       topics.innerHTML = '';
-      activity.topTopics.forEach((topic) => {
+      activity.topTopics.slice(0, 3).forEach((topic) => {
         const item = document.createElement('li');
         item.textContent = topic;
         topics.appendChild(item);
       });
+    }
+    if (topTopic) {
+      topTopic.textContent = activity.topTopics[0] || 'Sin datos aún';
     }
   }
 
@@ -339,16 +417,15 @@
   function init() {
     initTabs();
     updateSaveStatus();
+    updateStatusCards();
     updateChecklist();
     initKnowledgeEditor();
     renderSettings();
     renderActivity();
     refreshPreview();
 
-    const checklistButtons = document.querySelectorAll(
-      '#setupChecklist .checklist-item'
-    );
-    checklistButtons.forEach((button) => {
+    const tabLinks = document.querySelectorAll('[data-tab-link]');
+    tabLinks.forEach((button) => {
       button.addEventListener('click', () => {
         setActiveTab(button.dataset.tabLink);
       });

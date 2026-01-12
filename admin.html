@@ -38,45 +38,100 @@
     <div class="admin-content">
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
-          <h2>Bienvenido a Helpin</h2>
-          <p>Helpin centraliza respuestas oficiales para colaboradores. RR. HH. controla la información disponible y decide cuándo intervenir.</p>
+          <h2>Panel de control RR. HH.</h2>
+          <p>Visibilidad inmediata del estado, uso y acciones clave del asistente.</p>
         </div>
-        <div class="checklist" id="setupChecklist">
-          <button class="checklist-item" type="button" data-tab-link="knowledge" data-check-key="knowledge">
-            <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Pegar políticas internas oficiales</span>
-          </button>
-          <button class="checklist-item" type="button" data-tab-link="settings" data-check-key="hr">
-            <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Definir contacto de RR. HH.</span>
-          </button>
-          <button class="checklist-item" type="button" data-tab-link="preview" data-check-key="preview">
-            <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Probar preguntas sensibles en la vista previa</span>
-          </button>
-          <button class="checklist-item" type="button" data-tab-link="settings" data-check-key="activation">
-            <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Activar el asistente para colaboradores</span>
-          </button>
-        </div>
-        <div class="card activity-panel">
-          <div class="card-header">
-            <div>
-              <h3>Actividad del asistente (anónima)</h3>
-              <p>Resumen agregado de consultas recientes para monitorear el uso.</p>
+        <div class="dashboard-stack">
+          <div class="status-cards">
+            <div class="status-card">
+              <span class="status-title">Estado del asistente</span>
+              <span class="status-value" id="assistantStatusValue">Inactivo</span>
+              <span class="status-subtitle" id="assistantStatusSubtitle">Activar para comenzar</span>
+            </div>
+            <div class="status-card">
+              <span class="status-title">Base de conocimiento</span>
+              <span class="status-value" id="knowledgeStatusValue">Vacía</span>
+              <span class="status-subtitle" id="knowledgeStatusSubtitle">Sin actualizaciones</span>
+            </div>
+            <div class="status-card">
+              <span class="status-title">Consultas en 7 días</span>
+              <span class="status-value" id="activityCountSummary">0</span>
+              <span class="status-subtitle">Uso reciente</span>
+            </div>
+            <div class="status-card">
+              <span class="status-title">Consultas sensibles</span>
+              <span class="status-value" id="sensitiveCount">2</span>
+              <span class="status-subtitle">Revisar esta semana</span>
             </div>
           </div>
-          <div class="activity-stats">
-            <div class="activity-stat">
-              <span class="activity-label">Consultas en los últimos 7 días</span>
-              <span class="activity-value" id="activityCount">0</span>
+          <div class="card progress-panel">
+            <div class="progress-header">
+              <div>
+                <h3>Configuración inicial</h3>
+                <p>Control total antes de habilitar el asistente.</p>
+              </div>
+              <div class="progress-summary">
+                <span id="setupProgressText">Configuración completada: 0 de 4</span>
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
+                  <span id="setupProgressBar"></span>
+                </div>
+              </div>
+            </div>
+            <div class="checklist" id="setupChecklist">
+              <button class="checklist-item" type="button" data-tab-link="knowledge" data-check-key="knowledge">
+                <span class="checkmark" aria-hidden="true">✓</span>
+                <span class="checklist-title">Cargar políticas y contenidos oficiales</span>
+              </button>
+              <button class="checklist-item" type="button" data-tab-link="settings" data-check-key="hr">
+                <span class="checkmark" aria-hidden="true">✓</span>
+                <span class="checklist-title">Definir contacto y escalamiento RR. HH.</span>
+              </button>
+              <button class="checklist-item" type="button" data-tab-link="preview" data-check-key="preview">
+                <span class="checkmark" aria-hidden="true">✓</span>
+                <span class="checklist-title">Probar preguntas sensibles en vista previa</span>
+              </button>
+              <button class="checklist-item" type="button" data-tab-link="settings" data-check-key="activation">
+                <span class="checkmark" aria-hidden="true">✓</span>
+                <span class="checklist-title" id="activationChecklistText">Activar el asistente para colaboradores</span>
+              </button>
             </div>
           </div>
-          <div class="activity-topics">
-            <h4>Top 5 temas más consultados</h4>
-            <ol id="activityTopics"></ol>
+          <div class="card activity-panel">
+            <div class="card-header">
+              <div>
+                <h3>Actividad del asistente</h3>
+                <p>Uso semanal para validar adopción y detectar ajustes.</p>
+              </div>
+            </div>
+            <div class="activity-highlight">
+              <div class="activity-metric">
+                <span class="activity-value" id="activityCount">0</span>
+                <span class="activity-label">consultas en los últimos 7 días</span>
+              </div>
+              <div class="activity-topline">
+                <span class="activity-topline-label">Tema más consultado</span>
+                <span class="activity-topline-value" id="activityTopTopic">—</span>
+              </div>
+            </div>
+            <div class="activity-topics">
+              <h4>Top 3 temas consultados</h4>
+              <ol id="activityTopics"></ol>
+            </div>
+            <p class="activity-note">Privacidad: Helpin no almacena conversaciones personales ni datos sensibles.</p>
           </div>
-          <p class="activity-note">Helpin no almacena conversaciones personales ni datos sensibles.</p>
+          <div class="card actions-panel">
+            <div class="card-header">
+              <div>
+                <h3>Acciones recomendadas</h3>
+                <p>Priorice las siguientes tareas para mantener control y tranquilidad.</p>
+              </div>
+            </div>
+            <div class="actions-grid">
+              <button class="action-button" type="button" data-tab-link="knowledge">Actualizar base de conocimiento</button>
+              <button class="action-button" type="button" data-tab-link="preview">Probar nuevas preguntas sensibles</button>
+              <button class="action-button" type="button" data-tab-link="settings">Revisar configuración de RR. HH.</button>
+            </div>
+          </div>
         </div>
       </section>
 
