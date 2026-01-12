@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administración simple de Helpin</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .wizard-layout {
+      display: grid;
+      grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    .wizard-secondary-nav {
+      position: sticky;
+      top: 96px;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .wizard-secondary-nav button {
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      background: transparent;
+      padding: 10px 12px;
+      border-radius: 12px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .wizard-secondary-nav button.active {
+      background: #0f172a;
+      color: #fff;
+    }
+
+    .wizard-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .wizard-stepper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .wizard-stepper-item {
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .wizard-stepper-item .step-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #0f172a;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+    }
+
+    .wizard-stepper-item.active {
+      background: #0f172a;
+      color: #fff;
+    }
+
+    .wizard-stepper-item.active .step-number {
+      background: #fff;
+      color: #0f172a;
+    }
+
+    .wizard-step {
+      display: none;
+      padding: 24px;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .wizard-step.active {
+      display: block;
+    }
+
+    .wizard-step header {
+      margin-bottom: 16px;
+    }
+
+    .wizard-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .wizard-actions .primary {
+      min-width: 160px;
+    }
+
+    .wizard-actions .secondary {
+      min-width: 120px;
+    }
+
+    .template-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .template-buttons button {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 23, 42, 0.16);
+      background: #fff;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .activation-panel {
+      display: grid;
+      gap: 16px;
+    }
+
+    .activation-conditions {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .activation-conditions li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      background: #f8fafc;
+    }
+
+    .activation-conditions li.completed {
+      border-color: rgba(34, 197, 94, 0.6);
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .activation-conditions .checkmark {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(15, 23, 42, 0.3);
+      display: grid;
+      place-items: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: rgba(15, 23, 42, 0.6);
+    }
+
+    .activation-panel .primary {
+      width: 100%;
+    }
+
+    .active-summary {
+      display: grid;
+      place-items: center;
+      min-height: 60vh;
+    }
+
+    .summary-card {
+      max-width: 520px;
+      width: 100%;
+      background: #fff;
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+      display: grid;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .summary-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .summary-card li {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .summary-card .primary {
+      width: 100%;
+    }
+
+    .edit-notice {
+      background: rgba(234, 179, 8, 0.16);
+      color: #92400e;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .validation-hint {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 960px) {
+      .wizard-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .wizard-secondary-nav {
+        position: static;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body class="admin-ui">
+  <header class="admin-topbar">
+    <div class="topbar-logo">Helpin</div>
+    <div class="topbar-actions">
+      <div class="save-status" id="saveStatus" aria-live="polite">✓ Guardado</div>
+      <div>
+        <a class="topbar-button small" id="employeeChatLink" href="chat.html" target="_blank" rel="noopener noreferrer">Ver como colaborador</a>
+        <div class="employee-chat-note">Vista de prueba (no afecta datos reales).</div>
+      </div>
+    </div>
+  </header>
+  <main class="page">
+    <div id="editNotice" class="edit-notice hidden">Está editando una configuración activa</div>
+
+    <div id="wizardLayout" class="wizard-layout">
+      <aside class="wizard-secondary-nav" aria-label="Navegación secundaria" id="wizardSidebar">
+        <button type="button" class="active" data-step-link="1">Paso 1 · Información oficial</button>
+        <button type="button" data-step-link="2">Paso 2 · Contacto RR. HH.</button>
+        <button type="button" data-step-link="3">Paso 3 · Vista previa</button>
+        <button type="button" data-step-link="4">Paso 4 · Activar</button>
+      </aside>
+
+      <div class="wizard-content">
+        <div class="wizard-stepper" aria-label="Progreso del asistente" id="wizardStepper">
+          <div class="wizard-stepper-item active" data-step="1">
+            <span class="step-number">1</span>
+            <span>Información oficial</span>
+          </div>
+          <div class="wizard-stepper-item" data-step="2">
+            <span class="step-number">2</span>
+            <span>Contacto RR. HH.</span>
+          </div>
+          <div class="wizard-stepper-item" data-step="3">
+            <span class="step-number">3</span>
+            <span>Vista previa</span>
+          </div>
+          <div class="wizard-stepper-item" data-step="4">
+            <span class="step-number">4</span>
+            <span>Activar</span>
+          </div>
+        </div>
+
+        <section class="wizard-step active" data-step="1">
+          <header>
+            <h2>Paso 1 · Información oficial</h2>
+            <p>Copie y pegue la información oficial que el asistente podrá usar.</p>
+          </header>
+          <div class="template-buttons" aria-label="Plantillas de contenido">
+            <button type="button" data-template="vacaciones">Plantilla: Vacaciones</button>
+            <button type="button" data-template="licencias">Plantilla: Licencias</button>
+            <button type="button" data-template="beneficios">Plantilla: Beneficios</button>
+            <button type="button" data-template="horarios">Plantilla: Horarios</button>
+            <button type="button" data-template="reglamento">Plantilla: Reglamento</button>
+          </div>
+          <div class="knowledge-editor">
+            <label class="sr-only" for="knowledgeContent">Contenido de conocimiento</label>
+            <textarea
+              id="knowledgeContent"
+              placeholder="Pegue aquí políticas internas, beneficios, procedimientos y textos oficiales de RR. HH."
+            ></textarea>
+            <div class="knowledge-status" id="knowledgeStatus">Sin contenido aún</div>
+            <div class="validation-hint">Última actualización: <span id="knowledgeUpdatedAt">Sin registro</span></div>
+          </div>
+          <div class="wizard-actions">
+            <span class="badge" id="knowledgeProgress">Pendiente</span>
+            <button class="primary" type="button" data-next-step="2">Continuar</button>
+          </div>
+        </section>
+
+        <section class="wizard-step" data-step="2">
+          <header>
+            <h2>Paso 2 · Contacto RR. HH.</h2>
+            <p>Defina un correo para que el asistente derive dudas.</p>
+          </header>
+          <div class="form-grid">
+            <div>
+              <label for="hrEmail">Correo de RR. HH.</label>
+              <input id="hrEmail" type="text" placeholder="ejemplo@empresa.com" />
+              <div class="validation-hint" id="hrEmailHint">Campo obligatorio.</div>
+            </div>
+            <div>
+              <label for="hrUrl">URL de contacto de RR. HH. (opcional)</label>
+              <input id="hrUrl" type="text" placeholder="https://intranet.empresa.com/rrhh" />
+            </div>
+          </div>
+          <div class="card">
+            <h3>Escalamiento definido</h3>
+            <p id="hrEscalationPreview">Se usará el correo y la URL definidos.</p>
+          </div>
+          <div class="wizard-actions">
+            <button class="secondary" type="button" data-prev-step="1">Volver</button>
+            <button class="primary" type="button" data-next-step="3">Continuar</button>
+          </div>
+        </section>
+
+        <section class="wizard-step" data-step="3">
+          <header>
+            <h2>Paso 3 · Vista previa</h2>
+            <p>Revise cómo se verá el asistente para colaboradores.</p>
+          </header>
+          <div id="previewChat" class="preview-chat"></div>
+          <div class="wizard-actions">
+            <button class="secondary" type="button" data-prev-step="2">Volver</button>
+            <button class="primary" type="button" data-next-step="4">Continuar</button>
+          </div>
+        </section>
+
+        <section class="wizard-step" data-step="4">
+          <header>
+            <h2>Paso 4 · Activar</h2>
+            <p>Revise los mínimos y habilite el asistente cuando todo esté listo.</p>
+          </header>
+          <div class="activation-panel">
+            <ul class="activation-conditions" id="activationConditions">
+              <li><span class="checkmark">✓</span> Información oficial cargada</li>
+              <li><span class="checkmark">✓</span> Correo RR. HH. definido</li>
+            </ul>
+            <button class="primary" type="button" id="activateAssistant">Activar asistente para colaboradores</button>
+            <div class="validation-hint">Puede desactivarlo o editarlo en cualquier momento.</div>
+          </div>
+          <div class="wizard-actions">
+            <button class="secondary" type="button" data-prev-step="3">Volver</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <section class="active-summary hidden" id="activeSummary">
+      <div class="summary-card">
+        <div>
+          <h2>Asistente de RR. HH. activo</h2>
+          <p>Resumen no editable de la configuración vigente.</p>
+        </div>
+        <ul>
+          <li><span>Estado</span><strong id="summaryStatus">Activo</strong></li>
+          <li><span>Información oficial</span><strong id="summaryKnowledge">Cargada</strong></li>
+          <li><span>Contacto RR. HH.</span><strong id="summaryHr">—</strong></li>
+          <li><span>Visible para colaboradores</span><strong>Sí</strong></li>
+        </ul>
+        <button class="primary" type="button" id="editConfiguration">Editar configuración</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/mockData.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/chat.js"></script>
+  <script>
+    (function () {
+      const data = window.HelpinData;
+      let isDirty = false;
+      let saveTimer = null;
+      let activeStep = 1;
+      let isEditing = false;
+
+      const strictBoundaries = {
+        onlyOfficialInfo: true,
+        noPersonalCases: true,
+        noContractInterpretation: true,
+        noLegalQuestions: true,
+        alwaysEscalate: true
+      };
+
+      const templates = {
+        vacaciones: `## Vacaciones\n- Requisitos de elegibilidad\n- Días disponibles y acumulación\n- Procedimiento para solicitar\n- Casos especiales y excepciones`,
+        licencias: `## Licencias\n- Licencias médicas\n- Licencias parentales\n- Documentación requerida\n- Tiempos de respuesta`,
+        beneficios: `## Beneficios\n- Beneficios de salud\n- Beneficios de bienestar\n- Seguros o coberturas\n- Requisitos para acceder`,
+        horarios: `## Horarios\n- Horario general\n- Flexibilidad/teletrabajo\n- Registro de asistencia\n- Cambios de turno`,
+        reglamento: `## Reglamento interno\n- Normas de convivencia\n- Código de conducta\n- Procedimientos disciplinarios\n- Canal de dudas`
+      };
+
+      function updateSaveStatus() {
+        const status = document.querySelector('#saveStatus');
+        if (!status) {
+          return;
+        }
+        if (isDirty) {
+          status.textContent = 'Cambios sin guardar';
+          status.classList.add('unsaved');
+        } else {
+          status.textContent = '✓ Guardado';
+          status.classList.remove('unsaved');
+        }
+      }
+
+      function markDirty() {
+        isDirty = true;
+        updateSaveStatus();
+        if (saveTimer) {
+          window.clearTimeout(saveTimer);
+        }
+        saveTimer = window.setTimeout(() => {
+          isDirty = false;
+          updateSaveStatus();
+        }, 1200);
+      }
+
+      function formatDate(value) {
+        if (!value) {
+          return 'Sin registro';
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return 'Sin registro';
+        }
+        return date.toLocaleString('es-CL', {
+          dateStyle: 'medium',
+          timeStyle: 'short'
+        });
+      }
+
+      function updateKnowledgeStatus() {
+        const status = document.querySelector('#knowledgeStatus');
+        const updatedAt = document.querySelector('#knowledgeUpdatedAt');
+        const content = data.knowledgeContent || '';
+
+        if (status) {
+          status.textContent = content.trim().length > 0
+            ? 'Contenido listo para usar.'
+            : 'Sin contenido aún';
+        }
+
+        if (updatedAt) {
+          updatedAt.textContent = formatDate(data.knowledgeUpdatedAt);
+        }
+      }
+
+      function updateKnowledgeProgress() {
+        const badge = document.querySelector('#knowledgeProgress');
+        if (!badge) {
+          return;
+        }
+        const hasContent = (data.knowledgeContent || '').trim().length > 0;
+        badge.textContent = hasContent ? 'Listo' : 'Pendiente';
+      }
+
+      function updateEscalationPreview() {
+        const preview = document.querySelector('#hrEscalationPreview');
+        if (!preview) {
+          return;
+        }
+        const hrEmail = data.settings?.hrContact?.email || '{correo_rrhh}';
+        const hrUrl = data.settings?.hrContact?.url || '{url_rrhh}';
+        preview.textContent = `Correo: ${hrEmail} · URL: ${hrUrl}`;
+      }
+
+      function validateEmail(value) {
+        if (!value) {
+          return false;
+        }
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      }
+
+      function updateActivationState() {
+        const activationButton = document.querySelector('#activateAssistant');
+        const conditionItems = document.querySelectorAll('#activationConditions li');
+        const knowledgeReady = (data.knowledgeContent || '').trim().length > 0;
+        const hrReady = validateEmail(data.settings?.hrContact?.email || '');
+        const canActivate = knowledgeReady && hrReady;
+
+        if (conditionItems.length >= 2) {
+          conditionItems[0].classList.toggle('completed', knowledgeReady);
+          conditionItems[1].classList.toggle('completed', hrReady);
+        }
+
+        if (activationButton) {
+          activationButton.disabled = !canActivate || data.settings?.assistantActive;
+        }
+      }
+
+      function updateSummary() {
+        const summaryHr = document.querySelector('#summaryHr');
+        if (summaryHr) {
+          summaryHr.textContent = data.settings?.hrContact?.email || 'Sin definir';
+        }
+      }
+
+      function renderMode() {
+        const wizardLayout = document.querySelector('#wizardLayout');
+        const activeSummary = document.querySelector('#activeSummary');
+        const editNotice = document.querySelector('#editNotice');
+        const shouldShowWizard = !data.settings?.assistantActive || isEditing;
+        const shouldShowSummary = data.settings?.assistantActive && !isEditing;
+
+        if (wizardLayout) {
+          wizardLayout.classList.toggle('hidden', !shouldShowWizard);
+        }
+        if (activeSummary) {
+          activeSummary.classList.toggle('hidden', !shouldShowSummary);
+        }
+        if (editNotice) {
+          editNotice.classList.toggle('hidden', !(data.settings?.assistantActive && isEditing));
+        }
+      }
+
+      function initKnowledgeEditor() {
+        const textarea = document.querySelector('#knowledgeContent');
+        if (!textarea) {
+          return;
+        }
+        textarea.value = data.knowledgeContent || '';
+        textarea.addEventListener('input', (event) => {
+          data.knowledgeContent = event.target.value;
+          data.knowledgeUpdatedAt = new Date().toISOString();
+          markDirty();
+          updateKnowledgeStatus();
+          updateKnowledgeProgress();
+          updateActivationState();
+          refreshPreview();
+        });
+      }
+
+      function initTemplates() {
+        document.querySelectorAll('[data-template]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const key = button.dataset.template;
+            const template = templates[key];
+            const textarea = document.querySelector('#knowledgeContent');
+            if (!textarea || !template) {
+              return;
+            }
+            const current = textarea.value.trim();
+            const nextValue = current ? `${current}\n\n${template}` : template;
+            textarea.value = nextValue;
+            data.knowledgeContent = nextValue;
+            data.knowledgeUpdatedAt = new Date().toISOString();
+            markDirty();
+            updateKnowledgeStatus();
+            updateKnowledgeProgress();
+            updateActivationState();
+            refreshPreview();
+          });
+        });
+      }
+
+      function renderSettings() {
+        const settings = data.settings;
+        if (!settings) {
+          return;
+        }
+
+        const hrEmailInput = document.querySelector('#hrEmail');
+        const hrUrlInput = document.querySelector('#hrUrl');
+        const hrEmailHint = document.querySelector('#hrEmailHint');
+
+        if (hrEmailInput) {
+          hrEmailInput.value = settings.hrContact.email;
+          if (hrEmailHint) {
+            const isValid = validateEmail(settings.hrContact.email.trim());
+            hrEmailHint.textContent = isValid
+              ? 'Correo válido.'
+              : 'Campo obligatorio (use un correo válido).';
+            hrEmailHint.classList.toggle('error', !isValid);
+          }
+          hrEmailInput.addEventListener('input', (event) => {
+            settings.hrContact.email = event.target.value;
+            markDirty();
+            updateEscalationPreview();
+            updateActivationState();
+            updateSummary();
+            if (hrEmailHint) {
+              const isValid = validateEmail(event.target.value.trim());
+              hrEmailHint.textContent = isValid
+                ? 'Correo válido.'
+                : 'Campo obligatorio (use un correo válido).';
+              hrEmailHint.classList.toggle('error', !isValid);
+            }
+          });
+        }
+
+        if (hrUrlInput) {
+          hrUrlInput.value = settings.hrContact.url;
+          hrUrlInput.addEventListener('input', (event) => {
+            settings.hrContact.url = event.target.value;
+            markDirty();
+            updateEscalationPreview();
+          });
+        }
+
+        updateEscalationPreview();
+        updateSummary();
+      }
+
+      function applyStrictBoundaries() {
+        if (!data.settings) {
+          return;
+        }
+        data.settings.assistantBoundaries = {
+          ...strictBoundaries
+        };
+      }
+
+      function refreshPreview() {
+        const previewContainer = document.querySelector('#previewChat');
+        if (window.HelpinChat && previewContainer) {
+          window.HelpinChat.initChat({
+            container: previewContainer,
+            data,
+            mode: 'preview'
+          });
+        }
+      }
+
+      function setActiveStep(step) {
+        activeStep = step;
+        document.querySelectorAll('.wizard-step').forEach((panel) => {
+          panel.classList.toggle('active', Number(panel.dataset.step) === step);
+        });
+        document.querySelectorAll('.wizard-stepper-item').forEach((item) => {
+          item.classList.toggle('active', Number(item.dataset.step) === step);
+        });
+        document.querySelectorAll('[data-step-link]').forEach((button) => {
+          button.classList.toggle('active', Number(button.dataset.stepLink) === step);
+        });
+      }
+
+      function initWizardNavigation() {
+        document.querySelectorAll('[data-step-link]').forEach((button) => {
+          button.addEventListener('click', () => {
+            setActiveStep(Number(button.dataset.stepLink));
+          });
+        });
+
+        document.querySelectorAll('[data-next-step]').forEach((button) => {
+          button.addEventListener('click', () => {
+            setActiveStep(Number(button.dataset.nextStep));
+          });
+        });
+
+        document.querySelectorAll('[data-prev-step]').forEach((button) => {
+          button.addEventListener('click', () => {
+            setActiveStep(Number(button.dataset.prevStep));
+          });
+        });
+      }
+
+      function initActivation() {
+        const activateButton = document.querySelector('#activateAssistant');
+        if (activateButton) {
+          activateButton.addEventListener('click', () => {
+            data.settings.assistantActive = true;
+            isEditing = false;
+            markDirty();
+            updateActivationState();
+            renderMode();
+          });
+        }
+      }
+
+      function initEditMode() {
+        const editButton = document.querySelector('#editConfiguration');
+        if (!editButton) {
+          return;
+        }
+        editButton.addEventListener('click', () => {
+          isEditing = true;
+          renderMode();
+        });
+      }
+
+      function init() {
+        applyStrictBoundaries();
+        updateSaveStatus();
+        initKnowledgeEditor();
+        initTemplates();
+        renderSettings();
+        initWizardNavigation();
+        initActivation();
+        initEditMode();
+        updateActivationState();
+        updateKnowledgeStatus();
+        updateKnowledgeProgress();
+        refreshPreview();
+        setActiveStep(activeStep);
+        renderMode();
+      }
+
+      window.addEventListener('DOMContentLoaded', init);
+    })();
+  </script>
+</body>
+</html>
