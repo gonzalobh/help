@@ -76,14 +76,44 @@
       font-size: 0.9rem;
     }
 
-    .wizard-stepper-item.active {
+    .wizard-stepper-item .step-checkmark {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(15, 23, 42, 0.3);
+      display: none;
+      place-items: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: rgba(15, 23, 42, 0.6);
+      margin-left: auto;
+    }
+
+    .wizard-stepper-item.active:not(.completed) {
       background: #0f172a;
       color: #fff;
     }
 
-    .wizard-stepper-item.active .step-number {
+    .wizard-stepper-item.active:not(.completed) .step-number {
       background: #fff;
       color: #0f172a;
+    }
+
+    .wizard-stepper-item.completed {
+      border-color: rgba(34, 197, 94, 0.6);
+      background: rgba(34, 197, 94, 0.1);
+      color: #166534;
+    }
+
+    .wizard-stepper-item.completed .step-number {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    .wizard-stepper-item.completed .step-checkmark {
+      display: grid;
+      border-color: rgba(34, 197, 94, 0.6);
+      color: #166534;
     }
 
     .wizard-step {
@@ -174,62 +204,6 @@
       color: #b91c1c;
     }
 
-    .tests-grid {
-      display: grid;
-      gap: 12px;
-    }
-
-    .test-item {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(15, 23, 42, 0.1);
-      background: #f8fafc;
-    }
-
-    .test-item header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .test-status {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .test-status.ok {
-      background: rgba(34, 197, 94, 0.16);
-      color: #166534;
-    }
-
-    .test-status.warning {
-      background: rgba(234, 179, 8, 0.18);
-      color: #854d0e;
-    }
-
-    .test-status.fail {
-      background: rgba(239, 68, 68, 0.16);
-      color: #991b1b;
-    }
-
-    .summary-grid {
-      display: grid;
-      gap: 8px;
-      margin-top: 16px;
-    }
-
-    .summary-grid span {
-      font-size: 0.85rem;
-      color: #64748b;
-    }
-
     .activation-panel {
       display: grid;
       gap: 16px;
@@ -273,41 +247,6 @@
       font-size: 0.8rem;
       color: #64748b;
       margin-top: 4px;
-    }
-
-    .wizard-checklist {
-      display: grid;
-      gap: 8px;
-      margin-top: 16px;
-    }
-
-    .wizard-checklist .checklist-item {
-      background: #f8fafc;
-      border: 1px solid rgba(15, 23, 42, 0.1);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-
-    .wizard-checklist .checklist-item.completed {
-      border-color: rgba(34, 197, 94, 0.6);
-      background: rgba(34, 197, 94, 0.1);
-    }
-
-    .wizard-checklist .checkmark {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      border: 2px solid rgba(15, 23, 42, 0.3);
-      display: grid;
-      place-items: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: rgba(15, 23, 42, 0.6);
     }
 
     @media (max-width: 960px) {
@@ -365,42 +304,28 @@
             <div class="metric-subtitle" id="knowledgeStatusSubtitle">Sin actualizaciones</div>
           </div>
         </div>
-        <div class="wizard-checklist" id="setupChecklist">
-          <button class="checklist-item" type="button" data-step-link="1" data-check-key="knowledge">
-            <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Cargar políticas y contenidos oficiales</span>
-          </button>
-          <button class="checklist-item" type="button" data-step-link="2" data-check-key="hr">
-            <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Definir contacto y escalamiento RR. HH.</span>
-          </button>
-          <button class="checklist-item" type="button" data-step-link="3" data-check-key="preview">
-            <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title">Probar preguntas sensibles en vista previa</span>
-          </button>
-          <button class="checklist-item" type="button" data-step-link="4" data-check-key="activation">
-            <span class="checkmark" aria-hidden="true">✓</span>
-            <span class="checklist-title" id="activationChecklistText">Activar el asistente para colaboradores</span>
-          </button>
-        </div>
       </section>
 
       <div class="wizard-stepper" aria-label="Progreso del asistente">
         <div class="wizard-stepper-item active" data-step="1">
           <span class="step-number">1</span>
           <span>Pegar conocimiento</span>
+          <span class="step-checkmark" aria-hidden="true">✓</span>
         </div>
         <div class="wizard-stepper-item" data-step="2">
           <span class="step-number">2</span>
           <span>Contacto RR. HH.</span>
+          <span class="step-checkmark" aria-hidden="true">✓</span>
         </div>
         <div class="wizard-stepper-item" data-step="3">
           <span class="step-number">3</span>
           <span>Probar</span>
+          <span class="step-checkmark" aria-hidden="true">✓</span>
         </div>
         <div class="wizard-stepper-item" data-step="4">
           <span class="step-number">4</span>
           <span>Activar</span>
+          <span class="step-checkmark" aria-hidden="true">✓</span>
         </div>
       </div>
 
@@ -460,24 +385,10 @@
 
       <section class="wizard-step" data-step="3">
         <header>
-          <h2>Paso 3 · Vista previa y pruebas guiadas</h2>
-          <p>Revise la experiencia y ejecute pruebas con un clic.</p>
+          <h2>Paso 3 · Vista previa</h2>
+          <p>Revise la experiencia completa antes de activar.</p>
         </header>
         <div id="previewChat" class="preview-chat"></div>
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <h3>Pruebas guiadas</h3>
-              <p>Ejecute preguntas frecuentes y sensibles con semáforo de resultados.</p>
-            </div>
-            <button class="secondary small" type="button" id="runAllTests">Ejecutar todas las pruebas</button>
-          </div>
-          <div class="tests-grid" id="testsGrid"></div>
-          <div class="summary-grid" id="testsSummary">
-            <span>Total pruebas ejecutadas: <strong id="testsExecuted">0</strong></span>
-            <span>OK: <strong id="testsOk">0</strong> · Warning: <strong id="testsWarning">0</strong> · Fail: <strong id="testsFail">0</strong></span>
-          </div>
-        </div>
         <div class="wizard-actions">
           <button class="secondary" type="button" data-prev-step="2">Volver</button>
           <button class="primary" type="button" data-next-step="4">Continuar</button>
@@ -495,7 +406,6 @@
             <ul class="activation-conditions" id="activationConditions">
               <li><span class="checkmark">✓</span> Base de conocimiento cargada</li>
               <li><span class="checkmark">✓</span> Correo de RR. HH. válido</li>
-              <li><span class="checkmark">✓</span> (Recomendado) Al menos 1 prueba ejecutada</li>
             </ul>
             <div class="validation-hint" id="activationHint">Complete los requisitos para activar.</div>
             <button class="primary" type="button" id="activateAssistant">Activar asistente</button>
@@ -637,8 +547,6 @@
       let saveTimer = null;
       let activeStep = 1;
       let previewReviewed = false;
-      let testsExecuted = 0;
-      const testsState = new Map();
 
       const strictProfileValues = {
         onlyOfficialInfo: true,
@@ -656,58 +564,6 @@
         reglamento: `## Reglamento interno\n- Normas de convivencia\n- Código de conducta\n- Procedimientos disciplinarios\n- Canal de dudas`
       };
 
-      const tests = [
-        {
-          id: 'vacaciones',
-          label: 'Vacaciones: ¿Cuántos días de vacaciones tengo al año?',
-          type: 'common'
-        },
-        {
-          id: 'licencias',
-          label: 'Licencias: ¿Cómo solicito una licencia médica?',
-          type: 'common'
-        },
-        {
-          id: 'beneficios',
-          label: 'Beneficios: ¿Qué beneficios de salud ofrece la empresa?',
-          type: 'common'
-        },
-        {
-          id: 'horarios',
-          label: 'Horarios: ¿Cuál es el horario estándar?',
-          type: 'common'
-        },
-        {
-          id: 'permisos',
-          label: 'Permisos: ¿Puedo pedir un permiso especial?',
-          type: 'common'
-        },
-        {
-          id: 'salud',
-          label: 'Caso sensible: Necesito apoyo por un tema de salud personal.',
-          type: 'sensitive'
-        },
-        {
-          id: 'conflicto',
-          label: 'Caso sensible: Tengo un conflicto con mi jefe directo.',
-          type: 'sensitive'
-        },
-        {
-          id: 'legal',
-          label: 'Caso sensible: ¿Qué dice mi contrato sobre cláusulas especiales?',
-          type: 'sensitive'
-        },
-        {
-          id: 'negociacion',
-          label: 'Caso sensible: Necesito una excepción o negociación de beneficios.',
-          type: 'sensitive'
-        },
-        {
-          id: 'datos',
-          label: 'Caso sensible: ¿Cómo puedo actualizar mis datos personales?',
-          type: 'sensitive'
-        }
-      ];
 
       function updateSaveStatus() {
         const status = document.querySelector('#saveStatus');
@@ -805,34 +661,23 @@
         }
       }
 
-      function updateChecklist() {
-        const checklist = document.querySelector('#setupChecklist');
-        if (!checklist) {
-          return;
-        }
+      function updateStepCompletion() {
         const settings = data.settings || {};
         const knowledgeContent = data.knowledgeContent || '';
         const hrEmail = settings.hrContact?.email?.trim() || '';
         const hrUrl = settings.hrContact?.url?.trim() || '';
 
         const completion = {
-          knowledge: knowledgeContent.trim().length > 0,
-          preview: previewReviewed,
-          hr: Boolean(hrEmail || hrUrl),
-          activation: Boolean(settings.assistantActive)
+          1: knowledgeContent.trim().length > 0,
+          2: Boolean(hrEmail || hrUrl),
+          3: previewReviewed,
+          4: Boolean(settings.assistantActive)
         };
 
-        checklist.querySelectorAll('.checklist-item').forEach((step) => {
-          const key = step.dataset.checkKey || step.dataset.stepLink;
-          step.classList.toggle('completed', Boolean(completion[key]));
+        document.querySelectorAll('.wizard-stepper-item').forEach((item) => {
+          const step = Number(item.dataset.step);
+          item.classList.toggle('completed', Boolean(completion[step]));
         });
-
-        const activationText = document.querySelector('#activationChecklistText');
-        if (activationText) {
-          activationText.textContent = settings.assistantActive
-            ? 'Helpin está activo para colaboradores'
-            : 'Activar el asistente para colaboradores';
-        }
       }
 
       function updateKnowledgeProgress() {
@@ -857,7 +702,7 @@
           data.knowledgeContent = event.target.value;
           data.knowledgeUpdatedAt = new Date().toISOString();
           markDirty();
-          updateChecklist();
+          updateStepCompletion();
           updateKnowledgeStatus();
           updateKnowledgeProgress();
           refreshPreview();
@@ -882,7 +727,7 @@
             data.knowledgeContent = nextValue;
             data.knowledgeUpdatedAt = new Date().toISOString();
             markDirty();
-            updateChecklist();
+            updateStepCompletion();
             updateKnowledgeStatus();
             updateKnowledgeProgress();
             refreshPreview();
@@ -925,13 +770,11 @@
         const conditionItems = document.querySelectorAll('#activationConditions li');
         const knowledgeReady = (data.knowledgeContent || '').trim().length > 0;
         const hrReady = validateEmail(data.settings?.hrContact?.email || '');
-        const testsReady = testsExecuted > 0;
         const canActivate = knowledgeReady && hrReady;
 
-        if (conditionItems.length >= 3) {
+        if (conditionItems.length >= 2) {
           conditionItems[0].classList.toggle('completed', knowledgeReady);
           conditionItems[1].classList.toggle('completed', hrReady);
-          conditionItems[2].classList.toggle('completed', testsReady);
         }
 
         if (activationButton) {
@@ -986,7 +829,7 @@
           hrEmailInput.addEventListener('input', (event) => {
             settings.hrContact.email = event.target.value;
             markDirty();
-            updateChecklist();
+            updateStepCompletion();
             updateEscalationPreview();
             updateActivationState();
             updateMessagesPreview();
@@ -1005,7 +848,7 @@
           hrUrlInput.addEventListener('input', (event) => {
             settings.hrContact.url = event.target.value;
             markDirty();
-            updateChecklist();
+            updateStepCompletion();
             updateEscalationPreview();
             updateMessagesPreview();
           });
@@ -1176,134 +1019,6 @@
         }
       }
 
-      function normalize(text) {
-        return text.toLowerCase();
-      }
-
-      function extractKeywords(message) {
-        const parts = message.split(/\s+/);
-        return parts
-          .map((part) => part.replace(/[^a-zA-ZÁÉÍÓÚÜÑáéíóúüñ]/g, '').toLowerCase())
-          .filter((word) => word.length > 3);
-      }
-
-      function hasRelevantKnowledge(message, content) {
-        if (!content || !content.trim()) {
-          return false;
-        }
-        const normalizedMessage = normalize(message);
-        const normalizedContent = normalize(content);
-        if (normalizedContent.includes(normalizedMessage)) {
-          return true;
-        }
-        const keywords = extractKeywords(message);
-        return keywords.some((keyword) => normalizedContent.includes(keyword));
-      }
-
-      function evaluateTest(question) {
-        const knowledgeContent = data.knowledgeContent || '';
-        if (!knowledgeContent.trim()) {
-          return {
-            status: 'warning',
-            message: 'WARNING: Sin información oficial, derivación a RR. HH.'
-          };
-        }
-        if (hasRelevantKnowledge(question, knowledgeContent)) {
-          return {
-            status: 'ok',
-            message: 'OK: Respondió con información oficial disponible.'
-          };
-        }
-        return {
-          status: 'warning',
-          message: 'WARNING: No hay info oficial, revisar derivación manualmente.'
-        };
-      }
-
-      function updateTestsSummary() {
-        const okCount = Array.from(testsState.values()).filter(
-          (value) => value.status === 'ok'
-        ).length;
-        const warningCount = Array.from(testsState.values()).filter(
-          (value) => value.status === 'warning'
-        ).length;
-        const failCount = Array.from(testsState.values()).filter(
-          (value) => value.status === 'fail'
-        ).length;
-
-        document.querySelector('#testsExecuted').textContent = String(testsExecuted);
-        document.querySelector('#testsOk').textContent = String(okCount);
-        document.querySelector('#testsWarning').textContent = String(warningCount);
-        document.querySelector('#testsFail').textContent = String(failCount);
-        updateChecklist();
-        updateActivationState();
-      }
-
-      function runSingleTest(test) {
-        const result = evaluateTest(test.label);
-        testsExecuted += 1;
-        testsState.set(test.id, result);
-
-        const statusBadge = document.querySelector(`[data-test-status="${test.id}"]`);
-        const message = document.querySelector(`[data-test-message="${test.id}"]`);
-        if (statusBadge) {
-          statusBadge.textContent = result.status.toUpperCase();
-          statusBadge.className = `test-status ${result.status}`;
-        }
-        if (message) {
-          message.textContent = result.message;
-        }
-        updateTestsSummary();
-      }
-
-      async function runAllTests() {
-        for (const test of tests) {
-          runSingleTest(test);
-          await new Promise((resolve) => window.setTimeout(resolve, 200));
-        }
-      }
-
-      function initTests() {
-        const grid = document.querySelector('#testsGrid');
-        if (!grid) {
-          return;
-        }
-        grid.innerHTML = '';
-        tests.forEach((test) => {
-          const item = document.createElement('div');
-          item.className = 'test-item';
-
-          const header = document.createElement('header');
-          const title = document.createElement('strong');
-          title.textContent = test.label;
-          const status = document.createElement('span');
-          status.className = 'test-status warning';
-          status.textContent = 'PENDING';
-          status.dataset.testStatus = test.id;
-          header.append(title, status);
-
-          const message = document.createElement('div');
-          message.dataset.testMessage = test.id;
-          message.textContent = test.type === 'sensitive'
-            ? 'Revisar manualmente si la respuesta respeta límites.'
-            : 'Listo para probar.';
-
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'secondary small';
-          button.textContent = 'Ejecutar prueba';
-          button.addEventListener('click', () => runSingleTest(test));
-
-          item.append(header, message, button);
-          grid.appendChild(item);
-        });
-
-        const runAllButton = document.querySelector('#runAllTests');
-        if (runAllButton) {
-          runAllButton.addEventListener('click', runAllTests);
-        }
-      }
-
       function setActiveStep(step) {
         activeStep = step;
         document.querySelectorAll('.wizard-step').forEach((panel) => {
@@ -1317,7 +1032,7 @@
         });
         if (step === 3) {
           previewReviewed = true;
-          updateChecklist();
+          updateStepCompletion();
         }
       }
 
@@ -1348,7 +1063,7 @@
           activateButton.addEventListener('click', () => {
             data.settings.assistantActive = true;
             markDirty();
-            updateChecklist();
+            updateStepCompletion();
             updateStatusCards();
             updateActivationState();
           });
@@ -1357,33 +1072,23 @@
           deactivateButton.addEventListener('click', () => {
             data.settings.assistantActive = false;
             markDirty();
-            updateChecklist();
+            updateStepCompletion();
             updateStatusCards();
             updateActivationState();
           });
         }
       }
 
-      function initShortcuts() {
-        document.querySelectorAll('.wizard-checklist [data-step-link]').forEach((button) => {
-          button.addEventListener('click', () => {
-            setActiveStep(Number(button.dataset.stepLink));
-          });
-        });
-      }
-
       function init() {
         updateSaveStatus();
         updateStatusCards();
-        updateChecklist();
+        updateStepCompletion();
         initKnowledgeEditor();
         initTemplates();
         renderSettings();
         initBoundaries();
-        initTests();
         initWizardNavigation();
         initActivation();
-        initShortcuts();
         updateActivationState();
         refreshPreview();
         setActiveStep(activeStep);
@@ -1400,7 +1105,6 @@
       // - Modo personalizado permite cambiarlos.
       // - Avanzado colapsa/expande (details#advancedOptions).
       // - Preview funciona (HelpinChat.initChat en modo preview).
-      // - Pruebas guiadas se pueden ejecutar (runSingleTest/runAllTests).
     })();
   </script>
 </body>
