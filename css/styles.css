@@ -1,13 +1,16 @@
 :root {
   color-scheme: light;
-  --bg: #ffffff;
-  --border: #e7ebf0;
-  --text: #2f343a;
-  --title: #111111;
-  --muted: #6b7078;
-  --panel: #f7f8fa;
+  --bg: #f6f4ff;
+  --border: #e6e1f4;
+  --text: #2e2a3a;
+  --title: #1d1a2a;
+  --muted: #6f6a85;
+  --panel: #f7f5ff;
   --button: #ffffff;
-  --button-border: #d6dbe1;
+  --button-border: #d9d4ee;
+  --accent: #5b4cff;
+  --accent-soft: #b9b0ff;
+  --accent-strong: #7a3ff6;
   --radius-md: 10px;
   --radius-lg: 12px;
 }
@@ -23,6 +26,12 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
+}
+
+body.admin-ui {
+  background: radial-gradient(circle at 10% 15%, rgba(129, 102, 255, 0.22), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(255, 176, 243, 0.25), transparent 40%),
+    linear-gradient(180deg, #f7f4ff 0%, #ffffff 40%, #ffffff 100%);
 }
 
 .page {
@@ -43,9 +52,10 @@ body {
 .admin-sidebar {
   width: 56px;
   flex-shrink: 0;
-  border-right: 1px solid var(--border);
+  border-right: 1px solid rgba(90, 77, 140, 0.12);
   padding: 12px 8px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
   position: fixed;
   top: 56px;
   left: 0;
@@ -95,17 +105,17 @@ body {
 
 .tab-button.active {
   border-color: transparent;
-  background: transparent;
+  background: rgba(110, 94, 255, 0.12);
   font-weight: 600;
-  border-left-color: #2f343a;
+  border-left-color: var(--accent);
 }
 
 .tab-button.active .nav-icon {
-  color: var(--title);
+  color: var(--accent);
 }
 
 .tab-button:hover {
-  background: #f7f8fa;
+  background: rgba(110, 94, 255, 0.08);
 }
 
 .nav-icon {
@@ -145,8 +155,9 @@ body {
   left: 0;
   right: 0;
   height: 56px;
-  background: #ffffff;
-  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(90, 77, 140, 0.12);
+  backdrop-filter: blur(18px);
   display: flex;
   align-items: center;
   padding: 0 24px;
@@ -169,11 +180,11 @@ body {
 .topbar-button {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--button-border);
-  background: #f6f7f9;
+  border: 1px solid rgba(91, 76, 255, 0.2);
+  background: rgba(91, 76, 255, 0.12);
   padding: 6px 10px;
   font-size: 12px;
-  color: var(--text);
+  color: #3b2f7f;
   border-radius: 6px;
   text-decoration: none;
 }
@@ -184,7 +195,7 @@ body {
 }
 
 .topbar-button:hover {
-  background: #f1f3f6;
+  background: rgba(91, 76, 255, 0.2);
 }
 
 .save-status {
@@ -200,10 +211,12 @@ body {
 }
 
 .section {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.9);
   padding: 28px 32px;
   margin-bottom: 32px;
   border-radius: var(--radius-lg);
+  border: 1px solid rgba(226, 220, 255, 0.6);
+  box-shadow: 0 18px 40px rgba(61, 46, 120, 0.08);
 }
 
 .section-hero {
@@ -251,12 +264,13 @@ body {
 }
 
 .status-card {
-  border: 1px solid #edf1f5;
-  background: #ffffff;
+  border: 1px solid rgba(226, 220, 255, 0.6);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 245, 255, 0.95));
   border-radius: var(--radius-lg);
   padding: 18px 20px;
   display: grid;
   gap: 6px;
+  box-shadow: 0 12px 30px rgba(93, 77, 160, 0.08);
 }
 
 .status-title {
@@ -269,7 +283,7 @@ body {
 .status-value {
   font-size: 22px;
   font-weight: 600;
-  color: var(--title);
+  color: var(--accent-strong);
 }
 
 .status-subtitle {
@@ -355,7 +369,7 @@ textarea {
 
 .tab-panel.active {
   display: block;
-  background: #f6f7f9;
+  background: transparent;
 }
 
 button {
@@ -369,12 +383,14 @@ button {
 }
 
 button.primary {
-  border-color: #9aa1aa;
-  color: var(--title);
+  border-color: transparent;
+  color: #ffffff;
+  background: linear-gradient(135deg, #5b4cff, #9b50ff);
+  box-shadow: 0 12px 24px rgba(91, 76, 255, 0.25);
 }
 
 button.secondary {
-  background: #f6f7f9;
+  background: rgba(91, 76, 255, 0.12);
   color: var(--text);
 }
 
@@ -399,10 +415,11 @@ button:disabled {
 }
 
 .card {
-  border: 1px solid #edf1f5;
+  border: 1px solid rgba(226, 220, 255, 0.6);
   padding: 20px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: var(--radius-lg);
+  box-shadow: 0 16px 34px rgba(78, 65, 140, 0.08);
 }
 
 .card-header {
@@ -419,12 +436,12 @@ button:disabled {
 }
 
 .card-actions button {
-  background: #f6f7f9;
-  border-color: #e1e5eb;
+  background: rgba(91, 76, 255, 0.12);
+  border-color: rgba(91, 76, 255, 0.2);
 }
 
 .card-actions button:hover {
-  background: #f0f2f6;
+  background: rgba(91, 76, 255, 0.2);
 }
 
 .activity-panel {
@@ -447,8 +464,8 @@ button:disabled {
   justify-content: space-between;
   padding: 12px 16px;
   border-radius: 12px;
-  background: #f7f8fa;
-  border: 1px solid #edf1f5;
+  background: rgba(91, 76, 255, 0.08);
+  border: 1px solid rgba(91, 76, 255, 0.16);
 }
 
 .activity-label {
@@ -493,8 +510,8 @@ button:disabled {
   grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr);
   padding: 16px;
   border-radius: 12px;
-  background: #f7f8fa;
-  border: 1px solid #edf1f5;
+  background: rgba(91, 76, 255, 0.08);
+  border: 1px solid rgba(91, 76, 255, 0.16);
 }
 
 .activity-metric {
@@ -571,7 +588,7 @@ button:disabled {
 .progress-bar {
   width: 100%;
   height: 6px;
-  background: #eef1f5;
+  background: rgba(91, 76, 255, 0.12);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -580,7 +597,7 @@ button:disabled {
   display: block;
   height: 100%;
   width: 0%;
-  background: #2f343a;
+  background: linear-gradient(90deg, #5b4cff, #a66bff);
   border-radius: 999px;
   transition: width 0.2s ease;
 }
@@ -591,26 +608,26 @@ button:disabled {
   gap: 12px;
   padding: 14px 16px;
   border-radius: 10px;
-  border: 1px solid #edf1f5;
-  background: #ffffff;
+  border: 1px solid rgba(226, 220, 255, 0.7);
+  background: rgba(255, 255, 255, 0.9);
   font-size: 14px;
   text-align: left;
   width: 100%;
 }
 
 .checklist-item.primary-action {
-  border-color: #cfd6dd;
-  background: #f7f8fa;
+  border-color: rgba(91, 76, 255, 0.25);
+  background: rgba(91, 76, 255, 0.1);
 }
 
 .checklist-item.confirmed {
-  border-color: #dfe5eb;
-  background: #fbfcfd;
+  border-color: rgba(91, 76, 255, 0.2);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .checklist-item:hover {
-  border-color: #dfe5eb;
-  background: #f8f9fb;
+  border-color: rgba(91, 76, 255, 0.28);
+  background: rgba(91, 76, 255, 0.08);
 }
 
 .checkmark {
@@ -620,17 +637,17 @@ button:disabled {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid #dfe5eb;
+  border: 1px solid rgba(91, 76, 255, 0.3);
   color: transparent;
-  background: #f5f6f8;
+  background: rgba(91, 76, 255, 0.12);
   font-size: 12px;
   flex-shrink: 0;
 }
 
 .checklist-item.completed .checkmark {
   color: #ffffff;
-  background: #2f343a;
-  border-color: #2f343a;
+  background: linear-gradient(135deg, #5b4cff, #9b50ff);
+  border-color: transparent;
 }
 
 .checklist-title {
@@ -654,12 +671,12 @@ button:disabled {
   font-weight: 500;
   padding: 12px 16px;
   border-radius: 10px;
-  background: #f7f8fa;
-  border-color: #e1e5eb;
+  background: rgba(91, 76, 255, 0.1);
+  border-color: rgba(91, 76, 255, 0.2);
 }
 
 .action-button:hover {
-  background: #f1f3f6;
+  background: rgba(91, 76, 255, 0.18);
 }
 
 .knowledge-toolbar {
@@ -687,8 +704,8 @@ button:disabled {
   width: 100%;
   padding: 24px;
   border-radius: var(--radius-lg);
-  border: 1px solid #f0f3f6;
-  background: #fff;
+  border: 1px solid rgba(226, 220, 255, 0.7);
+  background: rgba(255, 255, 255, 0.95);
   font-size: 15px;
   line-height: 1.8;
   color: var(--text);
@@ -705,8 +722,8 @@ button:disabled {
 }
 
 .preview-chat .chat-shell {
-  border: 1px solid #e9edf2;
-  background: #f9fafb;
+  border: 1px solid rgba(226, 220, 255, 0.6);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .preview-chat .chat-header {
@@ -714,21 +731,22 @@ button:disabled {
 }
 
 .chat-shell {
-  border: 1px solid #e9edf2;
+  border: 1px solid rgba(226, 220, 255, 0.6);
   background: #fff;
   display: flex;
   flex-direction: column;
   height: 520px;
   border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: 0 14px 30px rgba(78, 65, 140, 0.12);
 }
 
 .chat-header {
   padding: 16px 18px;
-  border-bottom: 1px solid #e9edf2;
+  border-bottom: 1px solid rgba(226, 220, 255, 0.6);
   font-weight: 600;
   color: var(--title);
-  background: #fafbfc;
+  background: rgba(91, 76, 255, 0.08);
 }
 
 .chat-body {
@@ -744,7 +762,7 @@ button:disabled {
   max-width: 72%;
   padding: 10px 12px;
   border-radius: 12px;
-  background: #f5f6f8;
+  background: rgba(91, 76, 255, 0.08);
   color: var(--text);
   line-height: 1.6;
 }
@@ -752,7 +770,7 @@ button:disabled {
 .message.user {
   align-self: flex-end;
   background: #ffffff;
-  border: 1px solid #eceff3;
+  border: 1px solid rgba(226, 220, 255, 0.6);
 }
 
 .message-title {
