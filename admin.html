@@ -23,15 +23,11 @@
         </button>
         <button class="tab-button" type="button" data-tab-target="knowledge">
           <i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Conocimiento</span>
+          <span class="nav-label">Contenido oficial</span>
         </button>
-        <button class="tab-button" type="button" data-tab-target="preview">
-          <i data-lucide="message-square" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Vista previa</span>
-        </button>
-        <button class="tab-button" type="button" data-tab-target="settings">
+        <button class="tab-button" type="button" data-tab-target="activation">
           <i data-lucide="settings" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Configuración</span>
+          <span class="nav-label">Activación</span>
         </button>
       </nav>
     </aside>
@@ -39,7 +35,7 @@
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
           <h2>Panel de control RR. HH.</h2>
-          <p>Visibilidad inmediata del estado, uso y acciones clave del asistente.</p>
+          <p>Pegue el reglamento, active y mantenga el control jurídico desde aquí.</p>
         </div>
         <div class="dashboard-stack">
           <div class="status-cards">
@@ -49,30 +45,25 @@
               <span class="status-subtitle" id="assistantStatusSubtitle">Activar para comenzar</span>
             </div>
             <div class="status-card">
-              <span class="status-title">Base de conocimiento</span>
+              <span class="status-title">Contenido oficial</span>
               <span class="status-value" id="knowledgeStatusValue">Vacía</span>
               <span class="status-subtitle" id="knowledgeStatusSubtitle">Sin actualizaciones</span>
             </div>
             <div class="status-card">
-              <span class="status-title">Consultas en 7 días</span>
+              <span class="status-title">Uso reciente</span>
               <span class="status-value" id="activityCountSummary">0</span>
-              <span class="status-subtitle">Uso reciente</span>
-            </div>
-            <div class="status-card">
-              <span class="status-title">Consultas sensibles</span>
-              <span class="status-value" id="sensitiveCount">2</span>
-              <span class="status-subtitle">Revisar esta semana</span>
+              <span class="status-subtitle">Consultas últimos 7 días</span>
             </div>
           </div>
           <div class="card progress-panel">
             <div class="progress-header">
               <div>
                 <h3>Configuración inicial</h3>
-                <p>Control total antes de habilitar el asistente.</p>
+                <p>Solo lo esencial para activar con seguridad.</p>
               </div>
               <div class="progress-summary">
-                <span id="setupProgressText">Configuración completada: 0 de 4</span>
-                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
+                <span id="setupProgressText">Configuración completada: 0 de 3</span>
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0">
                   <span id="setupProgressBar"></span>
                 </div>
               </div>
@@ -80,56 +71,16 @@
             <div class="checklist" id="setupChecklist">
               <button class="checklist-item" type="button" data-tab-link="knowledge" data-check-key="knowledge">
                 <span class="checkmark" aria-hidden="true">✓</span>
-                <span class="checklist-title">Cargar políticas y contenidos oficiales</span>
+                <span class="checklist-title">Cargar contenido oficial</span>
               </button>
-              <button class="checklist-item" type="button" data-tab-link="settings" data-check-key="hr">
+              <button class="checklist-item" type="button" data-tab-link="activation" data-check-key="hr">
                 <span class="checkmark" aria-hidden="true">✓</span>
-                <span class="checklist-title">Definir contacto y escalamiento RR. HH.</span>
+                <span class="checklist-title">Definir contacto RR. HH.</span>
               </button>
-              <button class="checklist-item" type="button" data-tab-link="preview" data-check-key="preview">
-                <span class="checkmark" aria-hidden="true">✓</span>
-                <span class="checklist-title">Probar preguntas sensibles en vista previa</span>
-              </button>
-              <button class="checklist-item" type="button" data-tab-link="settings" data-check-key="activation">
+              <button class="checklist-item" type="button" data-tab-link="activation" data-check-key="activation">
                 <span class="checkmark" aria-hidden="true">✓</span>
                 <span class="checklist-title" id="activationChecklistText">Activar el asistente para colaboradores</span>
               </button>
-            </div>
-          </div>
-          <div class="card activity-panel">
-            <div class="card-header">
-              <div>
-                <h3>Actividad del asistente</h3>
-                <p>Uso semanal para validar adopción y detectar ajustes.</p>
-              </div>
-            </div>
-            <div class="activity-highlight">
-              <div class="activity-metric">
-                <span class="activity-value" id="activityCount">0</span>
-                <span class="activity-label">consultas en los últimos 7 días</span>
-              </div>
-              <div class="activity-topline">
-                <span class="activity-topline-label">Tema más consultado</span>
-                <span class="activity-topline-value" id="activityTopTopic">—</span>
-              </div>
-            </div>
-            <div class="activity-topics">
-              <h4>Top 3 temas consultados</h4>
-              <ol id="activityTopics"></ol>
-            </div>
-            <p class="activity-note">Privacidad: Helpin no almacena conversaciones personales ni datos sensibles.</p>
-          </div>
-          <div class="card actions-panel">
-            <div class="card-header">
-              <div>
-                <h3>Acciones recomendadas</h3>
-                <p>Priorice las siguientes tareas para mantener control y tranquilidad.</p>
-              </div>
-            </div>
-            <div class="actions-grid">
-              <button class="action-button" type="button" data-tab-link="knowledge">Actualizar base de conocimiento</button>
-              <button class="action-button" type="button" data-tab-link="preview">Probar nuevas preguntas sensibles</button>
-              <button class="action-button" type="button" data-tab-link="settings">Revisar configuración de RR. HH.</button>
             </div>
           </div>
         </div>
@@ -137,10 +88,11 @@
 
       <section class="section tab-panel" data-tab-panel="knowledge">
         <div class="section-header">
-          <h2>Base de conocimiento</h2>
-          <p>El asistente responderá únicamente con la información oficial que RR. HH. pegue aquí.</p>
+          <h2>Contenido oficial</h2>
+          <p>Solo se utilizará el contenido que RR. HH. defina oficialmente.</p>
         </div>
         <div class="knowledge-editor">
+          <p class="note">El asistente responderá únicamente con la información que usted pegue aquí, sin interpretar ni inventar contenido.</p>
           <label class="sr-only" for="knowledgeContent">Contenido de conocimiento</label>
           <textarea
             id="knowledgeContent"
@@ -157,112 +109,156 @@ Ejemplo:
         </div>
       </section>
 
-      <section class="section tab-panel" data-tab-panel="preview">
+      <section class="section tab-panel" data-tab-panel="activation">
         <div class="section-header">
-          <h2>Vista previa para colaboradores</h2>
-          <p>Revise cómo se verá para los colaboradores con el contenido actual y los ajustes actuales.</p>
+          <h2>Activación</h2>
+          <p>Configure lo esencial y active el asistente cuando esté listo.</p>
         </div>
-        <div id="previewChat" class="preview-chat"></div>
-      </section>
-
-      <section class="section tab-panel" data-tab-panel="settings">
-        <div class="section-header">
-          <h2>Configuración</h2>
-          <p>Estas opciones definen cuándo el asistente responde y cuándo interviene RR. HH.</p>
-        </div>
-        <div class="settings-block">
-          <div class="settings-header">
-            <h3>Escalamiento y asuntos legales</h3>
-            <p>Dónde acuden los colaboradores cuando las respuestas requieren revisión de RR. HH.</p>
-          </div>
-          <div class="form-grid">
-            <div>
-              <label for="hrEmail">Correo de RR. HH.</label>
-              <input id="hrEmail" type="text" placeholder="ejemplo@empresa.com" />
+        <div class="activation-editable" id="activationEditable">
+          <div class="settings-block">
+            <div class="settings-header">
+              <h3>Contacto RR. HH.</h3>
+              <p>Información oficial para escalar consultas cuando corresponda.</p>
             </div>
-            <div>
-              <label for="hrUrl">URL de contacto de RR. HH. (opcional)</label>
-              <input id="hrUrl" type="text" placeholder="https://intranet.empresa.com/rrhh o https://empresa.com/contacto-rrhh" />
-            </div>
-            <div>
-              <label for="hrFallback">Mensaje alternativo mostrado a los colaboradores</label>
-              <textarea id="hrFallback">Para consultas específicas o casos personales, por favor contacte directamente al equipo de RR. HH.</textarea>
-            </div>
-            <div>
-              <label for="assistantDisclaimer">Texto de descargo de responsabilidad</label>
-              <textarea id="assistantDisclaimer">Este asistente entrega información general basada en políticas internas.
+            <div class="form-grid">
+              <div>
+                <label for="hrEmail">Correo RR. HH.</label>
+                <input id="hrEmail" type="text" placeholder="ejemplo@empresa.com" />
+              </div>
+              <div>
+                <label for="hrFallback">Mensaje alternativo RR. HH.</label>
+                <textarea id="hrFallback">Para consultas específicas o casos personales, por favor contacte directamente al equipo de RR. HH.</textarea>
+              </div>
+              <div>
+                <label for="assistantDisclaimer">Texto de descargo de responsabilidad</label>
+                <textarea id="assistantDisclaimer">Este asistente entrega información general basada en políticas internas.
 Para casos particulares, confirme siempre con RR. HH.</textarea>
-            </div>
-            <div>
-              <button type="button" class="secondary small" id="resetDisclaimer">Restablecer a predeterminado</button>
+              </div>
+              <div>
+                <button type="button" class="secondary small" id="resetDisclaimer">Restablecer a predeterminado</button>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="settings-block">
-          <div class="settings-header">
-            <h3>Respuestas cuando no existe información oficial</h3>
-            <p>Este mensaje se muestra solo cuando el tema consultado no está cubierto por la base de conocimiento.</p>
-          </div>
-          <div class="form-grid">
-            <div>
-              <label for="noInfoMessage">Mensaje cuando no existe información oficial</label>
-              <textarea id="noInfoMessage">No tengo información oficial sobre este tema.
+          <details class="settings-block" id="advancedOptions">
+            <summary class="settings-header">Opciones avanzadas (opcional)</summary>
+            <p class="note">Detalles adicionales para límites, tono e idioma.</p>
+            <div class="form-grid">
+              <div>
+                <label for="hrUrl">URL de contacto RR. HH. (opcional)</label>
+                <input id="hrUrl" type="text" placeholder="https://intranet.empresa.com/rrhh o https://empresa.com/contacto-rrhh" />
+              </div>
+              <div>
+                <label for="noInfoMessage">Mensaje cuando no existe información oficial</label>
+                <textarea id="noInfoMessage">No tengo información oficial sobre este tema.
 Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
+              </div>
             </div>
-          </div>
+            <div class="settings-options">
+              <label class="option-row">
+                <span class="option-label">Responder solo con información oficial pegada por RR. HH. (recomendado)</span>
+                <input id="boundaryOfficialOnly" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+              <label class="option-row">
+                <span class="option-label">No responder casos personales</span>
+                <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+              <label class="option-row">
+                <span class="option-label">No interpretar contratos</span>
+                <input id="boundaryContracts" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+              <label class="option-row">
+                <span class="option-label">No responder consultas legales</span>
+                <input id="boundaryLegal" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+              <label class="option-row">
+                <span class="option-label">Sugerir siempre contactar a RR. HH. para excepciones</span>
+                <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+            </div>
+            <div class="form-grid">
+              <div>
+                <label for="countryContext">País o marco laboral de referencia</label>
+                <select id="countryContext">
+                  <option value="Chile">Chile</option>
+                  <option value="España">España</option>
+                  <option value="Francia">Francia</option>
+                  <option value="Polonia">Polonia</option>
+                  <option value="Genérico">Genérico</option>
+                </select>
+              </div>
+              <div>
+                <label>Tono (opcional)</label>
+                <div class="segmented-control" role="radiogroup" aria-label="Tono">
+                  <label class="segment">
+                    <input type="radio" name="tone" value="Neutral" />
+                    <span>Neutral</span>
+                  </label>
+                  <label class="segment">
+                    <input type="radio" name="tone" value="Formal" />
+                    <span>Formal</span>
+                  </label>
+                  <label class="segment">
+                    <input type="radio" name="tone" value="Amable" />
+                    <span>Amable</span>
+                  </label>
+                </div>
+                <p class="note">El tono es opcional y no afecta las políticas oficiales.</p>
+              </div>
+              <div>
+                <label>Idiomas disponibles</label>
+                <div class="language-options">
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Español" />
+                    <span>Español</span>
+                  </label>
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Inglés" />
+                    <span>Inglés</span>
+                  </label>
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Francés" />
+                    <span>Francés</span>
+                  </label>
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Alemán" />
+                    <span>Alemán</span>
+                  </label>
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Portugués" />
+                    <span>Portugués</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </details>
         </div>
-        <div class="settings-block">
+        <div class="settings-block" id="activationSummary" hidden>
           <div class="settings-header">
-            <h3>Límites del asistente</h3>
-            <p>Límites para casos sensibles o excepcionales.</p>
-          </div>
-          <div class="settings-options">
-            <label class="option-row">
-              <span class="option-label">Responder solo con información oficial pegada por RR. HH. (recomendado)</span>
-              <input id="boundaryOfficialOnly" class="toggle-input" type="checkbox" />
-              <span class="toggle-switch" aria-hidden="true"></span>
-            </label>
-            <label class="option-row">
-              <span class="option-label">No responder casos personales</span>
-              <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
-              <span class="toggle-switch" aria-hidden="true"></span>
-            </label>
-            <label class="option-row">
-              <span class="option-label">No interpretar contratos</span>
-              <input id="boundaryContracts" class="toggle-input" type="checkbox" />
-              <span class="toggle-switch" aria-hidden="true"></span>
-            </label>
-            <label class="option-row">
-              <span class="option-label">No responder consultas legales</span>
-              <input id="boundaryLegal" class="toggle-input" type="checkbox" />
-              <span class="toggle-switch" aria-hidden="true"></span>
-            </label>
-            <label class="option-row">
-              <span class="option-label">Sugerir siempre contactar a RR. HH. para excepciones</span>
-              <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
-              <span class="toggle-switch" aria-hidden="true"></span>
-            </label>
-          </div>
-        </div>
-        <div class="settings-block">
-          <div class="settings-header">
-            <h3>Contexto país o marco laboral de referencia</h3>
-            <p>Este contexto es declarativo y no implica interpretación legal.</p>
+            <h3>Resumen bloqueado</h3>
+            <p>El asistente está activo y bajo control de RR. HH.</p>
           </div>
           <div class="form-grid">
             <div>
-              <label for="countryContext">País o marco laboral de referencia</label>
-              <select id="countryContext">
-                <option value="Chile">Chile</option>
-                <option value="España">España</option>
-                <option value="Francia">Francia</option>
-                <option value="Polonia">Polonia</option>
-                <option value="Genérico">Genérico</option>
-              </select>
+              <span class="summary-label">Estado</span>
+              <span class="summary-value" id="summaryStatus">Activo</span>
+            </div>
+            <div>
+              <span class="summary-label">Última actualización del contenido</span>
+              <span class="summary-value" id="summaryKnowledgeUpdate">—</span>
+            </div>
+            <div>
+              <span class="summary-label">Contacto RR. HH. configurado</span>
+              <span class="summary-value" id="summaryHrContact">—</span>
             </div>
           </div>
+          <button type="button" class="secondary" id="editActivation">Editar configuración</button>
         </div>
-        <div class="settings-block">
+        <div class="settings-block" id="activationBlock">
           <div class="settings-header">
             <h3>Activación</h3>
             <p>El asistente no quedará disponible para colaboradores hasta activar esta opción.</p>
@@ -275,65 +271,6 @@ Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
             </label>
           </div>
         </div>
-        <div class="settings-block">
-          <div class="settings-header">
-            <h3>Opciones avanzadas</h3>
-            <p>Configuraciones opcionales para ajustar el estilo de las respuestas.</p>
-          </div>
-          <div class="form-grid">
-            <div>
-              <label>Tono (opcional)</label>
-              <div class="segmented-control" role="radiogroup" aria-label="Tono">
-                <label class="segment">
-                  <input type="radio" name="tone" value="Neutral" />
-                  <span>Neutral</span>
-                </label>
-                <label class="segment">
-                  <input type="radio" name="tone" value="Formal" />
-                  <span>Formal</span>
-                </label>
-                <label class="segment">
-                  <input type="radio" name="tone" value="Amable" />
-                  <span>Amable</span>
-                </label>
-              </div>
-              <p class="note">El tono es opcional y no afecta las políticas oficiales.</p>
-            </div>
-          </div>
-        </div>
-        <div class="settings-block">
-          <div class="settings-header">
-            <h3>Idioma</h3>
-            <p>El asistente responderá automáticamente en el idioma en que escriba el colaborador.</p>
-          </div>
-          <div class="form-grid">
-            <div>
-              <label>Idiomas disponibles</label>
-              <div class="language-options">
-                <label class="language-option">
-                  <input type="checkbox" name="assistantLanguage" value="Español" />
-                  <span>Español</span>
-                </label>
-                <label class="language-option">
-                  <input type="checkbox" name="assistantLanguage" value="Inglés" />
-                  <span>Inglés</span>
-                </label>
-                <label class="language-option">
-                  <input type="checkbox" name="assistantLanguage" value="Francés" />
-                  <span>Francés</span>
-                </label>
-                <label class="language-option">
-                  <input type="checkbox" name="assistantLanguage" value="Alemán" />
-                  <span>Alemán</span>
-                </label>
-                <label class="language-option">
-                  <input type="checkbox" name="assistantLanguage" value="Portugués" />
-                  <span>Portugués</span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
     </div>
   </main>
@@ -341,7 +278,6 @@ Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/mockData.js"></script>
   <script src="js/router.js"></script>
-  <script src="js/chat.js"></script>
   <script src="js/admin.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
