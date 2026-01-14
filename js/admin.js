@@ -5,6 +5,23 @@
   let saveTimer = null;
   let setActiveTab = () => {};
   let isEditingActive = false;
+  let dashboardCtaHandler = null;
+
+  function getSetupCompletion() {
+    const settings = data.settings || {};
+    const knowledgeContent = data.knowledgeContent || '';
+    const hrEmail = settings.hrContact?.email?.trim() || '';
+    const hrUrl = settings.hrContact?.url?.trim() || '';
+    const boundaries = settings.assistantBoundaries || {};
+    const boundariesEnabled = Object.values(boundaries).some(Boolean);
+
+    return {
+      knowledge: knowledgeContent.trim().length > 0,
+      hr: Boolean(hrEmail || hrUrl),
+      activation: Boolean(settings.assistantActive),
+      boundaries: boundariesEnabled
+    };
+  }
 
   function updateSaveStatus() {
     const status = document.querySelector('#saveStatus');
@@ -35,7 +52,7 @@
   function updateTopbar() {
     const chatLink = document.querySelector('#employeeChatLink');
     if (chatLink) {
-      chatLink.hidden = activeTab !== 'dashboard';
+      chatLink.hidden = activeTab === 'dashboard';
     }
   }
 
@@ -46,15 +63,7 @@
     }
     const steps = checklist.querySelectorAll('.checklist-item');
     const settings = data.settings || {};
-    const knowledgeContent = data.knowledgeContent || '';
-    const hrEmail = settings.hrContact?.email?.trim() || '';
-    const hrUrl = settings.hrContact?.url?.trim() || '';
-
-    const completion = {
-      knowledge: knowledgeContent.trim().length > 0,
-      hr: Boolean(hrEmail || hrUrl),
-      activation: Boolean(settings.assistantActive)
-    };
+    const completion = getSetupCompletion();
 
     steps.forEach((step) => {
       const key = step.dataset.checkKey || step.dataset.tabLink;
@@ -65,20 +74,28 @@
       '[data-check-key="activation"]'
     );
     const activationText = document.querySelector('#activationChecklistText');
+    const activationNote = document.querySelector('#activationChecklistNote');
     if (activationStep && activationText) {
       if (settings.assistantActive) {
-        activationText.textContent = 'Helpin está activo para colaboradores';
+        activationText.textContent = 'Asistente activo para colaboradores';
         activationStep.classList.add('confirmed');
         activationStep.classList.remove('primary-action');
+        if (activationNote) {
+          activationNote.textContent = 'El chat ya está habilitado.';
+        }
       } else {
-        activationText.textContent = 'Activar el asistente para colaboradores';
+        activationText.textContent = 'Habilitar el asistente para colaboradores';
         activationStep.classList.remove('confirmed');
         activationStep.classList.add('primary-action');
+        if (activationNote) {
+          activationNote.textContent = 'Paso final para abrir el chat.';
+        }
       }
     }
 
-    const totalSteps = Object.keys(completion).length;
-    const completedSteps = Object.values(completion).filter(Boolean).length;
+    const progressKeys = ['knowledge', 'hr', 'activation'];
+    const totalSteps = progressKeys.length;
+    const completedSteps = progressKeys.filter((key) => completion[key]).length;
     const progressText = document.querySelector('#setupProgressText');
     const progressBar = document.querySelector('#setupProgressBar');
     const progressTrack = document.querySelector('.progress-bar');
@@ -93,6 +110,8 @@
     if (progressTrack) {
       progressTrack.setAttribute('aria-valuenow', String(completedSteps));
     }
+
+    updateDashboardStatus();
   }
 
   function updateKnowledgeStatus() {
@@ -105,41 +124,92 @@
     } else {
       status.textContent = 'Sin contenido aún';
     }
-    updateStatusCards();
+    updateDashboardStatus();
   }
 
-  function updateStatusCards() {
+  function updateDashboardStatus() {
     const assistantStatusValue = document.querySelector(
       '#assistantStatusValue'
     );
     const assistantStatusSubtitle = document.querySelector(
       '#assistantStatusSubtitle'
     );
-    const knowledgeStatusValue = document.querySelector('#knowledgeStatusValue');
-    const knowledgeStatusSubtitle = document.querySelector(
-      '#knowledgeStatusSubtitle'
-    );
-    const knowledgeContent = data.knowledgeContent || '';
-    const assistantActive = Boolean(data.settings?.assistantActive);
+    const ctaButton = document.querySelector('#dashboardCta');
+    const editButton = document.querySelector('#dashboardEditCta');
+    const setupPanel = document.querySelector('#setupPanel');
+    const summaryPanel = document.querySelector('#activeSummary');
+    const activityPanel = document.querySelector('#activityPanel');
+    const summaryItems = document.querySelectorAll('[data-summary-item]');
+    const completion = getSetupCompletion();
+    const assistantActive = completion.activation;
+
+    let statusLabel = 'Inactivo – requiere configuración';
+    let statusMessage =
+      'El asistente aún no puede responder porque no hay contenido oficial.';
+    let ctaLabel = 'Cargar contenido oficial';
+    let ctaTarget = 'knowledge';
+    let ctaType = 'tab';
+
+    if (assistantActive) {
+      statusLabel = 'Activo y bajo control';
+      statusMessage =
+        'El asistente responde solo con políticas oficiales aprobadas.';
+      ctaLabel = 'Abrir chat de colaboradores';
+      ctaTarget = 'chat';
+      ctaType = 'chat';
+    } else if (!completion.knowledge) {
+      statusLabel = 'Inactivo – requiere configuración';
+      statusMessage =
+        'El asistente aún no puede responder porque no hay contenido oficial.';
+      ctaLabel = 'Cargar contenido oficial';
+      ctaTarget = 'knowledge';
+      ctaType = 'tab';
+    } else if (!completion.hr) {
+      statusLabel = 'Falta completar configuración';
+      statusMessage =
+        'Falta definir el contacto de RR. HH. para activar el asistente.';
+      ctaLabel = 'Completar configuración';
+      ctaTarget = 'activation';
+      ctaType = 'tab';
+    } else {
+      statusLabel = 'Falta completar configuración';
+      statusMessage = 'Todo está listo; solo falta activar el asistente.';
+      ctaLabel = 'Completar configuración';
+      ctaTarget = 'activation';
+      ctaType = 'tab';
+    }
 
     if (assistantStatusValue) {
-      assistantStatusValue.textContent = assistantActive ? 'Activo' : 'Inactivo';
+      assistantStatusValue.textContent = statusLabel;
     }
     if (assistantStatusSubtitle) {
-      assistantStatusSubtitle.textContent = assistantActive
-        ? 'Disponible para colaboradores'
-        : 'Listo para activar cuando RR. HH. lo apruebe';
+      assistantStatusSubtitle.textContent = statusMessage;
     }
 
-    if (knowledgeStatusValue) {
-      knowledgeStatusValue.textContent =
-        knowledgeContent.trim().length > 0 ? 'Con contenido' : 'Vacía';
+    if (ctaButton) {
+      ctaButton.textContent = ctaLabel;
+      ctaButton.dataset.ctaType = ctaType;
+      ctaButton.dataset.tabLink = ctaType === 'tab' ? ctaTarget : '';
     }
-    if (knowledgeStatusSubtitle) {
-      knowledgeStatusSubtitle.textContent =
-        knowledgeContent.trim().length > 0
-          ? 'Última actualización: hoy'
-          : 'Pendiente de carga oficial';
+    if (editButton) {
+      editButton.hidden = !assistantActive;
+    }
+
+    if (setupPanel) {
+      setupPanel.hidden = assistantActive;
+    }
+    if (summaryPanel) {
+      summaryPanel.hidden = !assistantActive;
+    }
+    if (activityPanel) {
+      activityPanel.hidden = !assistantActive;
+    }
+
+    if (summaryItems.length) {
+      summaryItems.forEach((item) => {
+        const key = item.dataset.summaryItem;
+        item.classList.toggle('completed', Boolean(completion[key]));
+      });
     }
   }
 
@@ -257,7 +327,7 @@
         settings.assistantActive = event.target.checked;
         markDirty();
         updateChecklist();
-        updateStatusCards();
+        updateDashboardStatus();
         if (settings.assistantActive) {
           isEditingActive = false;
         }
@@ -430,7 +500,7 @@
   function init() {
     initTabs();
     updateSaveStatus();
-    updateStatusCards();
+    updateDashboardStatus();
     updateChecklist();
     initKnowledgeEditor();
     renderSettings();
@@ -444,6 +514,35 @@
         setActiveTab(button.dataset.tabLink);
       });
     });
+
+    const dashboardCta = document.querySelector('#dashboardCta');
+    if (dashboardCta) {
+      if (dashboardCtaHandler) {
+        dashboardCta.removeEventListener('click', dashboardCtaHandler);
+      }
+      dashboardCtaHandler = (event) => {
+        const ctaType = dashboardCta.dataset.ctaType;
+        if (ctaType === 'chat') {
+          window.location.href = 'chat.html';
+          return;
+        }
+        const target = dashboardCta.dataset.tabLink;
+        if (target) {
+          event.preventDefault();
+          setActiveTab(target);
+        }
+      };
+      dashboardCta.addEventListener('click', dashboardCtaHandler);
+    }
+
+    const dashboardEdit = document.querySelector('#dashboardEditCta');
+    if (dashboardEdit) {
+      dashboardEdit.addEventListener('click', () => {
+        isEditingActive = true;
+        updateActivationView();
+        setActiveTab('activation');
+      });
+    }
   }
 
   window.addEventListener('DOMContentLoaded', init);
