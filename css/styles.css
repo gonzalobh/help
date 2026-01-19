@@ -942,6 +942,11 @@ button:disabled {
   padding: 8px 0 0;
 }
 
+.knowledge-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .knowledge-editor textarea {
   min-height: 380px;
   width: 100%;
