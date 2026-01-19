@@ -73,42 +73,14 @@
     const activationStep = checklist.querySelector(
       '[data-check-key="activation"]'
     );
-    const activationText = document.querySelector('#activationChecklistText');
-    const activationNote = document.querySelector('#activationChecklistNote');
-    if (activationStep && activationText) {
+    if (activationStep) {
       if (settings.assistantActive) {
-        activationText.textContent = 'Asistente activo para colaboradores';
         activationStep.classList.add('confirmed');
         activationStep.classList.remove('primary-action');
-        if (activationNote) {
-          activationNote.textContent = 'El chat ya está habilitado.';
-        }
       } else {
-        activationText.textContent = 'Habilitar el asistente para colaboradores';
         activationStep.classList.remove('confirmed');
-        activationStep.classList.add('primary-action');
-        if (activationNote) {
-          activationNote.textContent = 'Paso final para abrir el chat.';
-        }
+        activationStep.classList.remove('primary-action');
       }
-    }
-
-    const progressKeys = ['knowledge', 'hr', 'activation'];
-    const totalSteps = progressKeys.length;
-    const completedSteps = progressKeys.filter((key) => completion[key]).length;
-    const progressText = document.querySelector('#setupProgressText');
-    const progressBar = document.querySelector('#setupProgressBar');
-    const progressTrack = document.querySelector('.progress-bar');
-    const progressValue = Math.round((completedSteps / totalSteps) * 100);
-
-    if (progressText) {
-      progressText.textContent = `Configuración completada: ${completedSteps} de ${totalSteps}`;
-    }
-    if (progressBar) {
-      progressBar.style.width = `${progressValue}%`;
-    }
-    if (progressTrack) {
-      progressTrack.setAttribute('aria-valuenow', String(completedSteps));
     }
 
     updateDashboardStatus();
@@ -135,48 +107,30 @@
       '#assistantStatusSubtitle'
     );
     const ctaButton = document.querySelector('#dashboardCta');
-    const editButton = document.querySelector('#dashboardEditCta');
-    const setupPanel = document.querySelector('#setupPanel');
-    const summaryPanel = document.querySelector('#activeSummary');
-    const activityPanel = document.querySelector('#activityPanel');
-    const summaryItems = document.querySelectorAll('[data-summary-item]');
     const completion = getSetupCompletion();
     const assistantActive = completion.activation;
 
-    let statusLabel = 'Inactivo – requiere configuración';
-    let statusMessage =
-      'El asistente aún no puede responder porque no hay contenido oficial.';
-    let ctaLabel = 'Cargar contenido oficial';
+    let statusLabel = '🟡 No activo';
+    let statusMessage = 'Falta completar la configuración';
+    let ctaLabel = 'Continuar configuración';
     let ctaTarget = 'knowledge';
     let ctaType = 'tab';
 
     if (assistantActive) {
-      statusLabel = 'Activo y bajo control';
-      statusMessage =
-        'El asistente responde solo con políticas oficiales aprobadas.';
-      ctaLabel = 'Abrir chat de colaboradores';
-      ctaTarget = 'chat';
-      ctaType = 'chat';
+      statusLabel = '🟢 Activo';
+      statusMessage = 'Disponible para colaboradores';
+      ctaLabel = 'Editar configuración';
+      ctaTarget = 'activation';
+      ctaType = 'tab';
+    } else if (completion.knowledge && completion.hr) {
+      statusLabel = '🔴 Desactivado';
+      statusMessage = 'El asistente está apagado';
+      ctaTarget = 'activation';
+      ctaType = 'tab';
     } else if (!completion.knowledge) {
-      statusLabel = 'Inactivo – requiere configuración';
-      statusMessage =
-        'El asistente aún no puede responder porque no hay contenido oficial.';
-      ctaLabel = 'Cargar contenido oficial';
       ctaTarget = 'knowledge';
-      ctaType = 'tab';
     } else if (!completion.hr) {
-      statusLabel = 'Falta completar configuración';
-      statusMessage =
-        'Falta definir el contacto de RR. HH. para activar el asistente.';
-      ctaLabel = 'Completar configuración';
       ctaTarget = 'activation';
-      ctaType = 'tab';
-    } else {
-      statusLabel = 'Falta completar configuración';
-      statusMessage = 'Todo está listo; solo falta activar el asistente.';
-      ctaLabel = 'Completar configuración';
-      ctaTarget = 'activation';
-      ctaType = 'tab';
     }
 
     if (assistantStatusValue) {
@@ -190,26 +144,6 @@
       ctaButton.textContent = ctaLabel;
       ctaButton.dataset.ctaType = ctaType;
       ctaButton.dataset.tabLink = ctaType === 'tab' ? ctaTarget : '';
-    }
-    if (editButton) {
-      editButton.hidden = !assistantActive;
-    }
-
-    if (setupPanel) {
-      setupPanel.hidden = assistantActive;
-    }
-    if (summaryPanel) {
-      summaryPanel.hidden = !assistantActive;
-    }
-    if (activityPanel) {
-      activityPanel.hidden = !assistantActive;
-    }
-
-    if (summaryItems.length) {
-      summaryItems.forEach((item) => {
-        const key = item.dataset.summaryItem;
-        item.classList.toggle('completed', Boolean(completion[key]));
-      });
     }
   }
 
@@ -535,14 +469,6 @@
       dashboardCta.addEventListener('click', dashboardCtaHandler);
     }
 
-    const dashboardEdit = document.querySelector('#dashboardEditCta');
-    if (dashboardEdit) {
-      dashboardEdit.addEventListener('click', () => {
-        isEditingActive = true;
-        updateActivationView();
-        setActiveTab('activation');
-      });
-    }
   }
 
   window.addEventListener('DOMContentLoaded', init);

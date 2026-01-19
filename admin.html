@@ -35,85 +35,31 @@
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
           <h2>Panel de control RR. HH.</h2>
-          <p>Supervise el estado del asistente y avance paso a paso.</p>
+          <p>Configure el asistente para que responda a los colaboradores.</p>
         </div>
         <div class="dashboard-stack">
           <div class="status-card status-card--primary" id="assistantStatusCard">
             <div class="status-card-header">
-              <span class="status-title">Estado del asistente</span>
-              <span class="status-pill" id="assistantStatusValue">Inactivo – requiere configuración</span>
+              <span class="status-title">Estado del asistente RR. HH.</span>
+              <span class="status-pill" id="assistantStatusValue">🟡 No activo</span>
             </div>
-            <p class="status-description" id="assistantStatusSubtitle">El asistente aún no puede responder porque no hay contenido oficial.</p>
-            <div class="status-actions">
-              <button class="primary cta-button" type="button" id="dashboardCta">Cargar contenido oficial</button>
-              <button class="secondary" type="button" id="dashboardEditCta" hidden>Editar configuración</button>
-            </div>
-          </div>
-          <div class="card status-summary" id="activeSummary" hidden>
-            <div class="settings-header">
-              <h3>Resumen de supervisión</h3>
-              <p>El asistente está listo y protegido por la configuración oficial.</p>
-            </div>
-            <ul class="summary-checklist">
-              <li class="summary-item" data-summary-item="knowledge">
-                <span class="summary-check" aria-hidden="true">✓</span>
-                <span>Contenido oficial cargado</span>
-              </li>
-              <li class="summary-item" data-summary-item="hr">
-                <span class="summary-check" aria-hidden="true">✓</span>
-                <span>Contacto RR. HH. definido</span>
-              </li>
-              <li class="summary-item" data-summary-item="boundaries">
-                <span class="summary-check" aria-hidden="true">✓</span>
-                <span>Límites activados</span>
-              </li>
-            </ul>
-          </div>
-          <div class="card progress-panel" id="setupPanel">
-            <div class="progress-header">
-              <div>
-                <h3>Configuración inicial</h3>
-                <p>Completar esto desbloquea la activación.</p>
-              </div>
-              <div class="progress-summary">
-                <span id="setupProgressText">Configuración completada: 0 de 3</span>
-                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0">
-                  <span id="setupProgressBar"></span>
-                </div>
-              </div>
-            </div>
+            <p class="status-description" id="assistantStatusSubtitle">Falta completar la configuración</p>
             <div class="checklist" id="setupChecklist">
               <button class="checklist-item" type="button" data-tab-link="knowledge" data-check-key="knowledge">
                 <span class="checkmark" aria-hidden="true">✓</span>
-                <span>
-                  <span class="checklist-title">Pegar reglamento y políticas internas</span>
-                  <span class="checklist-note">Sin esto el asistente no se activa.</span>
-                </span>
+                <span class="checklist-title">Reglamento interno pegado</span>
               </button>
               <button class="checklist-item" type="button" data-tab-link="activation" data-check-key="hr">
                 <span class="checkmark" aria-hidden="true">✓</span>
-                <span>
-                  <span class="checklist-title">Definir contacto RR. HH. para dudas</span>
-                  <span class="checklist-note">Bloquea la activación.</span>
-                </span>
+                <span class="checklist-title">Contacto de RR. HH. definido</span>
               </button>
               <button class="checklist-item" type="button" data-tab-link="activation" data-check-key="activation">
                 <span class="checkmark" aria-hidden="true">✓</span>
-                <span>
-                  <span class="checklist-title" id="activationChecklistText">Habilitar el asistente para colaboradores</span>
-                  <span class="checklist-note" id="activationChecklistNote">Paso final para abrir el chat.</span>
-                </span>
+                <span class="checklist-title" id="activationChecklistText">Asistente activado</span>
               </button>
             </div>
-          </div>
-          <div class="card activity-panel" id="activityPanel" hidden>
-            <div class="card-header">
-              <h3>Uso reciente</h3>
-              <span class="helper-text">Solo visible cuando el asistente está activo.</span>
-            </div>
-            <div class="activity-stat minimal">
-              <span class="activity-label">Consultas últimos 7 días</span>
-              <span class="activity-value" id="activityCountSummary">0</span>
+            <div class="status-actions">
+              <button class="primary cta-button" type="button" id="dashboardCta">Continuar configuración</button>
             </div>
           </div>
         </div>
