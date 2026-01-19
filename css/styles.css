@@ -108,6 +108,10 @@ body.admin-ui::after {
   border: 1px solid rgba(231, 222, 214, 0.9);
 }
 
+.sidebar-logo {
+  padding: 6px 14px 12px;
+}
+
 .admin-content {
   flex: 1;
   min-width: 0;
@@ -128,6 +132,12 @@ body.admin-ui::after {
 .sidebar-nav {
   display: grid;
   gap: 8px;
+}
+
+.sidebar-chat {
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
 }
 
 .tab-button {
