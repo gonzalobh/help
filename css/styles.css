@@ -248,6 +248,21 @@ body.admin-ui::after {
   background: rgba(59, 42, 152, 0.14);
 }
 
+.topbar-button.chat-cta {
+  border: none;
+  background: #0b6f57;
+  color: #ffffff;
+  padding: 12px 26px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 18px;
+  box-shadow: 0 12px 22px rgba(11, 111, 87, 0.25);
+}
+
+.topbar-button.chat-cta:hover {
+  background: #095b47;
+}
+
 .save-status {
   font-size: 12px;
   color: var(--muted);
@@ -376,9 +391,16 @@ body.admin-ui::after {
   margin-top: 4px;
 }
 
-.cta-button {
-  font-size: 14px;
-  padding: 10px 18px;
+.cta-button.primary {
+  font-size: 16px;
+  padding: 12px 32px;
+  border-radius: 18px;
+  background: #2b1b9b;
+  box-shadow: 0 16px 26px rgba(43, 27, 155, 0.28);
+}
+
+.cta-button.primary:hover {
+  background: #22157b;
 }
 
 .settings-header {
