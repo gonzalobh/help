@@ -92,7 +92,7 @@ body.admin-ui::after {
 }
 
 .admin-sidebar {
-  width: 64px;
+  width: 240px;
   flex-shrink: 0;
   border-right: none;
   padding: 16px 10px;
@@ -101,8 +101,7 @@ body.admin-ui::after {
   position: fixed;
   top: 76px;
   left: 20px;
-  height: calc(100vh - 96px);
-  transition: width 0.2s ease;
+  height: fit-content;
   z-index: 5;
   box-shadow: var(--shadow-card);
   border-radius: 20px;
@@ -112,8 +111,7 @@ body.admin-ui::after {
 .admin-content {
   flex: 1;
   min-width: 0;
-  margin-left: 108px;
-  transition: margin-left 0.2s ease;
+  margin-left: 260px;
 }
 
 .admin-content .section {
@@ -145,8 +143,7 @@ body.admin-ui::after {
   display: flex;
   align-items: center;
   gap: 12px;
-  justify-content: center;
-  transition: all 0.2s ease;
+  justify-content: flex-start;
 }
 
 .tab-button.active {
@@ -172,28 +169,10 @@ body.admin-ui::after {
 }
 
 .nav-label {
-  opacity: 0;
-  max-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  transition: opacity 0.2s ease, max-width 0.2s ease;
-}
-
-.admin-sidebar:hover {
-  width: 240px;
-}
-
-.admin-sidebar:hover .tab-button {
-  justify-content: flex-start;
-}
-
-.admin-sidebar:hover .nav-label {
   opacity: 1;
   max-width: 160px;
-}
-
-.admin-sidebar:hover ~ .admin-content {
-  margin-left: 260px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .admin-topbar {
