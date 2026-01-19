@@ -10,13 +10,9 @@
   --panel: #ffffff;
   --button: #ffffff;
   --button-border: #d9d0c7;
-  --accent: #2b189b;
+  --accent: #3b2a98;
   --accent-soft: #f1edf9;
   --accent-strong: #2c1e72;
-  --button-primary: #2b189b;
-  --button-primary-hover: #241482;
-  --button-success: #0b6b53;
-  --button-success-hover: #085a46;
   --radius-md: 12px;
   --radius-lg: 18px;
   --shadow-soft: 0 6px 18px rgba(32, 24, 18, 0.08);
@@ -69,7 +65,7 @@ body.admin-ui::after {
 body.admin-ui::before {
   top: -120px;
   left: -120px;
-  background: radial-gradient(circle, rgba(43, 24, 155, 0.18), transparent 70%);
+  background: radial-gradient(circle, rgba(59, 42, 152, 0.18), transparent 70%);
 }
 
 body.admin-ui::after {
@@ -233,33 +229,23 @@ body.admin-ui::after {
 .topbar-button {
   display: inline-flex;
   align-items: center;
-  border: none;
-  background: var(--button-primary);
-  padding: 10px 20px;
-  font-size: 13px;
-  color: #ffffff;
-  border-radius: 16px;
+  border: 1px solid rgba(59, 42, 152, 0.2);
+  background: rgba(59, 42, 152, 0.08);
+  padding: 7px 12px;
+  font-size: 12px;
+  color: var(--accent-strong);
+  border-radius: 999px;
   text-decoration: none;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 12px 22px rgba(43, 24, 155, 0.22);
+  transition: all 0.2s ease;
 }
 
 .topbar-button.small {
-  padding: 8px 14px;
-  font-size: 12px;
+  padding: 5px 10px;
+  font-size: 11px;
 }
 
 .topbar-button:hover {
-  background: var(--button-primary-hover);
-}
-
-.topbar-button--success {
-  background: var(--button-success);
-  box-shadow: 0 12px 22px rgba(11, 107, 83, 0.24);
-}
-
-.topbar-button--success:hover {
-  background: var(--button-success-hover);
+  background: rgba(59, 42, 152, 0.14);
 }
 
 .save-status {
@@ -372,7 +358,7 @@ body.admin-ui::after {
   font-size: 13px;
   font-weight: 600;
   color: var(--accent-strong);
-  background: rgba(43, 24, 155, 0.12);
+  background: rgba(59, 42, 152, 0.12);
   padding: 6px 12px;
   border-radius: 999px;
 }
@@ -449,7 +435,7 @@ body.admin-ui::after {
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(43, 24, 155, 0.12);
+  background: rgba(59, 42, 152, 0.12);
   color: var(--accent-strong);
 }
 
@@ -526,8 +512,8 @@ textarea {
 input[type="text"]:focus,
 select:focus,
 textarea:focus {
-  border-color: rgba(43, 24, 155, 0.45);
-  box-shadow: 0 0 0 4px rgba(43, 24, 155, 0.12);
+  border-color: rgba(59, 42, 152, 0.45);
+  box-shadow: 0 0 0 4px rgba(59, 42, 152, 0.12);
   outline: none;
 }
 
@@ -553,45 +539,42 @@ textarea {
   background: transparent;
 }
 
-body.admin-ui button {
-  border: none;
-  background: var(--button-primary);
-  padding: 12px 26px;
-  font-size: 14px;
-  color: #ffffff;
-  border-radius: 16px;
+button {
+  border: 1px solid var(--button-border);
+  background: var(--button);
+  padding: 9px 14px;
+  font-size: 13px;
+  color: var(--text);
+  border-radius: 999px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 12px 22px rgba(43, 24, 155, 0.22);
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 12px rgba(32, 24, 18, 0.08);
 }
 
-body.admin-ui button.primary,
-body.admin-ui button.secondary {
-  border: none;
+button.primary {
+  border-color: transparent;
   color: #ffffff;
-  background: var(--button-primary);
-  box-shadow: 0 14px 26px rgba(43, 24, 155, 0.24);
+  background: linear-gradient(135deg, #3b2a98, #5342c8);
+  box-shadow: 0 14px 26px rgba(59, 42, 152, 0.24);
 }
 
-body.admin-ui button:hover {
-  background: var(--button-primary-hover);
+button.secondary {
+  background: #f9f6f2;
+  color: var(--text);
 }
 
-body.admin-ui button:disabled {
-  opacity: 0.6;
-}
-
-body.admin-ui button.small {
-  padding: 8px 16px;
+button.small {
+  padding: 6px 12px;
   font-size: 12px;
-  border-radius: 12px;
+  border-radius: 7px;
 }
 
-body.admin-ui button.icon {
-  padding: 8px 12px;
+button.icon {
+  padding: 6px 10px;
 }
 
-body.admin-ui button:disabled {
+button:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -650,8 +633,8 @@ body.admin-ui button:disabled {
   justify-content: space-between;
   padding: 12px 16px;
   border-radius: 12px;
-  background: rgba(43, 24, 155, 0.08);
-  border: 1px solid rgba(43, 24, 155, 0.16);
+  background: rgba(59, 42, 152, 0.08);
+  border: 1px solid rgba(59, 42, 152, 0.16);
 }
 
 .activity-stat.minimal {
@@ -701,8 +684,8 @@ body.admin-ui button:disabled {
   grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr);
   padding: 16px;
   border-radius: 12px;
-  background: rgba(43, 24, 155, 0.08);
-  border: 1px solid rgba(43, 24, 155, 0.16);
+  background: rgba(59, 42, 152, 0.08);
+  border: 1px solid rgba(59, 42, 152, 0.16);
 }
 
 .activity-metric {
@@ -808,8 +791,8 @@ body.admin-ui button:disabled {
 }
 
 .checklist-item.primary-action {
-  border-color: rgba(43, 24, 155, 0.25);
-  background: rgba(43, 24, 155, 0.1);
+  border-color: rgba(59, 42, 152, 0.25);
+  background: rgba(59, 42, 152, 0.1);
 }
 
 .checklist-item.confirmed {
@@ -818,8 +801,8 @@ body.admin-ui button:disabled {
 }
 
 .checklist-item:hover {
-  border-color: rgba(43, 24, 155, 0.28);
-  background: rgba(43, 24, 155, 0.08);
+  border-color: rgba(59, 42, 152, 0.28);
+  background: rgba(59, 42, 152, 0.08);
 }
 
 .checkmark {
@@ -829,16 +812,16 @@ body.admin-ui button:disabled {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid rgba(43, 24, 155, 0.3);
+  border: 1px solid rgba(59, 42, 152, 0.3);
   color: transparent;
-  background: rgba(43, 24, 155, 0.12);
+  background: rgba(59, 42, 152, 0.12);
   font-size: 12px;
   flex-shrink: 0;
 }
 
 .checklist-item.completed .checkmark {
   color: #ffffff;
-  background: linear-gradient(135deg, #2b189b, #5342c8);
+  background: linear-gradient(135deg, #3b2a98, #5342c8);
   border-color: transparent;
 }
 
@@ -877,19 +860,19 @@ body.admin-ui button:disabled {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 1px solid rgba(43, 24, 155, 0.3);
+  border: 1px solid rgba(59, 42, 152, 0.3);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   color: transparent;
-  background: rgba(43, 24, 155, 0.08);
+  background: rgba(59, 42, 152, 0.08);
   flex-shrink: 0;
 }
 
 .summary-item.completed .summary-check {
   color: #ffffff;
-  background: linear-gradient(135deg, #2b189b, #5342c8);
+  background: linear-gradient(135deg, #3b2a98, #5342c8);
   border-color: transparent;
 }
 
@@ -909,12 +892,12 @@ body.admin-ui button:disabled {
   font-weight: 500;
   padding: 12px 16px;
   border-radius: 14px;
-  background: rgba(43, 24, 155, 0.1);
-  border-color: rgba(43, 24, 155, 0.2);
+  background: rgba(59, 42, 152, 0.1);
+  border-color: rgba(59, 42, 152, 0.2);
 }
 
 .action-button:hover {
-  background: rgba(43, 24, 155, 0.18);
+  background: rgba(59, 42, 152, 0.18);
 }
 
 .knowledge-toolbar {
@@ -954,11 +937,6 @@ body.admin-ui button:disabled {
   color: var(--muted);
 }
 
-.knowledge-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .knowledge-status {
   font-size: 12px;
   color: var(--muted);
@@ -989,7 +967,7 @@ body.admin-ui button:disabled {
   border-bottom: 1px solid rgba(231, 222, 214, 0.9);
   font-weight: 600;
   color: var(--title);
-  background: rgba(43, 24, 155, 0.08);
+  background: rgba(59, 42, 152, 0.08);
 }
 
 .chat-body {
@@ -1005,7 +983,7 @@ body.admin-ui button:disabled {
   max-width: 72%;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(43, 24, 155, 0.08);
+  background: rgba(59, 42, 152, 0.08);
   color: var(--text);
   line-height: 1.6;
 }
