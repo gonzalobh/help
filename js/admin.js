@@ -6,6 +6,7 @@
   let setActiveTab = () => {};
   let isEditingActive = false;
   let dashboardCtaHandler = null;
+  let knowledgeDraft = '';
 
   function getSetupCompletion() {
     const settings = data.settings || {};
@@ -37,16 +38,23 @@
     }
   }
 
-  function markDirty() {
+  function markDirty({ autoSave = true } = {}) {
     isDirty = true;
     updateSaveStatus();
     if (saveTimer) {
       window.clearTimeout(saveTimer);
     }
-    saveTimer = window.setTimeout(() => {
-      isDirty = false;
-      updateSaveStatus();
-    }, 1200);
+    if (autoSave) {
+      saveTimer = window.setTimeout(() => {
+        isDirty = false;
+        updateSaveStatus();
+      }, 1200);
+    }
+  }
+
+  function markSaved() {
+    isDirty = false;
+    updateSaveStatus();
   }
 
   function updateTopbar() {
@@ -91,7 +99,11 @@
     if (!status) {
       return;
     }
-    if (data.knowledgeContent && data.knowledgeContent.trim().length > 0) {
+    const hasDraftChanges =
+      knowledgeDraft.trim() !== (data.knowledgeContent || '').trim();
+    if (hasDraftChanges) {
+      status.textContent = 'Cambios sin guardar';
+    } else if (data.knowledgeContent && data.knowledgeContent.trim().length > 0) {
       status.textContent = 'Actualizado recién';
     } else {
       status.textContent = 'Sin contenido aún';
@@ -149,18 +161,31 @@
 
   function initKnowledgeEditor() {
     const textarea = document.querySelector('#knowledgeContent');
+    const saveButton = document.querySelector('#saveKnowledge');
     if (!textarea) {
       return;
     }
-    textarea.value = data.knowledgeContent || '';
+    knowledgeDraft = data.knowledgeContent || '';
+    textarea.value = knowledgeDraft;
     updateKnowledgeStatus();
     textarea.addEventListener('input', (event) => {
-      data.knowledgeContent = event.target.value;
-      markDirty();
-      updateChecklist();
+      knowledgeDraft = event.target.value;
+      markDirty({ autoSave: false });
       updateKnowledgeStatus();
-      updateActivationSummary();
     });
+    if (saveButton) {
+      saveButton.addEventListener('click', () => {
+        const nextContent = knowledgeDraft.trim();
+        data.knowledgeContent = knowledgeDraft;
+        if (nextContent === '') {
+          data.knowledgeContent = '';
+        }
+        markSaved();
+        updateChecklist();
+        updateKnowledgeStatus();
+        updateActivationSummary();
+      });
+    }
   }
 
   function initTabs() {
