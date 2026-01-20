@@ -19,10 +19,14 @@
           <i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i>
           <span class="nav-label">Contenido oficial</span>
         </button>
-        <button class="tab-button" type="button" data-tab-target="activation">
+        <button class="tab-button sidebar-parent" type="button" data-submenu-toggle="settings" aria-expanded="false" aria-controls="settingsSubmenu">
           <i data-lucide="settings" class="nav-icon" aria-hidden="true"></i>
           <span class="nav-label">Configuración</span>
         </button>
+        <div class="sidebar-submenu" id="settingsSubmenu" role="group" aria-label="Opciones de configuración" hidden>
+          <button class="tab-button subtab-button" type="button" data-tab-target="settings-contact">Contacto RR. HH.</button>
+          <button class="tab-button subtab-button" type="button" data-tab-target="settings-limits">Límites</button>
+        </div>
         <a class="sidebar-cta sidebar-chat" id="employeeChatLink" href="chat.html">Probar chat</a>
       </nav>
     </aside>
@@ -44,11 +48,11 @@
                 <span class="checkmark" aria-hidden="true">✓</span>
                 <span class="checklist-title">Reglamento interno pegado</span>
               </button>
-              <button class="checklist-item" type="button" data-tab-link="activation" data-check-key="hr">
+              <button class="checklist-item" type="button" data-tab-link="settings-contact" data-check-key="hr">
                 <span class="checkmark" aria-hidden="true">✓</span>
                 <span class="checklist-title">Contacto de RR. HH. definido</span>
               </button>
-              <button class="checklist-item" type="button" data-tab-link="activation" data-check-key="activation">
+              <button class="checklist-item" type="button" data-tab-link="settings-contact" data-check-key="activation">
                 <span class="checkmark" aria-hidden="true">✓</span>
                 <span class="checklist-title" id="activationChecklistText">Asistente activado</span>
               </button>
@@ -88,9 +92,9 @@ Ejemplo:
         </div>
       </section>
 
-      <section class="section tab-panel" data-tab-panel="activation">
+      <section class="section tab-panel" data-tab-panel="settings-contact">
         <div class="section-header">
-          <h2>Configuración</h2>
+          <h2>Contacto RR. HH.</h2>
           <p>Configure lo esencial y active el asistente cuando esté listo.</p>
         </div>
         <div class="activation-editable" id="activationEditable">
@@ -118,104 +122,6 @@ Para casos particulares, confirme siempre con RR. HH.</textarea>
               </div>
             </div>
           </div>
-          <details class="settings-block" id="advancedOptions">
-            <summary class="settings-header">Ajustes legales y de límites (opcional)</summary>
-            <p class="note">No es necesario para la activación estándar.</p>
-            <p class="note">Detalles adicionales para límites, tono e idioma.</p>
-            <div class="form-grid">
-              <div>
-                <label for="hrUrl">URL de contacto RR. HH. (opcional)</label>
-                <input id="hrUrl" type="text" placeholder="https://intranet.empresa.com/rrhh o https://empresa.com/contacto-rrhh" />
-              </div>
-              <div>
-                <label for="noInfoMessage">Mensaje cuando no existe información oficial</label>
-                <textarea id="noInfoMessage">No tengo información oficial sobre este tema.
-Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
-              </div>
-            </div>
-            <div class="settings-options">
-              <label class="option-row">
-                <span class="option-label">Responder solo con información oficial pegada por RR. HH. (recomendado)</span>
-                <input id="boundaryOfficialOnly" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-              <label class="option-row">
-                <span class="option-label">No responder casos personales</span>
-                <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-              <label class="option-row">
-                <span class="option-label">No interpretar contratos</span>
-                <input id="boundaryContracts" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-              <label class="option-row">
-                <span class="option-label">No responder consultas legales</span>
-                <input id="boundaryLegal" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-              <label class="option-row">
-                <span class="option-label">Sugerir siempre contactar a RR. HH. para excepciones</span>
-                <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-            </div>
-            <div class="form-grid">
-              <div>
-                <label for="countryContext">País o marco laboral de referencia</label>
-                <select id="countryContext">
-                  <option value="Chile">Chile</option>
-                  <option value="España">España</option>
-                  <option value="Francia">Francia</option>
-                  <option value="Polonia">Polonia</option>
-                  <option value="Genérico">Genérico</option>
-                </select>
-              </div>
-              <div>
-                <label>Tono (opcional)</label>
-                <div class="segmented-control" role="radiogroup" aria-label="Tono">
-                  <label class="segment">
-                    <input type="radio" name="tone" value="Neutral" />
-                    <span>Neutral</span>
-                  </label>
-                  <label class="segment">
-                    <input type="radio" name="tone" value="Formal" />
-                    <span>Formal</span>
-                  </label>
-                  <label class="segment">
-                    <input type="radio" name="tone" value="Amable" />
-                    <span>Amable</span>
-                  </label>
-                </div>
-                <p class="note">El tono es opcional y no afecta las políticas oficiales.</p>
-              </div>
-              <div>
-                <label>Idiomas disponibles</label>
-                <div class="language-options">
-                  <label class="language-option">
-                    <input type="checkbox" name="assistantLanguage" value="Español" />
-                    <span>Español</span>
-                  </label>
-                  <label class="language-option">
-                    <input type="checkbox" name="assistantLanguage" value="Inglés" />
-                    <span>Inglés</span>
-                  </label>
-                  <label class="language-option">
-                    <input type="checkbox" name="assistantLanguage" value="Francés" />
-                    <span>Francés</span>
-                  </label>
-                  <label class="language-option">
-                    <input type="checkbox" name="assistantLanguage" value="Alemán" />
-                    <span>Alemán</span>
-                  </label>
-                  <label class="language-option">
-                    <input type="checkbox" name="assistantLanguage" value="Portugués" />
-                    <span>Portugués</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </details>
         </div>
         <div class="settings-block activation-summary" id="activationSummary" hidden>
           <div class="activation-summary-header">
@@ -246,6 +152,112 @@ Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
               <input id="assistantActive" class="toggle-input" type="checkbox" />
               <span class="toggle-switch" aria-hidden="true"></span>
             </label>
+          </div>
+        </div>
+      </section>
+      <section class="section tab-panel" data-tab-panel="settings-limits">
+        <div class="section-header">
+          <h2>Límites</h2>
+          <p>Defina límites legales, tono e idioma del asistente.</p>
+        </div>
+        <div class="settings-block" id="advancedOptions">
+          <div class="settings-header">
+            <h3>Ajustes legales y de límites (opcional)</h3>
+            <p class="note">No es necesario para la activación estándar.</p>
+            <p class="note">Detalles adicionales para límites, tono e idioma.</p>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label for="hrUrl">URL de contacto RR. HH. (opcional)</label>
+              <input id="hrUrl" type="text" placeholder="https://intranet.empresa.com/rrhh o https://empresa.com/contacto-rrhh" />
+            </div>
+            <div>
+              <label for="noInfoMessage">Mensaje cuando no existe información oficial</label>
+              <textarea id="noInfoMessage">No tengo información oficial sobre este tema.
+Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
+            </div>
+          </div>
+          <div class="settings-options">
+            <label class="option-row">
+              <span class="option-label">Responder solo con información oficial pegada por RR. HH. (recomendado)</span>
+              <input id="boundaryOfficialOnly" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">No responder casos personales</span>
+              <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">No interpretar contratos</span>
+              <input id="boundaryContracts" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">No responder consultas legales</span>
+              <input id="boundaryLegal" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">Sugerir siempre contactar a RR. HH. para excepciones</span>
+              <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+          </div>
+          <div class="form-grid">
+            <div>
+              <label for="countryContext">País o marco laboral de referencia</label>
+              <select id="countryContext">
+                <option value="Chile">Chile</option>
+                <option value="España">España</option>
+                <option value="Francia">Francia</option>
+                <option value="Polonia">Polonia</option>
+                <option value="Genérico">Genérico</option>
+              </select>
+            </div>
+            <div>
+              <label>Tono (opcional)</label>
+              <div class="segmented-control" role="radiogroup" aria-label="Tono">
+                <label class="segment">
+                  <input type="radio" name="tone" value="Neutral" />
+                  <span>Neutral</span>
+                </label>
+                <label class="segment">
+                  <input type="radio" name="tone" value="Formal" />
+                  <span>Formal</span>
+                </label>
+                <label class="segment">
+                  <input type="radio" name="tone" value="Amable" />
+                  <span>Amable</span>
+                </label>
+              </div>
+              <p class="note">El tono es opcional y no afecta las políticas oficiales.</p>
+            </div>
+            <div>
+              <label>Idiomas disponibles</label>
+              <div class="language-options">
+                <label class="language-option">
+                  <input type="checkbox" name="assistantLanguage" value="Español" />
+                  <span>Español</span>
+                </label>
+                <label class="language-option">
+                  <input type="checkbox" name="assistantLanguage" value="Inglés" />
+                  <span>Inglés</span>
+                </label>
+                <label class="language-option">
+                  <input type="checkbox" name="assistantLanguage" value="Francés" />
+                  <span>Francés</span>
+                </label>
+                <label class="language-option">
+                  <input type="checkbox" name="assistantLanguage" value="Alemán" />
+                  <span>Alemán</span>
+                </label>
+                <label class="language-option">
+                  <input type="checkbox" name="assistantLanguage" value="Portugués" />
+                  <span>Portugués</span>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </section>

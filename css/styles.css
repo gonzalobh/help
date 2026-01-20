@@ -138,6 +138,18 @@ body.admin-ui::after {
   gap: 8px;
 }
 
+.sidebar-submenu {
+  display: grid;
+  gap: 6px;
+  padding-left: 16px;
+  margin-top: -2px;
+  margin-bottom: 6px;
+}
+
+.sidebar-submenu[hidden] {
+  display: none;
+}
+
 .sidebar-chat {
   justify-content: center;
   width: 100%;
@@ -158,6 +170,35 @@ body.admin-ui::after {
   align-items: center;
   gap: 12px;
   justify-content: flex-start;
+}
+
+.tab-button.subtab-button {
+  padding: 8px 12px;
+  font-size: 12px;
+  gap: 0;
+}
+
+.tab-button.subtab-button::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.2);
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.tab-button.subtab-button.active::before {
+  background: var(--accent);
+}
+
+.sidebar-parent {
+  font-weight: 600;
+}
+
+.sidebar-parent.active {
+  background: rgba(124, 58, 237, 0.12);
+  color: var(--accent-strong);
 }
 
 .tab-button.active {
