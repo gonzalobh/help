@@ -385,7 +385,7 @@ body.admin-ui::after {
 
 .status-card--floating {
   position: fixed;
-  left: 24px;
+  right: 24px;
   bottom: 24px;
   width: min(320px, calc(100vw - 48px));
   max-height: 55vh;
