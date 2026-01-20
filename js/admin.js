@@ -159,13 +159,14 @@
       return;
     }
 
-    const setSettingsExpanded = () => {
+    const syncSettingsState = (target) => {
+      const isSettings = Boolean(target?.startsWith('settings-'));
       if (settingsSubmenu) {
-        settingsSubmenu.hidden = false;
+        settingsSubmenu.hidden = !isSettings;
       }
       if (settingsToggle) {
-        settingsToggle.setAttribute('aria-expanded', 'true');
-        settingsToggle.classList.add('active');
+        settingsToggle.setAttribute('aria-expanded', isSettings ? 'true' : 'false');
+        settingsToggle.classList.toggle('active', isSettings);
       }
     };
 
@@ -180,7 +181,7 @@
         panel.classList.toggle('active', panel.dataset.tabPanel === target);
       });
       activeTab = target;
-      setSettingsExpanded();
+      syncSettingsState(target);
       updateChecklist();
     };
 
@@ -192,14 +193,12 @@
 
     if (settingsToggle) {
       settingsToggle.addEventListener('click', () => {
-        setSettingsExpanded();
         if (!settingsTabs.has(activeTab)) {
           setActiveTab('settings-contact');
         }
       });
     }
 
-    setSettingsExpanded();
     setActiveTab(activeTab);
   }
 
