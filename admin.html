@@ -5,84 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Administración de Helpin</title>
   <link rel="stylesheet" href="css/styles.css" />
-  <style>
-    .activation-hero {
-      border: 1px solid #eadfd6;
-      background: #fdf9f5;
-      box-shadow: 0 12px 28px rgba(64, 44, 25, 0.08);
-    }
-
-    .activation-hero .settings-header {
-      margin-bottom: 18px;
-    }
-
-    .activation-hero-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .activation-hero-status {
-      font-weight: 600;
-      color: var(--text);
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: #fff2e8;
-      border: 1px solid #f2d8c7;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    .activation-hero-toggle {
-      padding: 12px 0;
-      font-size: 15px;
-    }
-
-    .toggle-switch--large {
-      width: 56px;
-      height: 30px;
-    }
-
-    .toggle-switch--large::after {
-      width: 22px;
-      height: 22px;
-      top: 3px;
-      left: 3px;
-    }
-
-    .toggle-input:checked + .toggle-switch--large::after {
-      transform: translateX(24px);
-    }
-
-    .activation-hero-note {
-      margin-top: 4px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .advanced-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .advanced-options-panel {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease, opacity 0.25s ease;
-    }
-
-    .advanced-options-panel.is-open {
-      max-height: 2000px;
-      opacity: 1;
-    }
-
-    .activation-summary-compact .settings-header p {
-      margin-bottom: 0;
-    }
-  </style>
 </head>
 <body class="admin-ui">
   <main class="page admin-layout">
@@ -172,30 +94,10 @@ Ejemplo:
           <p>Configure lo esencial y active el asistente cuando esté listo.</p>
         </div>
         <div class="activation-editable" id="activationEditable">
-          <div class="settings-block activation-hero">
-            <div class="settings-header">
-              <div class="activation-hero-title">
-                <h3>Asistente para colaboradores</h3>
-                <span class="activation-hero-status" id="assistantActiveStatus">🔴 Inactivo</span>
-              </div>
-              <p>Controle la disponibilidad del asistente con un solo ajuste.</p>
-            </div>
-            <div class="settings-options">
-              <label class="option-row activation-hero-toggle">
-                <span class="option-label">Activar el asistente para colaboradores</span>
-                <input id="assistantActive" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch toggle-switch--large" aria-hidden="true"></span>
-              </label>
-            </div>
-            <p class="note activation-hero-note">
-              Al activarlo, el asistente estará disponible para todos los colaboradores.
-              RR. HH. mantiene el control total.
-            </p>
-          </div>
           <div class="settings-block">
             <div class="settings-header">
-              <h3>Configuración mínima requerida</h3>
-              <p>Estos datos son necesarios para que el asistente funcione correctamente.</p>
+              <h3>Contacto RR. HH.</h3>
+              <p>Información oficial para escalar consultas cuando corresponda.</p>
             </div>
             <div class="form-grid">
               <div>
@@ -216,118 +118,104 @@ Para casos particulares, confirme siempre con RR. HH.</textarea>
               </div>
             </div>
           </div>
-          <div class="settings-block" id="advancedOptions">
-            <div class="settings-header">
-              <h3>Ajustes legales y de límites</h3>
-              <p class="note">Opcional. No es necesario para activar el asistente.</p>
-              <p class="note">Detalles adicionales para límites, tono e idioma.</p>
-            </div>
-            <button
-              type="button"
-              class="secondary small advanced-toggle"
-              id="advancedToggle"
-              aria-expanded="false"
-              aria-controls="advancedOptionsPanel"
-            >
-              <span class="advanced-toggle-icon" aria-hidden="true">⚙️</span>
-              <span class="advanced-toggle-text">Más opciones (avanzado)</span>
-            </button>
-            <div class="advanced-options-panel" id="advancedOptionsPanel" aria-hidden="true">
-              <div class="form-grid">
-                <div>
-                  <label for="hrUrl">URL de contacto RR. HH. (opcional)</label>
-                  <input id="hrUrl" type="text" placeholder="https://intranet.empresa.com/rrhh o https://empresa.com/contacto-rrhh" />
-                </div>
-                <div>
-                  <label for="noInfoMessage">Mensaje cuando no existe información oficial</label>
-                  <textarea id="noInfoMessage">No tengo información oficial sobre este tema.
+          <details class="settings-block" id="advancedOptions">
+            <summary class="settings-header">Ajustes legales y de límites (opcional)</summary>
+            <p class="note">No es necesario para la activación estándar.</p>
+            <p class="note">Detalles adicionales para límites, tono e idioma.</p>
+            <div class="form-grid">
+              <div>
+                <label for="hrUrl">URL de contacto RR. HH. (opcional)</label>
+                <input id="hrUrl" type="text" placeholder="https://intranet.empresa.com/rrhh o https://empresa.com/contacto-rrhh" />
+              </div>
+              <div>
+                <label for="noInfoMessage">Mensaje cuando no existe información oficial</label>
+                <textarea id="noInfoMessage">No tengo información oficial sobre este tema.
 Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
-                </div>
               </div>
-              <div class="settings-options">
-                <label class="option-row">
-                  <span class="option-label">Responder solo con información oficial pegada por RR. HH. (recomendado)</span>
-                  <input id="boundaryOfficialOnly" class="toggle-input" type="checkbox" />
-                  <span class="toggle-switch" aria-hidden="true"></span>
-                </label>
-                <label class="option-row">
-                  <span class="option-label">No responder casos personales</span>
-                  <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
-                  <span class="toggle-switch" aria-hidden="true"></span>
-                </label>
-                <label class="option-row">
-                  <span class="option-label">No interpretar contratos</span>
-                  <input id="boundaryContracts" class="toggle-input" type="checkbox" />
-                  <span class="toggle-switch" aria-hidden="true"></span>
-                </label>
-                <label class="option-row">
-                  <span class="option-label">No responder consultas legales</span>
-                  <input id="boundaryLegal" class="toggle-input" type="checkbox" />
-                  <span class="toggle-switch" aria-hidden="true"></span>
-                </label>
-                <label class="option-row">
-                  <span class="option-label">Sugerir siempre contactar a RR. HH. para excepciones</span>
-                  <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
-                  <span class="toggle-switch" aria-hidden="true"></span>
-                </label>
+            </div>
+            <div class="settings-options">
+              <label class="option-row">
+                <span class="option-label">Responder solo con información oficial pegada por RR. HH. (recomendado)</span>
+                <input id="boundaryOfficialOnly" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+              <label class="option-row">
+                <span class="option-label">No responder casos personales</span>
+                <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+              <label class="option-row">
+                <span class="option-label">No interpretar contratos</span>
+                <input id="boundaryContracts" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+              <label class="option-row">
+                <span class="option-label">No responder consultas legales</span>
+                <input id="boundaryLegal" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+              <label class="option-row">
+                <span class="option-label">Sugerir siempre contactar a RR. HH. para excepciones</span>
+                <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch" aria-hidden="true"></span>
+              </label>
+            </div>
+            <div class="form-grid">
+              <div>
+                <label for="countryContext">País o marco laboral de referencia</label>
+                <select id="countryContext">
+                  <option value="Chile">Chile</option>
+                  <option value="España">España</option>
+                  <option value="Francia">Francia</option>
+                  <option value="Polonia">Polonia</option>
+                  <option value="Genérico">Genérico</option>
+                </select>
               </div>
-              <div class="form-grid">
-                <div>
-                  <label for="countryContext">País o marco laboral de referencia</label>
-                  <select id="countryContext">
-                    <option value="Chile">Chile</option>
-                    <option value="España">España</option>
-                    <option value="Francia">Francia</option>
-                    <option value="Polonia">Polonia</option>
-                    <option value="Genérico">Genérico</option>
-                  </select>
+              <div>
+                <label>Tono (opcional)</label>
+                <div class="segmented-control" role="radiogroup" aria-label="Tono">
+                  <label class="segment">
+                    <input type="radio" name="tone" value="Neutral" />
+                    <span>Neutral</span>
+                  </label>
+                  <label class="segment">
+                    <input type="radio" name="tone" value="Formal" />
+                    <span>Formal</span>
+                  </label>
+                  <label class="segment">
+                    <input type="radio" name="tone" value="Amable" />
+                    <span>Amable</span>
+                  </label>
                 </div>
-                <div>
-                  <label>Tono (opcional)</label>
-                  <div class="segmented-control" role="radiogroup" aria-label="Tono">
-                    <label class="segment">
-                      <input type="radio" name="tone" value="Neutral" />
-                      <span>Neutral</span>
-                    </label>
-                    <label class="segment">
-                      <input type="radio" name="tone" value="Formal" />
-                      <span>Formal</span>
-                    </label>
-                    <label class="segment">
-                      <input type="radio" name="tone" value="Amable" />
-                      <span>Amable</span>
-                    </label>
-                  </div>
-                  <p class="note">El tono es opcional y no afecta las políticas oficiales.</p>
-                </div>
-                <div>
-                  <label>Idiomas disponibles</label>
-                  <div class="language-options">
-                    <label class="language-option">
-                      <input type="checkbox" name="assistantLanguage" value="Español" />
-                      <span>Español</span>
-                    </label>
-                    <label class="language-option">
-                      <input type="checkbox" name="assistantLanguage" value="Inglés" />
-                      <span>Inglés</span>
-                    </label>
-                    <label class="language-option">
-                      <input type="checkbox" name="assistantLanguage" value="Francés" />
-                      <span>Francés</span>
-                    </label>
-                    <label class="language-option">
-                      <input type="checkbox" name="assistantLanguage" value="Alemán" />
-                      <span>Alemán</span>
-                    </label>
-                    <label class="language-option">
-                      <input type="checkbox" name="assistantLanguage" value="Portugués" />
-                      <span>Portugués</span>
-                    </label>
-                  </div>
+                <p class="note">El tono es opcional y no afecta las políticas oficiales.</p>
+              </div>
+              <div>
+                <label>Idiomas disponibles</label>
+                <div class="language-options">
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Español" />
+                    <span>Español</span>
+                  </label>
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Inglés" />
+                    <span>Inglés</span>
+                  </label>
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Francés" />
+                    <span>Francés</span>
+                  </label>
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Alemán" />
+                    <span>Alemán</span>
+                  </label>
+                  <label class="language-option">
+                    <input type="checkbox" name="assistantLanguage" value="Portugués" />
+                    <span>Portugués</span>
+                  </label>
                 </div>
               </div>
             </div>
-          </div>
+          </details>
         </div>
         <div class="settings-block activation-summary" id="activationSummary" hidden>
           <div class="activation-summary-header">
@@ -348,9 +236,16 @@ Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
           <button type="button" class="secondary" id="editActivation">Editar configuración</button>
         </div>
         <div class="settings-block" id="activationBlock">
-          <div class="settings-header activation-summary-compact">
-            <h3>Resumen de activación</h3>
-            <p>Revise el estado y los datos esenciales antes de publicar el asistente.</p>
+          <div class="settings-header">
+            <h3>Activación</h3>
+            <p>El asistente no quedará disponible para colaboradores hasta activar esta opción.</p>
+          </div>
+          <div class="settings-options">
+            <label class="option-row">
+              <span class="option-label">Activar el asistente para colaboradores</span>
+              <input id="assistantActive" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
           </div>
         </div>
       </section>
@@ -365,38 +260,6 @@ Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
     window.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) {
         window.lucide.createIcons();
-      }
-
-      const assistantToggle = document.querySelector('#assistantActive');
-      const assistantStatus = document.querySelector('#assistantActiveStatus');
-
-      const renderAssistantStatus = () => {
-        if (!assistantToggle || !assistantStatus) {
-          return;
-        }
-        assistantStatus.textContent = assistantToggle.checked
-          ? '🟢 Activo'
-          : '🔴 Inactivo';
-      };
-
-      if (assistantToggle) {
-        assistantToggle.addEventListener('change', renderAssistantStatus);
-        renderAssistantStatus();
-      }
-
-      const advancedToggle = document.querySelector('#advancedToggle');
-      const advancedPanel = document.querySelector('#advancedOptionsPanel');
-      const advancedToggleText = document.querySelector('.advanced-toggle-text');
-
-      if (advancedToggle && advancedPanel && advancedToggleText) {
-        advancedToggle.addEventListener('click', () => {
-          const isOpen = advancedPanel.classList.toggle('is-open');
-          advancedToggle.setAttribute('aria-expanded', String(isOpen));
-          advancedPanel.setAttribute('aria-hidden', String(!isOpen));
-          advancedToggleText.textContent = isOpen
-            ? 'Ocultar opciones avanzadas'
-            : 'Más opciones (avanzado)';
-        });
       }
     });
   </script>
