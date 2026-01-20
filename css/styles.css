@@ -178,6 +178,35 @@ body.admin-ui::after {
   gap: 0;
 }
 
+.sidebar-submenu .subtab-button {
+  background: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 2px 0 2px 10px;
+  color: var(--muted);
+  font-weight: 500;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.sidebar-submenu .subtab-button:hover {
+  background: none;
+  color: #2b189b;
+}
+
+.sidebar-submenu .subtab-button:active {
+  background: none;
+}
+
+.sidebar-submenu .subtab-button.active {
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: #2b189b;
+  font-weight: 600;
+}
+
 .tab-button.subtab-button::before {
   content: none;
 }
