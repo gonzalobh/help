@@ -1,8 +1,6 @@
 (function () {
   const data = window.HelpinData;
   let activeTab = 'dashboard';
-  let isDirty = false;
-  let saveTimer = null;
   let setActiveTab = () => {};
   let isEditingActive = false;
   let dashboardCtaHandler = null;
@@ -22,46 +20,6 @@
       activation: Boolean(settings.assistantActive),
       boundaries: boundariesEnabled
     };
-  }
-
-  function updateSaveStatus() {
-    const status = document.querySelector('#saveStatus');
-    if (!status) {
-      return;
-    }
-    if (isDirty) {
-      status.textContent = 'Cambios sin guardar';
-      status.classList.add('unsaved');
-    } else {
-      status.textContent = '✓ Guardado';
-      status.classList.remove('unsaved');
-    }
-  }
-
-  function markDirty({ autoSave = true } = {}) {
-    isDirty = true;
-    updateSaveStatus();
-    if (saveTimer) {
-      window.clearTimeout(saveTimer);
-    }
-    if (autoSave) {
-      saveTimer = window.setTimeout(() => {
-        isDirty = false;
-        updateSaveStatus();
-      }, 1200);
-    }
-  }
-
-  function markSaved() {
-    isDirty = false;
-    updateSaveStatus();
-  }
-
-  function updateTopbar() {
-    const chatLink = document.querySelector('#employeeChatLink');
-    if (chatLink) {
-      chatLink.hidden = activeTab === 'dashboard';
-    }
   }
 
   function updateChecklist() {
@@ -170,7 +128,6 @@
     updateKnowledgeStatus();
     textarea.addEventListener('input', (event) => {
       knowledgeDraft = event.target.value;
-      markDirty({ autoSave: false });
       updateKnowledgeStatus();
     });
     if (saveButton) {
@@ -180,7 +137,6 @@
         if (nextContent === '') {
           data.knowledgeContent = '';
         }
-        markSaved();
         updateChecklist();
         updateKnowledgeStatus();
         updateActivationSummary();
@@ -207,7 +163,6 @@
         panel.classList.toggle('active', panel.dataset.tabPanel === target);
       });
       activeTab = target;
-      updateTopbar();
       updateChecklist();
     };
 
@@ -237,7 +192,6 @@
       hrEmailInput.value = settings.hrContact.email;
       hrEmailInput.addEventListener('input', (event) => {
         settings.hrContact.email = event.target.value;
-        markDirty();
         updateChecklist();
         updateActivationSummary();
       });
@@ -247,7 +201,6 @@
       hrUrlInput.value = settings.hrContact.url;
       hrUrlInput.addEventListener('input', (event) => {
         settings.hrContact.url = event.target.value;
-        markDirty();
         updateChecklist();
         updateActivationSummary();
       });
@@ -258,7 +211,6 @@
       hrFallbackTextarea.addEventListener('input', (event) => {
         settings.hrContact.fallbackMessage = event.target.value;
         data.sampleResponses.fallback = event.target.value;
-        markDirty();
         updateActivationSummary();
       });
     }
@@ -268,7 +220,6 @@
       noInfoMessageTextarea.addEventListener('input', (event) => {
         settings.noInfoMessage = event.target.value;
         data.sampleResponses.fallback = event.target.value;
-        markDirty();
       });
     }
 
@@ -276,7 +227,6 @@
       countryContextSelect.value = settings.countryContext;
       countryContextSelect.addEventListener('change', (event) => {
         settings.countryContext = event.target.value;
-        markDirty();
       });
     }
 
@@ -284,7 +234,6 @@
       assistantActiveToggle.checked = settings.assistantActive;
       assistantActiveToggle.addEventListener('change', (event) => {
         settings.assistantActive = event.target.checked;
-        markDirty();
         updateChecklist();
         updateDashboardStatus();
         if (settings.assistantActive) {
@@ -305,7 +254,6 @@
       boundaryOfficialOnly.checked = boundaries.onlyOfficialInfo;
       boundaryOfficialOnly.addEventListener('change', (event) => {
         boundaries.onlyOfficialInfo = event.target.checked;
-        markDirty();
       });
     }
 
@@ -313,7 +261,6 @@
       boundaryPersonal.checked = boundaries.noPersonalCases;
       boundaryPersonal.addEventListener('change', (event) => {
         boundaries.noPersonalCases = event.target.checked;
-        markDirty();
       });
     }
 
@@ -321,7 +268,6 @@
       boundaryContracts.checked = boundaries.noContractInterpretation;
       boundaryContracts.addEventListener('change', (event) => {
         boundaries.noContractInterpretation = event.target.checked;
-        markDirty();
       });
     }
 
@@ -329,7 +275,6 @@
       boundaryLegal.checked = boundaries.noLegalQuestions;
       boundaryLegal.addEventListener('change', (event) => {
         boundaries.noLegalQuestions = event.target.checked;
-        markDirty();
       });
     }
 
@@ -337,7 +282,6 @@
       boundaryEscalate.checked = boundaries.alwaysEscalate;
       boundaryEscalate.addEventListener('change', (event) => {
         boundaries.alwaysEscalate = event.target.checked;
-        markDirty();
       });
     }
 
@@ -349,7 +293,6 @@
       option.addEventListener('change', (event) => {
         if (event.target.checked) {
           settings.tone = event.target.value;
-          markDirty();
         }
       });
     });
@@ -370,7 +313,6 @@
           settings.languages = languageOptions
             .filter((input) => input.checked)
             .map((input) => input.value);
-          markDirty();
         });
       });
     }
@@ -383,7 +325,6 @@
       disclaimerTextarea.value = settings.disclaimer;
       disclaimerTextarea.addEventListener('input', (event) => {
         settings.disclaimer = event.target.value;
-        markDirty();
         updateActivationSummary();
       });
     }
@@ -392,7 +333,6 @@
       resetDisclaimer.addEventListener('click', () => {
         settings.disclaimer = disclaimerDefault;
         disclaimerTextarea.value = disclaimerDefault;
-        markDirty();
         updateActivationSummary();
       });
     }
@@ -458,7 +398,6 @@
 
   function init() {
     initTabs();
-    updateSaveStatus();
     updateDashboardStatus();
     updateChecklist();
     initKnowledgeEditor();

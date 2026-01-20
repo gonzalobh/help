@@ -14,7 +14,7 @@
 
     .wizard-secondary-nav {
       position: sticky;
-      top: 96px;
+      top: 32px;
       align-self: start;
       display: flex;
       flex-direction: column;
@@ -263,16 +263,6 @@
   </style>
 </head>
 <body class="admin-ui">
-  <header class="admin-topbar">
-    <div class="topbar-logo">Helpin</div>
-    <div class="topbar-actions">
-      <div class="save-status" id="saveStatus" aria-live="polite">✓ Guardado</div>
-      <div>
-        <a class="topbar-button small" id="employeeChatLink" href="chat.html" target="_blank" rel="noopener noreferrer">Ver como colaborador</a>
-        <div class="employee-chat-note">Vista de prueba (no afecta datos reales).</div>
-      </div>
-    </div>
-  </header>
   <main class="page wizard-layout">
     <aside class="wizard-secondary-nav" aria-label="Navegación secundaria">
       <button type="button" class="active" data-step-link="1">Paso 1 · Conocimiento</button>
@@ -543,8 +533,6 @@
   <script>
     (function () {
       const data = window.HelpinData;
-      let isDirty = false;
-      let saveTimer = null;
       let activeStep = 1;
       let previewReviewed = false;
 
@@ -563,33 +551,6 @@
         horarios: `## Horarios\n- Horario general\n- Flexibilidad/teletrabajo\n- Registro de asistencia\n- Cambios de turno`,
         reglamento: `## Reglamento interno\n- Normas de convivencia\n- Código de conducta\n- Procedimientos disciplinarios\n- Canal de dudas`
       };
-
-
-      function updateSaveStatus() {
-        const status = document.querySelector('#saveStatus');
-        if (!status) {
-          return;
-        }
-        if (isDirty) {
-          status.textContent = 'Cambios sin guardar';
-          status.classList.add('unsaved');
-        } else {
-          status.textContent = '✓ Guardado';
-          status.classList.remove('unsaved');
-        }
-      }
-
-      function markDirty() {
-        isDirty = true;
-        updateSaveStatus();
-        if (saveTimer) {
-          window.clearTimeout(saveTimer);
-        }
-        saveTimer = window.setTimeout(() => {
-          isDirty = false;
-          updateSaveStatus();
-        }, 1200);
-      }
 
       function formatDate(value) {
         if (!value) {
@@ -701,7 +662,6 @@
         textarea.addEventListener('input', (event) => {
           data.knowledgeContent = event.target.value;
           data.knowledgeUpdatedAt = new Date().toISOString();
-          markDirty();
           updateStepCompletion();
           updateKnowledgeStatus();
           updateKnowledgeProgress();
@@ -726,7 +686,6 @@
             textarea.value = nextValue;
             data.knowledgeContent = nextValue;
             data.knowledgeUpdatedAt = new Date().toISOString();
-            markDirty();
             updateStepCompletion();
             updateKnowledgeStatus();
             updateKnowledgeProgress();
@@ -828,7 +787,6 @@
           }
           hrEmailInput.addEventListener('input', (event) => {
             settings.hrContact.email = event.target.value;
-            markDirty();
             updateStepCompletion();
             updateEscalationPreview();
             updateActivationState();
@@ -847,7 +805,6 @@
           hrUrlInput.value = settings.hrContact.url;
           hrUrlInput.addEventListener('input', (event) => {
             settings.hrContact.url = event.target.value;
-            markDirty();
             updateStepCompletion();
             updateEscalationPreview();
             updateMessagesPreview();
@@ -863,7 +820,6 @@
             settings.noInfoMessage = event.target.value;
             settings.hrContact.fallbackMessage = event.target.value;
             data.sampleResponses.fallback = event.target.value;
-            markDirty();
             refreshPreview();
             updateMessagesPreview();
           });
@@ -873,7 +829,6 @@
           disclaimerTextarea.value = settings.disclaimer;
           disclaimerTextarea.addEventListener('input', (event) => {
             settings.disclaimer = event.target.value;
-            markDirty();
             refreshPreview();
             updateMessagesPreview();
           });
@@ -883,7 +838,6 @@
           countryContextSelect.value = settings.countryContext;
           countryContextSelect.addEventListener('change', (event) => {
             settings.countryContext = event.target.value;
-            markDirty();
             refreshPreview();
           });
         }
@@ -896,7 +850,6 @@
           option.addEventListener('change', (event) => {
             if (event.target.checked) {
               settings.tone = event.target.value;
-              markDirty();
             }
           });
         });
@@ -917,7 +870,6 @@
               settings.languages = languageOptions
                 .filter((input) => input.checked)
                 .map((input) => input.value);
-              markDirty();
             });
           });
         }
@@ -962,7 +914,6 @@
           if (boundaryEscalate) {
             boundaryEscalate.checked = boundaries.alwaysEscalate;
           }
-          markDirty();
           refreshPreview();
         }
 
@@ -1000,7 +951,6 @@
           element.checked = boundaries[key];
           element.addEventListener('change', (event) => {
             boundaries[key] = event.target.checked;
-            markDirty();
             refreshPreview();
           });
         });
@@ -1062,7 +1012,6 @@
         if (activateButton) {
           activateButton.addEventListener('click', () => {
             data.settings.assistantActive = true;
-            markDirty();
             updateStepCompletion();
             updateStatusCards();
             updateActivationState();
@@ -1071,7 +1020,6 @@
         if (deactivateButton) {
           deactivateButton.addEventListener('click', () => {
             data.settings.assistantActive = false;
-            markDirty();
             updateStepCompletion();
             updateStatusCards();
             updateActivationState();
@@ -1080,7 +1028,6 @@
       }
 
       function init() {
-        updateSaveStatus();
         updateStatusCards();
         updateStepCompletion();
         initKnowledgeEditor();
