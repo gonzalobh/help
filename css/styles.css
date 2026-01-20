@@ -161,7 +161,7 @@ body.admin-ui::after {
   text-align: left;
   background: transparent;
   border: 1px solid transparent;
-  border-left: 3px solid transparent;
+  border-left: none;
   padding: 10px 14px;
   border-radius: 12px;
   font-size: 13px;
@@ -179,33 +179,31 @@ body.admin-ui::after {
 }
 
 .tab-button.subtab-button::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: rgba(124, 58, 237, 0.2);
-  margin-right: 10px;
-  flex-shrink: 0;
+  content: none;
 }
 
 .tab-button.subtab-button.active::before {
-  background: var(--accent);
+  content: none;
 }
 
 .sidebar-parent {
   font-weight: 600;
+  border-left: none;
+  box-shadow: none;
 }
 
 .sidebar-parent.active {
   background: rgba(124, 58, 237, 0.12);
   color: var(--accent-strong);
+  border-left: none;
+  box-shadow: none;
 }
 
 .tab-button.active {
   border-color: transparent;
   background: var(--accent-soft);
   font-weight: 600;
-  border-left-color: var(--accent);
+  border-left: none;
   color: var(--accent-strong);
 }
 
@@ -215,6 +213,13 @@ body.admin-ui::after {
 
 .tab-button:hover {
   background: rgba(124, 58, 237, 0.08);
+  border-left: none;
+  box-shadow: none;
+}
+
+.tab-button:active {
+  border-left: none;
+  box-shadow: none;
 }
 
 .nav-icon {
