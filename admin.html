@@ -36,28 +36,6 @@
           <h2>Panel de control RR. HH.</h2>
           <p>Configure el asistente para que responda a los colaboradores.</p>
         </div>
-        <div class="dashboard-stack">
-          <div class="status-card status-card--primary status-card--floating" id="assistantStatusCard">
-            <div class="status-card-header">
-              <span class="status-title">Estado del asistente RR. HH.</span>
-            </div>
-            <p class="status-description" id="assistantStatusSubtitle">Falta completar la configuración</p>
-            <div class="checklist" id="setupChecklist">
-              <button class="checklist-item" type="button" data-tab-link="knowledge" data-check-key="knowledge">
-                <span class="checkmark" aria-hidden="true">✓</span>
-                <span class="checklist-title">Reglamento interno pegado</span>
-              </button>
-              <button class="checklist-item" type="button" data-tab-link="settings-contact" data-check-key="hr">
-                <span class="checkmark" aria-hidden="true">✓</span>
-                <span class="checklist-title">Contacto de RR. HH. definido</span>
-              </button>
-              <button class="checklist-item" type="button" data-tab-link="settings-contact" data-check-key="activation">
-                <span class="checkmark" aria-hidden="true">✓</span>
-                <span class="checklist-title" id="activationChecklistText">Asistente activado</span>
-              </button>
-            </div>
-          </div>
-        </div>
       </section>
 
       <section class="section tab-panel" data-tab-panel="knowledge">
@@ -259,6 +237,26 @@ Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
       </section>
     </div>
   </main>
+  <div class="status-card status-card--primary status-card--floating" id="assistantStatusCard">
+    <div class="status-card-header">
+      <span class="status-title">Estado del asistente RR. HH.</span>
+    </div>
+    <p class="status-description" id="assistantStatusSubtitle">Falta completar la configuración</p>
+    <div class="checklist" id="setupChecklist">
+      <button class="checklist-item" type="button" data-tab-link="knowledge" data-check-key="knowledge">
+        <span class="checkmark" aria-hidden="true">✓</span>
+        <span class="checklist-title">Reglamento interno pegado</span>
+      </button>
+      <button class="checklist-item" type="button" data-tab-link="settings-contact" data-check-key="hr">
+        <span class="checkmark" aria-hidden="true">✓</span>
+        <span class="checklist-title">Contacto de RR. HH. definido</span>
+      </button>
+      <button class="checklist-item" type="button" data-tab-link="settings-contact" data-check-key="activation">
+        <span class="checkmark" aria-hidden="true">✓</span>
+        <span class="checklist-title" id="activationChecklistText">Asistente activado</span>
+      </button>
+    </div>
+  </div>
 
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/mockData.js"></script>
