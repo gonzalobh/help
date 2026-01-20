@@ -387,7 +387,7 @@ body.admin-ui::after {
 }
 
 .status-card--primary {
-  padding: 16px 18px;
+  padding: 14px 16px;
   gap: 8px;
 }
 
@@ -395,11 +395,11 @@ body.admin-ui::after {
   position: fixed;
   left: 32px;
   bottom: 32px;
-  width: min(280px, 90vw);
+  width: min(240px, 90vw);
   max-height: none;
   overflow: visible;
   z-index: 6;
-  box-shadow: 0 12px 24px rgba(31, 20, 88, 0.12);
+  box-shadow: 0 8px 16px rgba(31, 20, 88, 0.12);
 }
 
 .status-card-header {
@@ -792,8 +792,8 @@ button:disabled {
 
 .checklist {
   display: grid;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .progress-panel {
@@ -841,12 +841,12 @@ button:disabled {
 .checklist-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-radius: 14px;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
   border: 1px solid rgba(231, 222, 214, 0.9);
   background: rgba(255, 255, 255, 0.95);
-  font-size: 14px;
+  font-size: 13px;
   text-align: left;
   width: 100%;
   transition: all 0.2s ease;
@@ -871,13 +871,13 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   border: 1px solid rgba(59, 42, 152, 0.3);
   color: transparent;
   background: rgba(59, 42, 152, 0.12);
-  font-size: 12px;
+  font-size: 11px;
   flex-shrink: 0;
 }
 
