@@ -5,6 +5,7 @@
   let isEditingActive = false;
   let dashboardCtaHandler = null;
   let knowledgeDraft = '';
+  const settingsTabs = new Set(['settings-contact', 'settings-limits']);
 
   function getSetupCompletion() {
     const settings = data.settings || {};
@@ -90,17 +91,17 @@
       statusLabel = '🟢 Activo';
       statusMessage = 'Disponible para colaboradores';
       ctaLabel = 'Editar configuración';
-      ctaTarget = 'activation';
+      ctaTarget = 'settings-contact';
       ctaType = 'tab';
     } else if (completion.knowledge && completion.hr) {
       statusLabel = '🔴 Desactivado';
       statusMessage = 'El asistente está apagado';
-      ctaTarget = 'activation';
+      ctaTarget = 'settings-contact';
       ctaType = 'tab';
     } else if (!completion.knowledge) {
       ctaTarget = 'knowledge';
     } else if (!completion.hr) {
-      ctaTarget = 'activation';
+      ctaTarget = 'settings-contact';
     }
 
     if (assistantStatusValue) {
@@ -145,12 +146,28 @@
   }
 
   function initTabs() {
-    const buttons = Array.from(document.querySelectorAll('.tab-button'));
+    const buttons = Array.from(
+      document.querySelectorAll('.tab-button[data-tab-target]')
+    );
     const panels = Array.from(document.querySelectorAll('.tab-panel'));
+    const settingsToggle = document.querySelector(
+      '[data-submenu-toggle="settings"]'
+    );
+    const settingsSubmenu = document.querySelector('#settingsSubmenu');
 
     if (!buttons.length || !panels.length) {
       return;
     }
+
+    const setSettingsExpanded = (expanded) => {
+      if (settingsSubmenu) {
+        settingsSubmenu.hidden = !expanded;
+      }
+      if (settingsToggle) {
+        settingsToggle.setAttribute('aria-expanded', String(expanded));
+        settingsToggle.classList.toggle('active', expanded);
+      }
+    };
 
     setActiveTab = (target) => {
       buttons.forEach((button) => {
@@ -163,6 +180,9 @@
         panel.classList.toggle('active', panel.dataset.tabPanel === target);
       });
       activeTab = target;
+      if (settingsTabs.has(target)) {
+        setSettingsExpanded(true);
+      }
       updateChecklist();
     };
 
@@ -171,6 +191,16 @@
         setActiveTab(button.dataset.tabTarget);
       });
     });
+
+    if (settingsToggle) {
+      settingsToggle.addEventListener('click', () => {
+        const shouldExpand = settingsSubmenu ? settingsSubmenu.hidden : true;
+        setSettingsExpanded(shouldExpand);
+        if (shouldExpand && !settingsTabs.has(activeTab)) {
+          setActiveTab('settings-contact');
+        }
+      });
+    }
 
     setActiveTab(activeTab);
   }
