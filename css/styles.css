@@ -392,14 +392,13 @@ body.admin-ui::after {
 }
 
 .status-card--floating {
-  position: relative;
-  right: auto;
-  bottom: auto;
-  width: 100%;
-  max-width: 280px;
+  position: fixed;
+  left: 32px;
+  bottom: 32px;
+  width: min(280px, 90vw);
   max-height: none;
   overflow: visible;
-  z-index: 1;
+  z-index: 6;
   box-shadow: 0 12px 24px rgba(31, 20, 88, 0.12);
 }
 
