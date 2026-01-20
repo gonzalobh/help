@@ -165,6 +165,7 @@ body.admin-ui::after {
   background: transparent;
   border: 1px solid transparent;
   border-left: none;
+  box-shadow: none;
   padding: 10px 14px;
   border-radius: 12px;
   font-size: 16px;
