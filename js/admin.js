@@ -162,10 +162,10 @@
     const syncSettingsState = (target) => {
       const isSettings = Boolean(target?.startsWith('settings-'));
       if (settingsSubmenu) {
-        settingsSubmenu.hidden = !isSettings;
+        settingsSubmenu.hidden = false;
       }
       if (settingsToggle) {
-        settingsToggle.setAttribute('aria-expanded', isSettings ? 'true' : 'false');
+        settingsToggle.setAttribute('aria-expanded', 'true');
         settingsToggle.classList.toggle('active', isSettings);
       }
     };
