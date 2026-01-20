@@ -413,16 +413,6 @@
     updateActivationSummary();
   }
 
-  function initActivationControls() {
-    const editButton = document.querySelector('#editActivation');
-    if (editButton) {
-      editButton.addEventListener('click', () => {
-        isEditingActive = true;
-        updateActivationView();
-      });
-    }
-  }
-
   function init() {
     initTabs();
     updateDashboardStatus();
@@ -430,7 +420,6 @@
     initKnowledgeEditor();
     renderSettings();
     renderActivity();
-    initActivationControls();
     updateActivationView();
 
     const tabLinks = document.querySelectorAll('[data-tab-link]');
