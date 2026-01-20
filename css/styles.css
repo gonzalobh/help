@@ -383,6 +383,17 @@ body.admin-ui::after {
   gap: 12px;
 }
 
+.status-card--floating {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  width: min(320px, calc(100vw - 48px));
+  max-height: 55vh;
+  overflow: auto;
+  z-index: 20;
+  box-shadow: 0 18px 40px rgba(31, 20, 88, 0.2);
+}
+
 .status-card-header {
   display: flex;
   justify-content: space-between;
