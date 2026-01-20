@@ -144,7 +144,7 @@ body.admin-ui::after {
 .sidebar-submenu {
   display: grid;
   gap: 6px;
-  padding-left: 46px;
+  padding-left: 50px;
   margin-top: -2px;
   margin-bottom: 6px;
 }
