@@ -422,6 +422,17 @@
     renderActivity();
     updateActivationView();
 
+    const advancedToggle = document.querySelector('#advancedToggle');
+    const advancedOptions = document.querySelector('#advancedBoundaryOptions');
+    if (advancedToggle && advancedOptions) {
+      advancedToggle.addEventListener('click', () => {
+        const isExpanded =
+          advancedToggle.getAttribute('aria-expanded') === 'true';
+        advancedToggle.setAttribute('aria-expanded', String(!isExpanded));
+        advancedOptions.hidden = isExpanded;
+      });
+    }
+
     const tabLinks = document.querySelectorAll('[data-tab-link]');
     tabLinks.forEach((button) => {
       button.addEventListener('click', () => {
