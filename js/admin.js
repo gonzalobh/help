@@ -325,14 +325,16 @@
     const noInfoMessageTextarea = document.querySelector('#noInfoMessage');
     const countryContextSelect = document.querySelector('#countryContext');
     const assistantActiveToggle = document.querySelector('#assistantActive');
+    const contactDraft = {
+      hrEmail: settings.hrContact.email || '',
+      hrFallback: settings.hrContact.fallbackMessage || '',
+      disclaimer: settings.disclaimer || ''
+    };
 
     if (hrEmailInput) {
-      hrEmailInput.value = settings.hrContact.email;
+      hrEmailInput.value = contactDraft.hrEmail;
       hrEmailInput.addEventListener('input', (event) => {
-        settings.hrContact.email = event.target.value;
-        updateRemoteConfig({ hrEmail: event.target.value });
-        updateChecklist();
-        updateActivationSummary();
+        contactDraft.hrEmail = event.target.value;
       });
     }
 
@@ -346,12 +348,9 @@
     }
 
     if (hrFallbackTextarea) {
-      hrFallbackTextarea.value = settings.hrContact.fallbackMessage;
+      hrFallbackTextarea.value = contactDraft.hrFallback;
       hrFallbackTextarea.addEventListener('input', (event) => {
-        settings.hrContact.fallbackMessage = event.target.value;
-        data.sampleResponses.fallback = event.target.value;
-        updateRemoteConfig({ hrFallback: event.target.value });
-        updateActivationSummary();
+        contactDraft.hrFallback = event.target.value;
       });
     }
 
@@ -502,24 +501,53 @@
     }
 
     const disclaimerTextarea = document.querySelector('#assistantDisclaimer');
-    const resetDisclaimer = document.querySelector('#resetDisclaimer');
-    const disclaimerDefault = settings.disclaimer;
-
     if (disclaimerTextarea) {
-      disclaimerTextarea.value = settings.disclaimer;
+      disclaimerTextarea.value = contactDraft.disclaimer;
       disclaimerTextarea.addEventListener('input', (event) => {
-        settings.disclaimer = event.target.value;
-        updateRemoteConfig({ disclaimer: event.target.value });
-        updateActivationSummary();
+        contactDraft.disclaimer = event.target.value;
       });
     }
 
-    if (resetDisclaimer && disclaimerTextarea) {
-      resetDisclaimer.addEventListener('click', () => {
-        settings.disclaimer = disclaimerDefault;
-        disclaimerTextarea.value = disclaimerDefault;
-        updateRemoteConfig({ disclaimer: disclaimerDefault });
+    const saveContactButton = document.querySelector('#saveContact');
+    const saveContactStatus = document.querySelector('#saveContactStatus');
+    if (saveContactButton) {
+      const defaultLabel = saveContactButton.textContent.trim();
+      let statusTimeout = null;
+      let statusResetTimeout = null;
+
+      saveContactButton.addEventListener('click', () => {
+        if (statusTimeout) {
+          clearTimeout(statusTimeout);
+        }
+        if (statusResetTimeout) {
+          clearTimeout(statusResetTimeout);
+        }
+
+        settings.hrContact.email = contactDraft.hrEmail;
+        settings.hrContact.fallbackMessage = contactDraft.hrFallback;
+        settings.disclaimer = contactDraft.disclaimer;
+        data.sampleResponses.fallback = settings.hrContact.fallbackMessage;
+
+        saveContactButton.textContent = 'Guardando…';
+        saveContactButton.disabled = true;
+        updateRemoteConfig({
+          hrEmail: settings.hrContact.email,
+          hrFallback: settings.hrContact.fallbackMessage,
+          disclaimer: settings.disclaimer
+        });
+        updateChecklist();
         updateActivationSummary();
+
+        statusTimeout = setTimeout(() => {
+          saveContactButton.textContent = defaultLabel;
+          saveContactButton.disabled = false;
+          if (saveContactStatus) {
+            saveContactStatus.classList.add('is-visible');
+            statusResetTimeout = setTimeout(() => {
+              saveContactStatus.classList.remove('is-visible');
+            }, 2600);
+          }
+        }, 700);
       });
     }
   }
