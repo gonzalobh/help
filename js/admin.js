@@ -10,6 +10,7 @@
     disclaimer: data?.settings?.disclaimer ?? '',
     noInfoMessage:
       data?.settings?.noInfoMessage ?? data?.sampleResponses?.fallback ?? '',
+    tone: data?.settings?.tone ?? '',
     limits: {
       officialOnly:
         data?.settings?.assistantBoundaries?.onlyOfficialInfo ?? false,
@@ -55,6 +56,7 @@
     data.settings.hrContact.fallbackMessage = config.hrFallback || '';
     data.settings.disclaimer = config.disclaimer || '';
     data.settings.noInfoMessage = config.noInfoMessage || '';
+    data.settings.tone = config.tone || '';
     data.sampleResponses.fallback =
       data.settings.noInfoMessage || data.sampleResponses.fallback || '';
 
@@ -358,7 +360,6 @@
       noInfoMessageTextarea.addEventListener('input', (event) => {
         settings.noInfoMessage = event.target.value;
         data.sampleResponses.fallback = event.target.value;
-        updateRemoteConfig({ noInfoMessage: event.target.value });
       });
     }
 
@@ -439,17 +440,18 @@
     });
 
     const saveLimitsButton = document.querySelector('#saveLimits');
+    const saveLimitsStatus = document.querySelector('#saveLimitsStatus');
     if (saveLimitsButton) {
       const defaultLabel = saveLimitsButton.textContent.trim();
       let statusTimeout = null;
-      let resetTimeout = null;
+      let statusResetTimeout = null;
 
       saveLimitsButton.addEventListener('click', () => {
         if (statusTimeout) {
           clearTimeout(statusTimeout);
         }
-        if (resetTimeout) {
-          clearTimeout(resetTimeout);
+        if (statusResetTimeout) {
+          clearTimeout(statusResetTimeout);
         }
 
         const payload = {
@@ -467,11 +469,14 @@
         updateRemoteConfig(payload);
 
         statusTimeout = setTimeout(() => {
-          saveLimitsButton.textContent = 'Cambios guardados ✓';
-          resetTimeout = setTimeout(() => {
-            saveLimitsButton.textContent = defaultLabel;
-            saveLimitsButton.disabled = false;
-          }, 2200);
+          saveLimitsButton.textContent = defaultLabel;
+          saveLimitsButton.disabled = false;
+          if (saveLimitsStatus) {
+            saveLimitsStatus.classList.add('is-visible');
+            statusResetTimeout = setTimeout(() => {
+              saveLimitsStatus.classList.remove('is-visible');
+            }, 2600);
+          }
         }, 700);
       });
     }
