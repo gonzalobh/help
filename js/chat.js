@@ -111,19 +111,6 @@
   async function sendToAIMessage(userMessage, body, data) {
     const fallbackMessage =
       data.settings?.noInfoMessage || getFallbackMessage(data);
-    const systemPrompt = [
-      'Eres un asistente interno de RR. HH.',
-      'Responde SOLO con información oficial.',
-      'NO inventes información.',
-      'NO uses conocimiento externo.',
-      'NO respondas casos personales.',
-      'NO entregues asesoría legal ni contractual.',
-      'Si no hay información relevante, responde EXACTAMENTE con:',
-      data.settings?.noInfoMessage || '',
-      '',
-      'Información oficial:',
-      data.knowledgeContent || ''
-    ].join('\n');
 
     try {
       const response = await fetch('https://hotel-chat-proxy.vercel.app/api/helpin', {
@@ -133,7 +120,13 @@
         },
         body: JSON.stringify({
           messages: [{ role: 'user', content: userMessage }],
-          system: systemPrompt
+          config: {
+            knowledgeContent: data.knowledgeContent,
+            noInfoMessage: data.settings.noInfoMessage,
+            tone: data.settings.tone,
+            boundaries: data.settings.assistantBoundaries,
+            hrContact: data.settings.hrContact
+          }
         })
       });
       const result = await response.json();
