@@ -126,7 +126,7 @@
     ].join('\n');
 
     try {
-      const response = await fetch('/api/helpin', {
+      const response = await fetch('https://hotel-chat-proxy.vercel.app/api/helpin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
