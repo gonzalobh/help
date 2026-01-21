@@ -1,11 +1,117 @@
 (function () {
+  const ADMIN_EMAIL = "gonzalobh@gmail.com";
+  const ADMIN_PASSWORD = "CAMBIA_ESTO_SI_QUIERES";
   const data = window.HelpinData;
+  const DEFAULT_CONFIG = {
+    assistantActive: data?.settings?.assistantActive ?? false,
+    knowledge: data?.knowledgeContent ?? '',
+    hrEmail: data?.settings?.hrContact?.email ?? '',
+    hrFallback: data?.settings?.hrContact?.fallbackMessage ?? '',
+    disclaimer: data?.settings?.disclaimer ?? '',
+    noInfoMessage:
+      data?.settings?.noInfoMessage ?? data?.sampleResponses?.fallback ?? '',
+    limits: {
+      officialOnly:
+        data?.settings?.assistantBoundaries?.onlyOfficialInfo ?? false,
+      noPersonal: data?.settings?.assistantBoundaries?.noPersonalCases ?? false,
+      noContracts:
+        data?.settings?.assistantBoundaries?.noContractInterpretation ?? false,
+      noLegal: data?.settings?.assistantBoundaries?.noLegalQuestions ?? false,
+      escalate: data?.settings?.assistantBoundaries?.alwaysEscalate ?? false
+    },
+    updatedAt: 0
+  };
   let activeTab = 'dashboard';
   let setActiveTab = () => {};
   let isEditingActive = false;
   let dashboardCtaHandler = null;
   let knowledgeDraft = '';
   const settingsTabs = new Set(['settings-contact', 'settings-limits']);
+
+  function logError(message, error) {
+    console.error(`[Helpin] ${message}`, error);
+  }
+
+  function mergeConfig(remoteConfig) {
+    const config = remoteConfig || {};
+    return {
+      ...DEFAULT_CONFIG,
+      ...config,
+      limits: {
+        ...DEFAULT_CONFIG.limits,
+        ...(config.limits || {})
+      }
+    };
+  }
+
+  function applyConfigToData(config) {
+    data.knowledgeContent = config.knowledge || '';
+    data.settings = data.settings || {};
+    data.sampleResponses = data.sampleResponses || {};
+    data.settings.hrContact = data.settings.hrContact || {};
+    data.settings.assistantBoundaries = data.settings.assistantBoundaries || {};
+
+    data.settings.assistantActive = Boolean(config.assistantActive);
+    data.settings.hrContact.email = config.hrEmail || '';
+    data.settings.hrContact.fallbackMessage = config.hrFallback || '';
+    data.settings.disclaimer = config.disclaimer || '';
+    data.settings.noInfoMessage = config.noInfoMessage || '';
+    data.sampleResponses.fallback =
+      data.settings.noInfoMessage || data.sampleResponses.fallback || '';
+
+    const limits = config.limits || {};
+    data.settings.assistantBoundaries.onlyOfficialInfo = Boolean(
+      limits.officialOnly
+    );
+    data.settings.assistantBoundaries.noPersonalCases = Boolean(
+      limits.noPersonal
+    );
+    data.settings.assistantBoundaries.noContractInterpretation = Boolean(
+      limits.noContracts
+    );
+    data.settings.assistantBoundaries.noLegalQuestions = Boolean(
+      limits.noLegal
+    );
+    data.settings.assistantBoundaries.alwaysEscalate = Boolean(limits.escalate);
+  }
+
+  function updateRemoteConfig(updatePayload) {
+    if (typeof db === 'undefined') {
+      return;
+    }
+    db.ref('config')
+      .update(updatePayload)
+      .catch((error) => {
+        logError('No se pudo guardar la configuración.', error);
+      });
+  }
+
+  async function ensureAdminAuth() {
+    if (typeof auth === 'undefined') {
+      return;
+    }
+    if (auth.currentUser) {
+      return;
+    }
+    try {
+      await auth.signInWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
+    } catch (error) {
+      logError('Error de autenticación.', error);
+    }
+  }
+
+  async function loadConfigFromFirebase() {
+    if (typeof db === 'undefined') {
+      return mergeConfig();
+    }
+    try {
+      const snapshot = await db.ref('config').once('value');
+      return mergeConfig(snapshot.val());
+    } catch (error) {
+      logError('No se pudo cargar la configuración.', error);
+      return mergeConfig();
+    }
+  }
 
   function getSetupCompletion() {
     const settings = data.settings || {};
@@ -138,6 +244,10 @@
         if (nextContent === '') {
           data.knowledgeContent = '';
         }
+        updateRemoteConfig({
+          knowledge: data.knowledgeContent,
+          updatedAt: Date.now()
+        });
         updateChecklist();
         updateKnowledgeStatus();
         updateActivationSummary();
@@ -219,6 +329,7 @@
       hrEmailInput.value = settings.hrContact.email;
       hrEmailInput.addEventListener('input', (event) => {
         settings.hrContact.email = event.target.value;
+        updateRemoteConfig({ hrEmail: event.target.value });
         updateChecklist();
         updateActivationSummary();
       });
@@ -238,6 +349,7 @@
       hrFallbackTextarea.addEventListener('input', (event) => {
         settings.hrContact.fallbackMessage = event.target.value;
         data.sampleResponses.fallback = event.target.value;
+        updateRemoteConfig({ hrFallback: event.target.value });
         updateActivationSummary();
       });
     }
@@ -247,6 +359,7 @@
       noInfoMessageTextarea.addEventListener('input', (event) => {
         settings.noInfoMessage = event.target.value;
         data.sampleResponses.fallback = event.target.value;
+        updateRemoteConfig({ noInfoMessage: event.target.value });
       });
     }
 
@@ -261,6 +374,7 @@
       assistantActiveToggle.checked = settings.assistantActive;
       assistantActiveToggle.addEventListener('change', (event) => {
         settings.assistantActive = event.target.checked;
+        updateRemoteConfig({ assistantActive: settings.assistantActive });
         updateChecklist();
         updateDashboardStatus();
         if (settings.assistantActive) {
@@ -281,6 +395,7 @@
       boundaryOfficialOnly.checked = boundaries.onlyOfficialInfo;
       boundaryOfficialOnly.addEventListener('change', (event) => {
         boundaries.onlyOfficialInfo = event.target.checked;
+        updateRemoteConfig({ 'limits/officialOnly': event.target.checked });
       });
     }
 
@@ -288,6 +403,7 @@
       boundaryPersonal.checked = boundaries.noPersonalCases;
       boundaryPersonal.addEventListener('change', (event) => {
         boundaries.noPersonalCases = event.target.checked;
+        updateRemoteConfig({ 'limits/noPersonal': event.target.checked });
       });
     }
 
@@ -295,6 +411,7 @@
       boundaryContracts.checked = boundaries.noContractInterpretation;
       boundaryContracts.addEventListener('change', (event) => {
         boundaries.noContractInterpretation = event.target.checked;
+        updateRemoteConfig({ 'limits/noContracts': event.target.checked });
       });
     }
 
@@ -302,6 +419,7 @@
       boundaryLegal.checked = boundaries.noLegalQuestions;
       boundaryLegal.addEventListener('change', (event) => {
         boundaries.noLegalQuestions = event.target.checked;
+        updateRemoteConfig({ 'limits/noLegal': event.target.checked });
       });
     }
 
@@ -309,6 +427,7 @@
       boundaryEscalate.checked = boundaries.alwaysEscalate;
       boundaryEscalate.addEventListener('change', (event) => {
         boundaries.alwaysEscalate = event.target.checked;
+        updateRemoteConfig({ 'limits/escalate': event.target.checked });
       });
     }
 
@@ -352,6 +471,7 @@
       disclaimerTextarea.value = settings.disclaimer;
       disclaimerTextarea.addEventListener('input', (event) => {
         settings.disclaimer = event.target.value;
+        updateRemoteConfig({ disclaimer: event.target.value });
         updateActivationSummary();
       });
     }
@@ -360,6 +480,7 @@
       resetDisclaimer.addEventListener('click', () => {
         settings.disclaimer = disclaimerDefault;
         disclaimerTextarea.value = disclaimerDefault;
+        updateRemoteConfig({ disclaimer: disclaimerDefault });
         updateActivationSummary();
       });
     }
@@ -413,7 +534,10 @@
     updateActivationSummary();
   }
 
-  function init() {
+  async function init() {
+    await ensureAdminAuth();
+    const config = await loadConfigFromFirebase();
+    applyConfigToData(config);
     initTabs();
     updateDashboardStatus();
     updateChecklist();
