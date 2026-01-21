@@ -438,6 +438,44 @@
       });
     });
 
+    const saveLimitsButton = document.querySelector('#saveLimits');
+    if (saveLimitsButton) {
+      const defaultLabel = saveLimitsButton.textContent.trim();
+      let statusTimeout = null;
+      let resetTimeout = null;
+
+      saveLimitsButton.addEventListener('click', () => {
+        if (statusTimeout) {
+          clearTimeout(statusTimeout);
+        }
+        if (resetTimeout) {
+          clearTimeout(resetTimeout);
+        }
+
+        const payload = {
+          noInfoMessage: settings.noInfoMessage,
+          tone: settings.tone || '',
+          'limits/officialOnly': boundaries.onlyOfficialInfo,
+          'limits/noPersonal': boundaries.noPersonalCases,
+          'limits/noContracts': boundaries.noContractInterpretation,
+          'limits/noLegal': boundaries.noLegalQuestions,
+          'limits/escalate': boundaries.alwaysEscalate
+        };
+
+        saveLimitsButton.textContent = 'Guardando…';
+        saveLimitsButton.disabled = true;
+        updateRemoteConfig(payload);
+
+        statusTimeout = setTimeout(() => {
+          saveLimitsButton.textContent = 'Cambios guardados ✓';
+          resetTimeout = setTimeout(() => {
+            saveLimitsButton.textContent = defaultLabel;
+            saveLimitsButton.disabled = false;
+          }, 2200);
+        }, 700);
+      });
+    }
+
     const languageOptions = Array.from(
       document.querySelectorAll('input[name="assistantLanguage"]')
     );
@@ -521,17 +559,6 @@
     initKnowledgeEditor();
     renderSettings();
     renderActivity();
-
-    const advancedToggle = document.querySelector('#advancedToggle');
-    const advancedOptions = document.querySelector('#advancedBoundaryOptions');
-    if (advancedToggle && advancedOptions) {
-      advancedToggle.addEventListener('click', () => {
-        const isExpanded =
-          advancedToggle.getAttribute('aria-expanded') === 'true';
-        advancedToggle.setAttribute('aria-expanded', String(!isExpanded));
-        advancedOptions.hidden = isExpanded;
-      });
-    }
 
     const tabLinks = document.querySelectorAll('[data-tab-link]');
     tabLinks.forEach((button) => {

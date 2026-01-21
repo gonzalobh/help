@@ -131,61 +131,54 @@ Para casos particulares, confirme siempre con RR. HH.</textarea>
       <section class="section tab-panel" data-tab-panel="settings-limits">
         <div class="section-header">
           <h2>Límites</h2>
-          <p>Defina límites legales, tono e idioma del asistente.</p>
+          <p>Aquí define qué puede responder el asistente y cómo debe hacerlo.</p>
         </div>
-        <div class="settings-block" id="advancedOptions">
+        <div class="settings-block">
           <div class="settings-header">
-            <h3>Ajustes legales y de límites (opcional)</h3>
-            <p class="note">No es necesario para la activación estándar.</p>
-            <p class="note">Detalles adicionales para límites, tono e idioma.</p>
+            <h3>Comportamiento del asistente</h3>
+          </div>
+          <div class="settings-options">
+            <label class="option-row">
+              <span class="option-label">Responder solo con información oficial pegada por RR. HH.</span>
+              <input id="boundaryOfficialOnly" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">No responder casos personales</span>
+              <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">No interpretar contratos</span>
+              <input id="boundaryContracts" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">No responder consultas legales</span>
+              <input id="boundaryLegal" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+            <label class="option-row">
+              <span class="option-label">Sugerir siempre contactar a RR. HH. para excepciones</span>
+              <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
+              <span class="toggle-switch" aria-hidden="true"></span>
+            </label>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="settings-header">
+            <h3>Respuesta y tono del asistente</h3>
           </div>
           <div class="form-grid">
-            <div>
-              <label for="hrUrl">URL de contacto RR. HH. (opcional)</label>
-              <input id="hrUrl" type="text" placeholder="https://intranet.empresa.com/rrhh o https://empresa.com/contacto-rrhh" />
-            </div>
             <div>
               <label for="noInfoMessage">Mensaje cuando no existe información oficial</label>
               <textarea id="noInfoMessage">No tengo información oficial sobre este tema.
 Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
             </div>
           </div>
-          <button class="advanced-toggle" type="button" id="advancedToggle" aria-expanded="false" aria-controls="advancedBoundaryOptions">
-            <span>Avanzado</span>
-            <i data-lucide="chevron-down" class="advanced-icon" aria-hidden="true"></i>
-          </button>
-          <div class="advanced-options" id="advancedBoundaryOptions" hidden>
-            <div class="settings-options">
-              <label class="option-row">
-                <span class="option-label">Responder solo con información oficial pegada por RR. HH. (recomendado)</span>
-                <input id="boundaryOfficialOnly" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-              <label class="option-row">
-                <span class="option-label">No responder casos personales</span>
-                <input id="boundaryPersonal" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-              <label class="option-row">
-                <span class="option-label">No interpretar contratos</span>
-                <input id="boundaryContracts" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-              <label class="option-row">
-                <span class="option-label">No responder consultas legales</span>
-                <input id="boundaryLegal" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-              <label class="option-row">
-                <span class="option-label">Sugerir siempre contactar a RR. HH. para excepciones</span>
-                <input id="boundaryEscalate" class="toggle-input" type="checkbox" />
-                <span class="toggle-switch" aria-hidden="true"></span>
-              </label>
-            </div>
-          </div>
           <div class="form-grid">
             <div>
-              <label>Tono (opcional)</label>
+              <label>Tono</label>
               <div class="segmented-control" role="radiogroup" aria-label="Tono">
                 <label class="segment">
                   <input type="radio" name="tone" value="Neutral" />
@@ -203,6 +196,11 @@ Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
               <p class="note">El tono es opcional y no afecta las políticas oficiales.</p>
             </div>
           </div>
+        </div>
+        <div class="knowledge-actions">
+          <button class="cta-button primary" type="button" id="saveLimits">
+            Guardar cambios
+          </button>
         </div>
       </section>
     </div>
