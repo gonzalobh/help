@@ -23,7 +23,6 @@
   };
   let activeTab = 'dashboard';
   let setActiveTab = () => {};
-  let isEditingActive = false;
   let dashboardCtaHandler = null;
   let knowledgeDraft = '';
   const settingsTabs = new Set(['settings-contact', 'settings-limits']);
@@ -377,10 +376,6 @@
         updateRemoteConfig({ assistantActive: settings.assistantActive });
         updateChecklist();
         updateDashboardStatus();
-        if (settings.assistantActive) {
-          isEditingActive = false;
-        }
-        updateActivationView();
       });
     }
 
@@ -516,24 +511,6 @@
     }
   }
 
-  function updateActivationView() {
-    const editable = document.querySelector('#activationEditable');
-    const summary = document.querySelector('#activationSummary');
-    const activationBlock = document.querySelector('#activationBlock');
-    const settings = data.settings || {};
-    const assistantActive = Boolean(settings.assistantActive);
-
-    if (!editable || !summary || !activationBlock) {
-      return;
-    }
-
-    const showSummary = assistantActive && !isEditingActive;
-    editable.hidden = showSummary;
-    summary.hidden = !showSummary;
-    activationBlock.hidden = showSummary;
-    updateActivationSummary();
-  }
-
   async function init() {
     await ensureAdminAuth();
     const config = await loadConfigFromFirebase();
@@ -544,7 +521,6 @@
     initKnowledgeEditor();
     renderSettings();
     renderActivity();
-    updateActivationView();
 
     const advancedToggle = document.querySelector('#advancedToggle');
     const advancedOptions = document.querySelector('#advancedBoundaryOptions');
