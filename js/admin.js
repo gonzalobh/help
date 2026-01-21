@@ -1,6 +1,6 @@
 (function () {
   const ADMIN_EMAIL = "gonzalobh@gmail.com";
-  const ADMIN_PASSWORD = "CAMBIA_ESTO_SI_QUIERES";
+  const ADMIN_PASSWORD = "mesa4rojo";
   const data = window.HelpinData;
   const DEFAULT_CONFIG = {
     assistantActive: data?.settings?.assistantActive ?? false,
