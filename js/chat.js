@@ -1,6 +1,86 @@
 (function () {
   const defaultWelcome =
     'Usted puede realizar consultas sobre políticas internas, beneficios o procedimientos de RR. HH.';
+  const data = window.HelpinData;
+  const DEFAULT_CONFIG = {
+    assistantActive: data?.settings?.assistantActive ?? false,
+    knowledge: data?.knowledgeContent ?? '',
+    hrEmail: data?.settings?.hrContact?.email ?? '',
+    hrFallback: data?.settings?.hrContact?.fallbackMessage ?? '',
+    disclaimer: data?.settings?.disclaimer ?? '',
+    noInfoMessage:
+      data?.settings?.noInfoMessage ?? data?.sampleResponses?.fallback ?? '',
+    limits: {
+      officialOnly:
+        data?.settings?.assistantBoundaries?.onlyOfficialInfo ?? false,
+      noPersonal: data?.settings?.assistantBoundaries?.noPersonalCases ?? false,
+      noContracts:
+        data?.settings?.assistantBoundaries?.noContractInterpretation ?? false,
+      noLegal: data?.settings?.assistantBoundaries?.noLegalQuestions ?? false,
+      escalate: data?.settings?.assistantBoundaries?.alwaysEscalate ?? false
+    },
+    updatedAt: 0
+  };
+
+  function logError(message, error) {
+    console.error(`[Helpin] ${message}`, error);
+  }
+
+  function mergeConfig(remoteConfig) {
+    const config = remoteConfig || {};
+    return {
+      ...DEFAULT_CONFIG,
+      ...config,
+      limits: {
+        ...DEFAULT_CONFIG.limits,
+        ...(config.limits || {})
+      }
+    };
+  }
+
+  function applyConfigToData(config) {
+    data.knowledgeContent = config.knowledge || '';
+    data.settings = data.settings || {};
+    data.sampleResponses = data.sampleResponses || {};
+    data.settings.hrContact = data.settings.hrContact || {};
+    data.settings.assistantBoundaries = data.settings.assistantBoundaries || {};
+
+    data.settings.assistantActive = Boolean(config.assistantActive);
+    data.settings.hrContact.email = config.hrEmail || '';
+    data.settings.hrContact.fallbackMessage = config.hrFallback || '';
+    data.settings.disclaimer = config.disclaimer || '';
+    data.settings.noInfoMessage = config.noInfoMessage || '';
+    data.sampleResponses.fallback =
+      data.settings.noInfoMessage || data.sampleResponses.fallback || '';
+
+    const limits = config.limits || {};
+    data.settings.assistantBoundaries.onlyOfficialInfo = Boolean(
+      limits.officialOnly
+    );
+    data.settings.assistantBoundaries.noPersonalCases = Boolean(
+      limits.noPersonal
+    );
+    data.settings.assistantBoundaries.noContractInterpretation = Boolean(
+      limits.noContracts
+    );
+    data.settings.assistantBoundaries.noLegalQuestions = Boolean(
+      limits.noLegal
+    );
+    data.settings.assistantBoundaries.alwaysEscalate = Boolean(limits.escalate);
+  }
+
+  async function loadConfigFromFirebase() {
+    if (typeof db === 'undefined') {
+      return mergeConfig();
+    }
+    try {
+      const snapshot = await db.ref('config').once('value');
+      return mergeConfig(snapshot.val());
+    } catch (error) {
+      logError('No se pudo cargar la configuración.', error);
+      return mergeConfig();
+    }
+  }
 
   function createMessage(content, role) {
     const message = document.createElement('div');
@@ -179,5 +259,33 @@
     }
   }
 
-  window.HelpinChat = { initChat };
+  function renderInactiveMessage(container) {
+    container.innerHTML = '';
+    const shell = document.createElement('div');
+    shell.className = 'chat-shell';
+    const header = document.createElement('div');
+    header.className = 'chat-header';
+    header.textContent = 'Asistente de Helpin';
+    const body = document.createElement('div');
+    body.className = 'chat-body';
+    body.appendChild(createMessage('El asistente no está activo.', 'assistant'));
+    shell.append(header, body);
+    container.appendChild(shell);
+  }
+
+  async function initWithFirebase({ container, mode }) {
+    if (!container) {
+      return;
+    }
+    const config = await loadConfigFromFirebase();
+    applyConfigToData(config);
+    window.HelpinConfig = config;
+    if (!config.assistantActive) {
+      renderInactiveMessage(container);
+      return;
+    }
+    initChat({ container, data, mode });
+  }
+
+  window.HelpinChat = { initChat, initWithFirebase };
 })();
