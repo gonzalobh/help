@@ -985,6 +985,8 @@ button:disabled {
 .knowledge-actions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
 }
 
 .knowledge-editor textarea {
@@ -1007,6 +1009,19 @@ button:disabled {
 .knowledge-status {
   font-size: 12px;
   color: var(--muted);
+}
+
+.save-status {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f9d55;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.save-status.is-visible {
+  opacity: 1;
 }
 
 .preview-chat .chat-shell {
