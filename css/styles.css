@@ -314,11 +314,6 @@ body.admin-ui::after {
   position: relative;
 }
 
-.admin-ui .section {
-  font-size: 16px;
-  line-height: 1.7;
-}
-
 .section-hero {
   background: var(--panel);
 }
@@ -349,10 +344,6 @@ body.admin-ui::after {
   color: var(--muted);
   font-size: 14px;
   line-height: 1.6;
-}
-
-.admin-ui .section-header p {
-  font-size: 16px;
 }
 
 .dashboard-stack {
@@ -469,10 +460,6 @@ body.admin-ui::after {
   line-height: 1.6;
 }
 
-.admin-ui .settings-header p {
-  font-size: 15px;
-}
-
 .activation-summary {
   display: grid;
   gap: 16px;
@@ -520,19 +507,11 @@ body.admin-ui::after {
   margin: 0;
 }
 
-.admin-ui .activation-summary-subtitle {
-  font-size: 15px;
-}
-
 .activation-summary-details {
   display: grid;
   gap: 8px;
   font-size: 14px;
   color: var(--text);
-}
-
-.admin-ui .activation-summary-details {
-  font-size: 16px;
 }
 
 .activation-summary-details p {
@@ -579,10 +558,6 @@ label {
   margin-bottom: 6px;
 }
 
-.admin-ui label {
-  font-size: 14px;
-}
-
 input[type="text"],
 select,
 textarea {
@@ -594,12 +569,6 @@ textarea {
   color: var(--text);
   background: #ffffff;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.admin-ui input[type="text"],
-.admin-ui select,
-.admin-ui textarea {
-  font-size: 16px;
 }
 
 input[type="text"]:focus,
@@ -630,10 +599,6 @@ textarea {
 .tab-panel.active {
   display: block;
   background: transparent;
-}
-
-.tab-panel.always-visible {
-  display: block;
 }
 
 button {
@@ -823,10 +788,6 @@ button:disabled {
   margin-top: 8px;
   font-size: 12px;
   color: var(--muted);
-}
-
-.admin-ui .note {
-  font-size: 14px;
 }
 
 .checklist {
@@ -1248,10 +1209,6 @@ button:disabled {
   font-size: 14px;
   color: var(--text);
   padding: 2px 0;
-}
-
-.admin-ui .option-row {
-  font-size: 16px;
 }
 
 .option-label {
