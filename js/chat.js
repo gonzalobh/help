@@ -89,30 +89,6 @@
     return message;
   }
 
-  function normalize(text) {
-    return text.toLowerCase();
-  }
-
-  function extractKeywords(message) {
-    const parts = message.split(/\s+/);
-    return parts
-      .map((part) => part.replace(/[^a-zA-ZÁÉÍÓÚÜÑáéíóúüñ]/g, '').toLowerCase())
-      .filter((word) => word.length > 3);
-  }
-
-  function hasRelevantKnowledge(message, content) {
-    if (!content || !content.trim()) {
-      return false;
-    }
-    const normalizedMessage = normalize(message);
-    const normalizedContent = normalize(content);
-    if (normalizedContent.includes(normalizedMessage)) {
-      return true;
-    }
-    const keywords = extractKeywords(message);
-    return keywords.some((keyword) => normalizedContent.includes(keyword));
-  }
-
   function getFallbackMessage(data) {
     return (
       data.settings?.noInfoMessage ||
@@ -130,6 +106,42 @@
       return 'Según las políticas internas de la empresa:\n';
     }
     return `Según las políticas internas de la empresa, alineadas con la legislación de ${country}:\n`;
+  }
+
+  async function sendToAIMessage(userMessage, body, data) {
+    const fallbackMessage =
+      data.settings?.noInfoMessage || getFallbackMessage(data);
+    const systemPrompt = [
+      'Eres un asistente interno de RR. HH.',
+      'Responde SOLO con información oficial.',
+      'NO inventes información.',
+      'NO uses conocimiento externo.',
+      'NO respondas casos personales.',
+      'NO entregues asesoría legal ni contractual.',
+      'Si no hay información relevante, responde EXACTAMENTE con:',
+      data.settings?.noInfoMessage || '',
+      '',
+      'Información oficial:',
+      data.knowledgeContent || ''
+    ].join('\n');
+
+    try {
+      const response = await fetch('/api/helpin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: userMessage }],
+          system: systemPrompt
+        })
+      });
+      const result = await response.json();
+      body.appendChild(createMessage(result.reply, 'assistant'));
+    } catch (error) {
+      logError('No se pudo obtener respuesta del asistente.', error);
+      body.appendChild(createMessage(fallbackMessage, 'assistant'));
+    }
   }
 
   function initChat({ container, data, mode }) {
@@ -187,28 +199,13 @@
       }
     }
 
-    function respond(message) {
-      const fallbackMessage = getFallbackMessage(data);
-      if (!hasRelevantKnowledge(message, data.knowledgeContent || '')) {
-        body.appendChild(createMessage(fallbackMessage, 'assistant'));
-        return;
-      }
-
-      body.appendChild(
-        createMessage(
-          `${getContextPrefix(data)}${data.knowledgeContent.trim()}`,
-          'assistant'
-        )
-      );
-    }
-
     function sendMessage(message) {
       const trimmed = message.trim();
       if (!trimmed) {
         return;
       }
       body.appendChild(createMessage(trimmed, 'user'));
-      respond(trimmed);
+      sendToAIMessage(trimmed, body, data);
       body.scrollTop = body.scrollHeight;
       input.value = '';
       if (mode === 'preview') {
