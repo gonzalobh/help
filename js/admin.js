@@ -327,6 +327,7 @@
     const assistantActiveToggle = document.querySelector('#assistantActive');
     const contactDraft = {
       hrEmail: settings.hrContact.email || '',
+      hrUrl: settings.hrContact.url || '',
       hrFallback: settings.hrContact.fallbackMessage || '',
       disclaimer: settings.disclaimer || ''
     };
@@ -339,11 +340,9 @@
     }
 
     if (hrUrlInput) {
-      hrUrlInput.value = settings.hrContact.url;
+      hrUrlInput.value = contactDraft.hrUrl;
       hrUrlInput.addEventListener('input', (event) => {
-        settings.hrContact.url = event.target.value;
-        updateChecklist();
-        updateActivationSummary();
+        contactDraft.hrUrl = event.target.value;
       });
     }
 
@@ -524,6 +523,7 @@
         }
 
         settings.hrContact.email = contactDraft.hrEmail;
+        settings.hrContact.url = contactDraft.hrUrl;
         settings.hrContact.fallbackMessage = contactDraft.hrFallback;
         settings.disclaimer = contactDraft.disclaimer;
         data.sampleResponses.fallback = settings.hrContact.fallbackMessage;
@@ -532,6 +532,7 @@
         saveContactButton.disabled = true;
         updateRemoteConfig({
           hrEmail: settings.hrContact.email,
+          hrUrl: settings.hrContact.url,
           hrFallback: settings.hrContact.fallbackMessage,
           disclaimer: settings.disclaimer
         });
