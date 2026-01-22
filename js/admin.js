@@ -184,6 +184,7 @@
     const assistantStatusSubtitle = document.querySelector(
       '#assistantStatusSubtitle'
     );
+    const assistantStateTitle = document.querySelector('#assistantStateTitle');
     const ctaButton = document.querySelector('#dashboardCta');
     const completion = getSetupCompletion();
     const assistantActive = completion.activation;
@@ -216,6 +217,11 @@
     }
     if (assistantStatusSubtitle) {
       assistantStatusSubtitle.textContent = statusMessage;
+    }
+    if (assistantStateTitle) {
+      assistantStateTitle.textContent = assistantActive
+        ? 'Asistente activo'
+        : 'Asistente inactivo';
     }
 
     if (ctaButton) {
@@ -571,8 +577,8 @@
     const settings = data.settings || {};
     const knowledgeContent = data.knowledgeContent || '';
     const hrEmail = settings.hrContact?.email?.trim() || '';
-    const hrUrl = settings.hrContact?.url?.trim() || '';
-    const contactValue = hrEmail || hrUrl || 'Sin definir';
+    const hrFallback = settings.hrContact?.fallbackMessage?.trim() || '';
+    const contactValue = hrEmail || hrFallback || 'Sin definir';
 
     if (summaryUpdate) {
       summaryUpdate.textContent =
