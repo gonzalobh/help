@@ -136,36 +136,6 @@
     return candidates.some((value) => emailPattern.test(value));
   }
 
-  function updateChecklist() {
-    const checklist = document.querySelector('#setupChecklist');
-    if (!checklist) {
-      return;
-    }
-    const steps = checklist.querySelectorAll('.checklist-item');
-    const settings = data.settings || {};
-    const completion = getSetupCompletion();
-
-    steps.forEach((step) => {
-      const key = step.dataset.checkKey || step.dataset.tabLink;
-      step.classList.toggle('completed', Boolean(completion[key]));
-    });
-
-    const activationStep = checklist.querySelector(
-      '[data-check-key="activation"]'
-    );
-    if (activationStep) {
-      if (settings.assistantActive) {
-        activationStep.classList.add('confirmed');
-        activationStep.classList.remove('primary-action');
-      } else {
-        activationStep.classList.remove('confirmed');
-        activationStep.classList.remove('primary-action');
-      }
-    }
-
-    updateDashboardStatus();
-  }
-
   function updateKnowledgeStatus() {
     const status = document.querySelector('#knowledgeStatus');
     if (!status) {
@@ -293,16 +263,6 @@
     }
   }
 
-  function updateAssistantStatusCardVisibility() {
-    const statusCard = document.querySelector('#assistantStatusCard');
-    if (!statusCard) {
-      return;
-    }
-    const completion = getSetupCompletion();
-    statusCard.hidden =
-      completion.knowledge && completion.hr && completion.activation;
-  }
-
   function initKnowledgeEditor() {
     const textarea = document.querySelector('#knowledgeContent');
     const saveButton = document.querySelector('#saveKnowledge');
@@ -329,7 +289,6 @@
           knowledge: data.knowledgeContent,
           updatedAt: knowledgeUpdatedAt
         });
-        updateChecklist();
         updateKnowledgeStatus();
         updateActivationSummary();
         if (saveStatus) {
@@ -380,7 +339,7 @@
       });
       activeTab = target;
       syncSettingsState(target);
-      updateChecklist();
+      updateDashboardStatus();
     };
 
     buttons.forEach((button) => {
@@ -460,7 +419,6 @@
       assistantActiveToggle.addEventListener('change', (event) => {
         settings.assistantActive = event.target.checked;
         updateRemoteConfig({ assistantActive: settings.assistantActive });
-        updateChecklist();
         updateDashboardStatus();
       });
     }
@@ -624,8 +582,8 @@
           hrFallback: settings.hrContact.fallbackMessage,
           disclaimer: settings.disclaimer
         });
-        updateChecklist();
         updateActivationSummary();
+        updateDashboardStatus();
 
         statusTimeout = setTimeout(() => {
           saveContactButton.textContent = defaultLabel;
@@ -706,11 +664,6 @@
   }
 
   async function init() {
-    const statusCard = document.querySelector('#assistantStatusCard');
-    if (statusCard) {
-      statusCard.hidden = true;
-    }
-
     await ensureAdminAuth();
     let hasInitialized = false;
 
@@ -718,8 +671,6 @@
       applyConfigToData(config);
       updateActivationSummary();
       updateDashboardStatus();
-      updateChecklist();
-      updateAssistantStatusCardVisibility();
 
       if (!hasInitialized) {
         initTabs();
@@ -757,13 +708,6 @@
     toggleInputs.forEach((toggle) => {
       toggle.addEventListener('change', () => {
         showToggleFeedback();
-      });
-    });
-
-    const tabLinks = document.querySelectorAll('[data-tab-link]');
-    tabLinks.forEach((button) => {
-      button.addEventListener('click', () => {
-        setActiveTab(button.dataset.tabLink);
       });
     });
 
