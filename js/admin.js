@@ -107,22 +107,6 @@
     }
   }
 
-  async function loadConfigFromFirebase() {
-    if (typeof db === 'undefined') {
-      return mergeConfig();
-    }
-    try {
-      const snapshot = await db.ref('config').once('value');
-      if (!snapshot.exists()) {
-        return mergeConfig();
-      }
-      return mergeConfig(snapshot.val());
-    } catch (error) {
-      logError('No se pudo cargar la configuración.', error);
-      return mergeConfig();
-    }
-  }
-
   function getSetupCompletion() {
     const settings = data.settings || {};
     const knowledgeContent = data.knowledgeContent || '';
@@ -130,18 +114,30 @@
     const hrFallback = settings.hrContact?.fallbackMessage?.trim() || '';
     const boundaries = settings.assistantBoundaries || {};
     const boundariesEnabled = Object.values(boundaries).some(Boolean);
+    const hasVisibleContactEmail = hasDisplayedContactEmail();
 
     return {
       knowledge: knowledgeContent.trim().length > 0,
-      hr: Boolean(hrEmail || hrFallback),
+      hr: Boolean(hrEmail || hrFallback || hasVisibleContactEmail),
       activation: Boolean(settings.assistantActive),
       boundaries: boundariesEnabled
     };
   }
 
+  function hasDisplayedContactEmail() {
+    const emailPattern = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+    const summaryContact = document.querySelector('#summaryHrContact');
+    const hrEmailInput = document.querySelector('#hrEmail');
+    const candidates = [
+      summaryContact?.textContent || '',
+      hrEmailInput?.value || ''
+    ];
+
+    return candidates.some((value) => emailPattern.test(value));
+  }
+
   function updateChecklist() {
     const checklist = document.querySelector('#setupChecklist');
-    const statusCard = document.querySelector('#assistantStatusCard');
     if (!checklist) {
       return;
     }
@@ -165,11 +161,6 @@
         activationStep.classList.remove('confirmed');
         activationStep.classList.remove('primary-action');
       }
-    }
-
-    if (statusCard) {
-      statusCard.hidden =
-        completion.knowledge && completion.hr && completion.activation;
     }
 
     updateDashboardStatus();
@@ -300,6 +291,16 @@
       ctaButton.dataset.ctaType = ctaType;
       ctaButton.dataset.tabLink = ctaType === 'tab' ? ctaTarget : '';
     }
+  }
+
+  function updateAssistantStatusCardVisibility() {
+    const statusCard = document.querySelector('#assistantStatusCard');
+    if (!statusCard) {
+      return;
+    }
+    const completion = getSetupCompletion();
+    statusCard.hidden =
+      completion.knowledge && completion.hr && completion.activation;
   }
 
   function initKnowledgeEditor() {
@@ -684,17 +685,52 @@
     }
   }
 
+  function subscribeConfigFromFirebase(handleConfigUpdate) {
+    if (typeof db === 'undefined') {
+      handleConfigUpdate(mergeConfig());
+      return;
+    }
+    db.ref('config').on(
+      'value',
+      (snapshot) => {
+        const config = snapshot.exists()
+          ? mergeConfig(snapshot.val())
+          : mergeConfig();
+        handleConfigUpdate(config);
+      },
+      (error) => {
+        logError('No se pudo cargar la configuración.', error);
+        handleConfigUpdate(mergeConfig());
+      }
+    );
+  }
+
   async function init() {
+    const statusCard = document.querySelector('#assistantStatusCard');
+    if (statusCard) {
+      statusCard.hidden = true;
+    }
+
     await ensureAdminAuth();
-    const config = await loadConfigFromFirebase();
-    applyConfigToData(config);
-    updateActivationSummary();
-    initTabs();
-    updateDashboardStatus();
-    updateChecklist();
-    initKnowledgeEditor();
-    renderSettings();
-    renderActivity();
+    let hasInitialized = false;
+
+    const handleConfigUpdate = (config) => {
+      applyConfigToData(config);
+      updateActivationSummary();
+      updateDashboardStatus();
+      updateChecklist();
+      updateAssistantStatusCardVisibility();
+
+      if (!hasInitialized) {
+        initTabs();
+        initKnowledgeEditor();
+        renderSettings();
+        renderActivity();
+        hasInitialized = true;
+      }
+    };
+
+    subscribeConfigFromFirebase(handleConfigUpdate);
 
     const toggleFeedback = document.querySelector('#toggleFeedback');
     const saveFeedback = document.querySelector('#saveFeedback');
