@@ -623,60 +623,17 @@
     }
   }
 
-  async function loadDashboardSummary() {
-    const summaryUpdate = document.querySelector('#summaryKnowledgeUpdate');
-    const summaryContact = document.querySelector('#summaryHrContact');
-    if (!summaryUpdate && !summaryContact) {
-      return;
-    }
-    if (typeof db === 'undefined') {
-      renderDashboardSummary(summaryUpdate, summaryContact, '—', '—');
-      return;
-    }
-
-    try {
-      const [lastUpdatedSnap, hrEmailSnap] = await Promise.all([
-        db.ref('knowledge/lastUpdated').once('value'),
-        db.ref('contact/hrEmail').once('value')
-      ]);
-      const lastUpdatedValue = lastUpdatedSnap.val();
-      const hrEmailValue = hrEmailSnap.val();
-      let formattedDate = '—';
-
-      if (lastUpdatedValue) {
-        const parsedDate = new Date(lastUpdatedValue);
-        if (!Number.isNaN(parsedDate.getTime())) {
-          formattedDate = parsedDate.toLocaleDateString('es-CL', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
-        }
-      }
-
-      renderDashboardSummary(
-        summaryUpdate,
-        summaryContact,
-        formattedDate,
-        hrEmailValue || '—'
-      );
-    } catch (error) {
-      logError('No se pudo cargar el resumen del panel.', error);
-      renderDashboardSummary(summaryUpdate, summaryContact, '—', '—');
-    }
-  }
-
   async function init() {
     await ensureAdminAuth();
     const config = await loadConfigFromFirebase();
     applyConfigToData(config);
+    updateActivationSummary();
     initTabs();
     updateDashboardStatus();
     updateChecklist();
     initKnowledgeEditor();
     renderSettings();
     renderActivity();
-    await loadDashboardSummary();
 
     const toggleFeedback = document.querySelector('#toggleFeedback');
     const saveFeedback = document.querySelector('#saveFeedback');
