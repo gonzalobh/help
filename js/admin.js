@@ -601,12 +601,68 @@
     const hrFallback = settings.hrContact?.fallbackMessage?.trim() || '';
     const contactValue = hrEmail || hrFallback || 'Sin definir';
 
+    renderDashboardSummary(
+      summaryUpdate,
+      summaryContact,
+      knowledgeContent.trim().length > 0 ? 'Hoy' : 'Sin contenido',
+      contactValue
+    );
+  }
+
+  function renderDashboardSummary(
+    summaryUpdate,
+    summaryContact,
+    updateValue,
+    contactValue
+  ) {
     if (summaryUpdate) {
-      summaryUpdate.textContent =
-        knowledgeContent.trim().length > 0 ? 'Hoy' : 'Sin contenido';
+      summaryUpdate.textContent = updateValue;
     }
     if (summaryContact) {
       summaryContact.textContent = contactValue;
+    }
+  }
+
+  async function loadDashboardSummary() {
+    const summaryUpdate = document.querySelector('#summaryKnowledgeUpdate');
+    const summaryContact = document.querySelector('#summaryHrContact');
+    if (!summaryUpdate && !summaryContact) {
+      return;
+    }
+    if (typeof db === 'undefined') {
+      renderDashboardSummary(summaryUpdate, summaryContact, '—', '—');
+      return;
+    }
+
+    try {
+      const [lastUpdatedSnap, hrEmailSnap] = await Promise.all([
+        db.ref('knowledge/lastUpdated').once('value'),
+        db.ref('contact/hrEmail').once('value')
+      ]);
+      const lastUpdatedValue = lastUpdatedSnap.val();
+      const hrEmailValue = hrEmailSnap.val();
+      let formattedDate = '—';
+
+      if (lastUpdatedValue) {
+        const parsedDate = new Date(lastUpdatedValue);
+        if (!Number.isNaN(parsedDate.getTime())) {
+          formattedDate = parsedDate.toLocaleDateString('es-CL', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        }
+      }
+
+      renderDashboardSummary(
+        summaryUpdate,
+        summaryContact,
+        formattedDate,
+        hrEmailValue || '—'
+      );
+    } catch (error) {
+      logError('No se pudo cargar el resumen del panel.', error);
+      renderDashboardSummary(summaryUpdate, summaryContact, '—', '—');
     }
   }
 
@@ -620,6 +676,7 @@
     initKnowledgeEditor();
     renderSettings();
     renderActivity();
+    await loadDashboardSummary();
 
     const toggleFeedback = document.querySelector('#toggleFeedback');
     const saveFeedback = document.querySelector('#saveFeedback');
