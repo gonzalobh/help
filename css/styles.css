@@ -136,6 +136,62 @@ body.admin-ui::after {
   max-width: 768px;
 }
 
+.assistant-focus {
+  margin: 16px auto 0;
+  padding: 48px 40px;
+  max-width: 640px;
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  display: grid;
+  gap: 24px;
+  text-align: center;
+}
+
+.assistant-state {
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+}
+
+.assistant-state h3 {
+  font-size: 26px;
+  color: var(--title);
+}
+
+.assistant-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-switch--lg {
+  width: 72px;
+  height: 36px;
+}
+
+.toggle-switch--lg::after {
+  width: 28px;
+  height: 28px;
+  top: 3px;
+  left: 3px;
+}
+
+.toggle-input:checked + .toggle-switch--lg::after {
+  transform: translateX(34px);
+}
+
+.assistant-state-description {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.assistant-meta {
+  display: grid;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--muted);
+}
+
 .sidebar-nav {
   display: grid;
   gap: 8px;

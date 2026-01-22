@@ -34,36 +34,20 @@
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
           <h2>Panel de control RR. HH.</h2>
-          <p>Configure el asistente para que responda a los colaboradores.</p>
         </div>
-        <div class="settings-block activation-summary" id="activationSummary" hidden>
-          <div class="activation-summary-header">
-            <div class="activation-summary-title">
-              <i data-lucide="shield-check" class="summary-icon" aria-hidden="true"></i>
-              <h3>Asistente activo</h3>
-              <span class="summary-pill" id="summaryStatus">Activo</span>
-            </div>
-            <p class="activation-summary-subtitle">Disponible para colaboradores · Controlado por RR. HH.</p>
-          </div>
-          <div class="activation-summary-details">
-            <p>Última actualización del contenido: <span id="summaryKnowledgeUpdate">—</span></p>
-            <p>
-              Contacto RR. HH.:
-              <a class="summary-link" id="summaryHrContact" href="mailto:">—</a>
-            </p>
-          </div>
-        </div>
-        <div class="settings-block" id="activationBlock">
-          <div class="settings-header">
-            <h3>Activación</h3>
-            <p>El asistente no quedará disponible para colaboradores hasta activar esta opción.</p>
-          </div>
-          <div class="settings-options">
-            <label class="option-row">
-              <span class="option-label">Activar el asistente para colaboradores</span>
+        <div class="assistant-focus">
+          <div class="assistant-state">
+            <h3 id="assistantStateTitle">Asistente inactivo</h3>
+            <label class="assistant-toggle">
+              <span class="sr-only">Activar asistente</span>
               <input id="assistantActive" class="toggle-input" type="checkbox" />
-              <span class="toggle-switch" aria-hidden="true"></span>
+              <span class="toggle-switch toggle-switch--lg" aria-hidden="true"></span>
             </label>
+            <p class="assistant-state-description">Disponible para colaboradores · Controlado por RR. HH.</p>
+          </div>
+          <div class="assistant-meta">
+            <p class="assistant-meta-line">Última actualización del contenido: <span id="summaryKnowledgeUpdate">—</span></p>
+            <p class="assistant-meta-line">Contacto RR. HH.: <span id="summaryHrContact">—</span></p>
           </div>
         </div>
       </section>
