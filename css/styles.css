@@ -138,13 +138,15 @@ body.admin-ui::after {
 
 .assistant-focus {
   margin: 16px auto 0;
-  padding: 48px 40px;
-  max-width: 640px;
-  background: var(--panel);
-  border-radius: var(--radius-lg);
+  padding: 52px 44px;
+  max-width: 680px;
+  background: linear-gradient(160deg, #ffffff 0%, #f9f6ff 100%);
+  border-radius: calc(var(--radius-lg) + 2px);
   display: grid;
   gap: 24px;
   text-align: center;
+  border: 1px solid rgba(59, 42, 152, 0.14);
+  box-shadow: 0 22px 40px rgba(41, 26, 108, 0.16);
 }
 
 .assistant-state {
@@ -153,9 +155,44 @@ body.admin-ui::after {
   justify-items: center;
 }
 
-.assistant-state h3 {
-  font-size: 26px;
+.assistant-status-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.assistant-status-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(59, 42, 152, 0.08);
+  border: 1px solid rgba(59, 42, 152, 0.12);
   color: var(--title);
+}
+
+.assistant-status-label .status-text {
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  font-variant: all-small-caps;
+  font-weight: 600;
+}
+
+.assistant-status-label .status-dot {
+  font-size: 14px;
+  color: #9c948c;
+}
+
+.assistant-status-label[data-status="active"] .status-dot {
+  color: #16a34a;
+}
+
+.assistant-system-signal {
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .assistant-toggle {
@@ -183,6 +220,13 @@ body.admin-ui::after {
 .assistant-state-description {
   color: var(--muted);
   font-size: 16px;
+}
+
+.assistant-primary-cta {
+  width: min(320px, 100%);
+  font-size: 17px;
+  padding: 14px 28px;
+  box-shadow: 0 18px 30px rgba(43, 27, 155, 0.3);
 }
 
 .assistant-meta {
@@ -361,12 +405,12 @@ body.admin-ui::after {
 }
 
 .section {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.9);
   padding: 32px 36px;
   margin-bottom: 32px;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(231, 222, 214, 0.8);
-  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(231, 222, 214, 0.7);
+  box-shadow: var(--shadow-soft);
   position: relative;
 }
 
@@ -1299,10 +1343,13 @@ button:disabled {
   width: 42px;
   height: 22px;
   border-radius: 999px;
-  background: #e6dbd2;
-  border: 1px solid #e6dbd2;
+  background: #e3d9d0;
+  border: 1px solid #d4c9bf;
   flex-shrink: 0;
-  transition: background 0.18s ease, border-color 0.18s ease;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 3px 8px rgba(48, 34, 24, 0.18);
+  transition: background 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .toggle-switch::after {
@@ -1314,12 +1361,16 @@ button:disabled {
   height: 16px;
   border-radius: 50%;
   background: #ffffff;
-  transition: transform 0.18s ease, background 0.18s ease;
+  box-shadow: 0 4px 10px rgba(32, 24, 18, 0.25);
+  transition: transform 0.2s ease, background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .toggle-input:checked + .toggle-switch {
   background: var(--accent);
   border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+    0 4px 12px rgba(43, 27, 155, 0.32);
 }
 
 .toggle-input:checked + .toggle-switch::after {
@@ -1330,6 +1381,29 @@ button:disabled {
 .toggle-input:focus-visible + .toggle-switch {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+.micro-feedback {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(59, 42, 152, 0.12);
+  border: 1px solid rgba(59, 42, 152, 0.2);
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 10;
+}
+
+.micro-feedback.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .segmented-control {

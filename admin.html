@@ -27,7 +27,7 @@
           <button class="tab-button subtab-button" type="button" data-tab-target="settings-contact">Contacto RR. HH.</button>
           <button class="tab-button subtab-button" type="button" data-tab-target="settings-limits">Límites</button>
         </div>
-        <a class="sidebar-cta sidebar-chat" id="employeeChatLink" href="chat.html">Probar chat</a>
+        <a class="sidebar-cta sidebar-chat" id="employeeChatLink" href="chat.html">Probar como colaborador</a>
       </nav>
     </aside>
     <div class="admin-content">
@@ -37,12 +37,21 @@
         </div>
         <div class="assistant-focus">
           <div class="assistant-state">
-            <h3 id="assistantStateTitle">Asistente inactivo</h3>
-            <label class="assistant-toggle">
-              <span class="sr-only">Activar asistente</span>
-              <input id="assistantActive" class="toggle-input" type="checkbox" />
-              <span class="toggle-switch toggle-switch--lg" aria-hidden="true"></span>
-            </label>
+            <div class="assistant-status-row">
+              <div class="assistant-status-label" id="assistantStateTitle" data-status="inactive">
+                <span class="status-dot" aria-hidden="true">●</span>
+                <span class="status-text">ASISTENTE INACTIVO</span>
+              </div>
+              <label class="assistant-toggle">
+                <span class="sr-only">Activar asistente</span>
+                <input id="assistantActive" class="toggle-input" type="checkbox" />
+                <span class="toggle-switch toggle-switch--lg" aria-hidden="true"></span>
+              </label>
+            </div>
+            <p class="assistant-system-signal">Estado del sistema: OK</p>
+            <button class="cta-button primary assistant-primary-cta" type="button" id="dashboardCta" data-cta-type="chat">
+              Probar como colaborador
+            </button>
             <p class="assistant-state-description">Disponible para colaboradores · Controlado por RR. HH.</p>
           </div>
           <div class="assistant-meta">
@@ -72,6 +81,7 @@ Ejemplo:
 • Reglamentos"
           ></textarea>
           <div class="knowledge-actions">
+            <span class="save-status" id="saveKnowledgeStatus" role="status" aria-live="polite">Guardado</span>
             <button class="cta-button primary" type="button" id="saveKnowledge">
               Guardar contenido
             </button>
@@ -212,6 +222,8 @@ Para evitar errores, te recomiendo contactar directamente a RR. HH.</textarea>
       </button>
     </div>
   </div>
+  <div class="micro-feedback" id="toggleFeedback" role="status" aria-live="polite">Estado actualizado</div>
+  <div class="micro-feedback" id="saveFeedback" role="status" aria-live="polite">Configuración guardada</div>
 
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>

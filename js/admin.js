@@ -25,6 +25,8 @@
   let activeTab = 'dashboard';
   let setActiveTab = () => {};
   let dashboardCtaHandler = null;
+  let showToggleFeedback = () => {};
+  let showSaveFeedback = () => {};
   let knowledgeDraft = '';
   const settingsTabs = new Set(['settings-contact', 'settings-limits']);
 
@@ -191,25 +193,23 @@
 
     let statusLabel = '🟡 No activo';
     let statusMessage = 'Falta completar la configuración';
-    let ctaLabel = 'Continuar configuración';
-    let ctaTarget = 'knowledge';
-    let ctaType = 'tab';
+    let ctaLabel = 'Probar como colaborador';
+    let ctaTarget = '';
+    let ctaType = 'chat';
 
     if (assistantActive) {
       statusLabel = '🟢 Activo';
       statusMessage = 'Disponible para colaboradores';
-      ctaLabel = 'Editar configuración';
-      ctaTarget = 'settings-contact';
-      ctaType = 'tab';
+      ctaLabel = 'Probar como colaborador';
+      ctaType = 'chat';
     } else if (completion.knowledge && completion.hr) {
       statusLabel = '🔴 Desactivado';
       statusMessage = 'El asistente está apagado';
-      ctaTarget = 'settings-contact';
-      ctaType = 'tab';
+      ctaType = 'chat';
     } else if (!completion.knowledge) {
-      ctaTarget = 'knowledge';
+      ctaType = 'chat';
     } else if (!completion.hr) {
-      ctaTarget = 'settings-contact';
+      ctaType = 'chat';
     }
 
     if (assistantStatusValue) {
@@ -219,9 +219,20 @@
       assistantStatusSubtitle.textContent = statusMessage;
     }
     if (assistantStateTitle) {
-      assistantStateTitle.textContent = assistantActive
-        ? 'Asistente activo'
-        : 'Asistente inactivo';
+      const statusText = assistantActive
+        ? 'ASISTENTE ACTIVO'
+        : 'ASISTENTE INACTIVO';
+      const statusLabelElement = assistantStateTitle.querySelector(
+        '.status-text'
+      );
+      if (statusLabelElement) {
+        statusLabelElement.textContent = statusText;
+      } else {
+        assistantStateTitle.textContent = statusText;
+      }
+      assistantStateTitle.dataset.status = assistantActive
+        ? 'active'
+        : 'inactive';
     }
 
     if (ctaButton) {
@@ -234,6 +245,7 @@
   function initKnowledgeEditor() {
     const textarea = document.querySelector('#knowledgeContent');
     const saveButton = document.querySelector('#saveKnowledge');
+    const saveStatus = document.querySelector('#saveKnowledgeStatus');
     if (!textarea) {
       return;
     }
@@ -258,6 +270,13 @@
         updateChecklist();
         updateKnowledgeStatus();
         updateActivationSummary();
+        if (saveStatus) {
+          saveStatus.classList.add('is-visible');
+          setTimeout(() => {
+            saveStatus.classList.remove('is-visible');
+          }, 2600);
+        }
+        showSaveFeedback();
       });
     }
   }
@@ -481,6 +500,7 @@
               saveLimitsStatus.classList.remove('is-visible');
             }, 2600);
           }
+          showSaveFeedback();
         }, 700);
       });
     }
@@ -554,6 +574,7 @@
               saveContactStatus.classList.remove('is-visible');
             }, 2600);
           }
+          showSaveFeedback();
         }, 700);
       });
     }
@@ -599,6 +620,34 @@
     initKnowledgeEditor();
     renderSettings();
     renderActivity();
+
+    const toggleFeedback = document.querySelector('#toggleFeedback');
+    const saveFeedback = document.querySelector('#saveFeedback');
+    const createFeedbackController = (element) => {
+      let timeout = null;
+      return () => {
+        if (!element) {
+          return;
+        }
+        element.classList.add('is-visible');
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+          element.classList.remove('is-visible');
+        }, 2200);
+      };
+    };
+
+    showToggleFeedback = createFeedbackController(toggleFeedback);
+    showSaveFeedback = createFeedbackController(saveFeedback);
+
+    const toggleInputs = document.querySelectorAll('.toggle-input');
+    toggleInputs.forEach((toggle) => {
+      toggle.addEventListener('change', () => {
+        showToggleFeedback();
+      });
+    });
 
     const tabLinks = document.querySelectorAll('[data-tab-link]');
     tabLinks.forEach((button) => {
