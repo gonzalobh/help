@@ -138,6 +138,73 @@ body.admin-ui::after {
   margin-right: auto;
 }
 
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card {
+  width: min(420px, 100%);
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 22px;
+  border: 1px solid rgba(231, 222, 214, 0.9);
+  padding: 32px;
+  display: grid;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.auth-card h1 {
+  font-size: 24px;
+  color: var(--title);
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+}
+
+.auth-form input {
+  width: 100%;
+}
+
+.auth-error {
+  font-size: 13px;
+  color: #b42318;
+  background: #fdecec;
+  border: 1px solid #f8caca;
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+
+.auth-submit {
+  width: 100%;
+  font-size: 15px;
+  padding: 12px 18px;
+}
+
+.admin-logout {
+  width: 100%;
+  margin-top: 12px;
+}
+
+#adminApp[hidden],
+#loginView[hidden],
+#noAccessView[hidden],
+#bootLoading[hidden] {
+  display: none;
+}
+
 .admin-content .tab-panel[data-tab-panel="preview"] {
   max-width: 768px;
 }

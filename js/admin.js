@@ -1,6 +1,4 @@
 (function () {
-  const ADMIN_EMAIL = "gonzalobh@gmail.com";
-  const ADMIN_PASSWORD = "mesa4rojo";
   const data = window.HelpinData;
   const DEFAULT_CONFIG = {
     assistantActive: data?.settings?.assistantActive ?? false,
@@ -30,6 +28,10 @@
   let knowledgeDraft = '';
   let knowledgeUpdatedAt = null;
   const settingsTabs = new Set(['settings-contact', 'settings-limits']);
+  let adminAccessGranted = false;
+  let hasInitialized = false;
+  let configUnsubscribe = null;
+  const ui = {};
 
   function logError(message, error) {
     console.error(`[Helpin] ${message}`, error);
@@ -83,7 +85,12 @@
   }
 
   function updateRemoteConfig(updatePayload) {
-    if (typeof db === 'undefined') {
+    if (
+      typeof db === 'undefined' ||
+      typeof auth === 'undefined' ||
+      !auth.currentUser ||
+      !adminAccessGranted
+    ) {
       return;
     }
     db.ref('config')
@@ -93,18 +100,120 @@
       });
   }
 
-  async function ensureAdminAuth() {
+  function cacheAuthElements() {
+    ui.bootLoading = document.querySelector('#bootLoading');
+    ui.loginView = document.querySelector('#loginView');
+    ui.loginForm = document.querySelector('#loginForm');
+    ui.loginEmail = document.querySelector('#loginEmail');
+    ui.loginPassword = document.querySelector('#loginPassword');
+    ui.loginButton = document.querySelector('#loginSubmit');
+    ui.loginError = document.querySelector('#loginError');
+    ui.adminApp = document.querySelector('#adminApp');
+    ui.logoutButton = document.querySelector('#logoutButton');
+    ui.noAccessView = document.querySelector('#noAccessView');
+    ui.noAccessLogout = document.querySelector('#noAccessLogout');
+  }
+
+  function setViewState(state) {
+    if (ui.bootLoading) {
+      ui.bootLoading.hidden = state !== 'loading';
+    }
+    if (ui.loginView) {
+      ui.loginView.hidden = state !== 'login';
+    }
+    if (ui.adminApp) {
+      ui.adminApp.hidden = state !== 'admin';
+    }
+    if (ui.noAccessView) {
+      ui.noAccessView.hidden = state !== 'no-access';
+    }
+  }
+
+  function setLoginError(message) {
+    if (!ui.loginError) {
+      return;
+    }
+    if (!message) {
+      ui.loginError.textContent = '';
+      ui.loginError.hidden = true;
+      return;
+    }
+    ui.loginError.textContent = message;
+    ui.loginError.hidden = false;
+  }
+
+  function setLoginLoading(isLoading) {
+    if (ui.loginButton) {
+      ui.loginButton.disabled = isLoading;
+      ui.loginButton.textContent = isLoading ? 'Ingresando…' : 'Ingresar';
+    }
+    if (ui.loginForm) {
+      ui.loginForm.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+    }
+  }
+
+  function resetLoginForm() {
+    if (ui.loginForm) {
+      ui.loginForm.reset();
+    }
+    setLoginError('');
+    setLoginLoading(false);
+  }
+
+  async function checkAdminAllowlist(user) {
+    if (!user || typeof db === 'undefined') {
+      return false;
+    }
+    try {
+      const snapshot = await db.ref(`admins/${user.uid}`).once('value');
+      return snapshot.exists() && snapshot.val() === true;
+    } catch (error) {
+      logError('No se pudo validar el acceso de administrador.', error);
+      return false;
+    }
+  }
+
+  function stopConfigSubscription() {
+    if (typeof configUnsubscribe === 'function') {
+      configUnsubscribe();
+      configUnsubscribe = null;
+    }
+  }
+
+  function handleLogout() {
     if (typeof auth === 'undefined') {
       return;
     }
-    if (auth.currentUser) {
+    auth.signOut().catch((error) => {
+      logError('No se pudo cerrar sesión.', error);
+    });
+  }
+
+  function handleLoginSubmit(event) {
+    event.preventDefault();
+    if (typeof auth === 'undefined') {
+      setLoginError('No se pudo iniciar sesión. Intenta nuevamente.');
       return;
     }
-    try {
-      await auth.signInWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
-    } catch (error) {
-      logError('Error de autenticación.', error);
+    const email = ui.loginEmail?.value?.trim() || '';
+    const password = ui.loginPassword?.value || '';
+    if (!email || !password) {
+      setLoginError('Ingresa tu email y contraseña.');
+      return;
     }
+    setLoginLoading(true);
+    setLoginError('');
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        resetLoginForm();
+      })
+      .catch(() => {
+        setLoginError('Email o contraseña incorrectos.');
+      })
+      .finally(() => {
+        setLoginLoading(false);
+      });
   }
 
   function getSetupCompletion() {
@@ -646,42 +755,35 @@
   function subscribeConfigFromFirebase(handleConfigUpdate) {
     if (typeof db === 'undefined') {
       handleConfigUpdate(mergeConfig());
-      return;
+      return null;
     }
-    db.ref('config').on(
+    const ref = db.ref('config');
+    const onValue = (snapshot) => {
+      const config = snapshot.exists()
+        ? mergeConfig(snapshot.val())
+        : mergeConfig();
+      handleConfigUpdate(config);
+    };
+    const onError = (error) => {
+      logError('No se pudo cargar la configuración.', error);
+      handleConfigUpdate(mergeConfig());
+    };
+    ref.on(
       'value',
-      (snapshot) => {
-        const config = snapshot.exists()
-          ? mergeConfig(snapshot.val())
-          : mergeConfig();
-        handleConfigUpdate(config);
-      },
-      (error) => {
-        logError('No se pudo cargar la configuración.', error);
-        handleConfigUpdate(mergeConfig());
-      }
+      onValue,
+      onError
     );
+    return () => ref.off('value', onValue);
   }
 
-  async function init() {
-    await ensureAdminAuth();
-    let hasInitialized = false;
-
-    const handleConfigUpdate = (config) => {
-      applyConfigToData(config);
-      updateActivationSummary();
-      updateDashboardStatus();
-
-      if (!hasInitialized) {
-        initTabs();
-        initKnowledgeEditor();
-        renderSettings();
-        renderActivity();
-        hasInitialized = true;
-      }
-    };
-
-    subscribeConfigFromFirebase(handleConfigUpdate);
+  function initAdminUIOnce() {
+    if (hasInitialized) {
+      return;
+    }
+    initTabs();
+    initKnowledgeEditor();
+    renderSettings();
+    renderActivity();
 
     const toggleFeedback = document.querySelector('#toggleFeedback');
     const saveFeedback = document.querySelector('#saveFeedback');
@@ -731,6 +833,68 @@
       dashboardCta.addEventListener('click', dashboardCtaHandler);
     }
 
+    hasInitialized = true;
+  }
+
+  function startAdminSession() {
+    stopConfigSubscription();
+    const handleConfigUpdate = (config) => {
+      applyConfigToData(config);
+      updateActivationSummary();
+      updateDashboardStatus();
+      initAdminUIOnce();
+    };
+
+    configUnsubscribe = subscribeConfigFromFirebase(handleConfigUpdate);
+  }
+
+  function attachAuthListeners() {
+    if (ui.loginForm) {
+      ui.loginForm.addEventListener('submit', handleLoginSubmit);
+    }
+    if (ui.logoutButton) {
+      ui.logoutButton.addEventListener('click', handleLogout);
+    }
+    if (ui.noAccessLogout) {
+      ui.noAccessLogout.addEventListener('click', handleLogout);
+    }
+  }
+
+  function handleAuthState(user) {
+    adminAccessGranted = false;
+    stopConfigSubscription();
+    if (!user) {
+      setViewState('login');
+      resetLoginForm();
+      return;
+    }
+    setViewState('loading');
+    checkAdminAllowlist(user).then((hasAccess) => {
+      resetLoginForm();
+      adminAccessGranted = hasAccess;
+      if (!hasAccess) {
+        setViewState('no-access');
+        return;
+      }
+      setViewState('admin');
+      startAdminSession();
+    });
+  }
+
+  function init() {
+    cacheAuthElements();
+    attachAuthListeners();
+    setViewState('loading');
+
+    if (typeof auth === 'undefined') {
+      setLoginError('No se pudo cargar la autenticación.');
+      setViewState('login');
+      return;
+    }
+
+    auth.onAuthStateChanged((user) => {
+      handleAuthState(user);
+    });
   }
 
   window.addEventListener('DOMContentLoaded', init);
