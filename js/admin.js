@@ -141,6 +141,7 @@
 
   function updateChecklist() {
     const checklist = document.querySelector('#setupChecklist');
+    const statusCard = document.querySelector('#assistantStatusCard');
     if (!checklist) {
       return;
     }
@@ -164,6 +165,11 @@
         activationStep.classList.remove('confirmed');
         activationStep.classList.remove('primary-action');
       }
+    }
+
+    if (statusCard) {
+      statusCard.hidden =
+        completion.knowledge && completion.hr && completion.activation;
     }
 
     updateDashboardStatus();
