@@ -20,7 +20,7 @@
       noLegal: data?.settings?.assistantBoundaries?.noLegalQuestions ?? false,
       escalate: data?.settings?.assistantBoundaries?.alwaysEscalate ?? false
     },
-    updatedAt: 0
+    updatedAt: null
   };
   let activeTab = 'dashboard';
   let setActiveTab = () => {};
@@ -28,6 +28,7 @@
   let showToggleFeedback = () => {};
   let showSaveFeedback = () => {};
   let knowledgeDraft = '';
+  let knowledgeUpdatedAt = null;
   const settingsTabs = new Set(['settings-contact', 'settings-limits']);
 
   function logError(message, error) {
@@ -76,6 +77,9 @@
       limits.noLegal
     );
     data.settings.assistantBoundaries.alwaysEscalate = Boolean(limits.escalate);
+    knowledgeUpdatedAt = Number.isFinite(config.updatedAt)
+      ? config.updatedAt
+      : null;
   }
 
   function updateRemoteConfig(updatePayload) {
@@ -109,6 +113,9 @@
     }
     try {
       const snapshot = await db.ref('config').once('value');
+      if (!snapshot.exists()) {
+        return mergeConfig();
+      }
       return mergeConfig(snapshot.val());
     } catch (error) {
       logError('No se pudo cargar la configuración.', error);
@@ -176,7 +183,54 @@
     } else {
       status.textContent = 'Sin contenido aún';
     }
+    updateKnowledgeMetadata();
     updateDashboardStatus();
+  }
+
+  function getCharacterCount(value) {
+    if (typeof value !== 'string') {
+      return 0;
+    }
+    return value.length;
+  }
+
+  function formatKnowledgeUpdatedAt(timestamp) {
+    if (!Number.isFinite(timestamp)) {
+      return '';
+    }
+    const date = new Date(timestamp);
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear());
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} · ${hours}:${minutes}`;
+  }
+
+  function updateKnowledgeMetadata() {
+    const meta = document.querySelector('#knowledgeMeta');
+    const metaText = document.querySelector('#knowledgeMetaText');
+    if (!meta || !metaText) {
+      return;
+    }
+    const draftValue = typeof knowledgeDraft === 'string' ? knowledgeDraft : '';
+    const trimmedDraft = draftValue.trim();
+    if (trimmedDraft.length === 0) {
+      meta.hidden = true;
+      metaText.textContent = '';
+      return;
+    }
+    const count = getCharacterCount(draftValue);
+    const formattedCount = new Intl.NumberFormat('es-CL').format(count);
+    const formattedUpdatedAt = formatKnowledgeUpdatedAt(knowledgeUpdatedAt);
+    const updatedAtLabel = formattedUpdatedAt
+      ? formattedUpdatedAt
+      : '—';
+    metaText.textContent = `${formattedCount} caracteres · Última actualización: ${updatedAtLabel}`;
+    meta.hidden = false;
   }
 
   function updateDashboardStatus() {
@@ -263,9 +317,10 @@
         if (nextContent === '') {
           data.knowledgeContent = '';
         }
+        knowledgeUpdatedAt = Date.now();
         updateRemoteConfig({
           knowledge: data.knowledgeContent,
-          updatedAt: Date.now()
+          updatedAt: knowledgeUpdatedAt
         });
         updateChecklist();
         updateKnowledgeStatus();
