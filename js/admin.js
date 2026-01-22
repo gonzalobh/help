@@ -25,8 +25,12 @@
   let dashboardCtaHandler = null;
   let showToggleFeedback = () => {};
   let showSaveFeedback = () => {};
+  let showSaveErrorFeedback = () => {};
   let knowledgeDraft = '';
   let knowledgeUpdatedAt = null;
+  let contactDraft = null;
+  let hasConfigLoaded = false;
+  let setPanelSaveState = () => {};
   const settingsTabs = new Set(['settings-contact', 'settings-limits']);
   let adminAccessGranted = false;
   let hasInitialized = false;
@@ -97,6 +101,8 @@
       .update(updatePayload)
       .catch((error) => {
         logError('No se pudo guardar la configuración.', error);
+        showSaveErrorFeedback();
+        setPanelSaveState('Error al guardar, reintenta', 'error');
       });
   }
 
@@ -288,25 +294,20 @@
 
   function updateKnowledgeMetadata() {
     const meta = document.querySelector('#knowledgeMeta');
-    const metaText = document.querySelector('#knowledgeMetaText');
-    if (!meta || !metaText) {
+    const countElement = document.querySelector('#knowledgeCharCount');
+    const updatedAtElement = document.querySelector('#knowledgeUpdatedAt');
+    if (!meta || !countElement || !updatedAtElement) {
       return;
     }
     const draftValue = typeof knowledgeDraft === 'string' ? knowledgeDraft : '';
-    const trimmedDraft = draftValue.trim();
-    if (trimmedDraft.length === 0) {
-      meta.hidden = true;
-      metaText.textContent = '';
-      return;
-    }
     const count = getCharacterCount(draftValue);
     const formattedCount = new Intl.NumberFormat('es-CL').format(count);
     const formattedUpdatedAt = formatKnowledgeUpdatedAt(knowledgeUpdatedAt);
     const updatedAtLabel = formattedUpdatedAt
       ? formattedUpdatedAt
       : '—';
-    metaText.textContent = `${formattedCount} caracteres · Última actualización: ${updatedAtLabel}`;
-    meta.hidden = false;
+    countElement.textContent = formattedCount;
+    updatedAtElement.textContent = updatedAtLabel;
   }
 
   function updateDashboardStatus() {
@@ -317,6 +318,7 @@
       '#assistantStatusSubtitle'
     );
     const assistantStateTitle = document.querySelector('#assistantStateTitle');
+    const assistantStateMessage = document.querySelector('#assistantStateMessage');
     const ctaButton = document.querySelector('#dashboardCta');
     const completion = getSetupCompletion();
     const assistantActive = completion.activation;
@@ -363,6 +365,11 @@
       assistantStateTitle.dataset.status = assistantActive
         ? 'active'
         : 'inactive';
+    }
+    if (assistantStateMessage) {
+      assistantStateMessage.textContent = assistantActive
+        ? 'El asistente está activo'
+        : 'El asistente está desactivado';
     }
 
     if (ctaButton) {
@@ -480,7 +487,7 @@
     const noInfoMessageTextarea = document.querySelector('#noInfoMessage');
     const countryContextSelect = document.querySelector('#countryContext');
     const assistantActiveToggle = document.querySelector('#assistantActive');
-    const contactDraft = {
+    contactDraft = {
       hrEmail: settings.hrContact.email || '',
       hrUrl: settings.hrContact.url || '',
       hrFallback: settings.hrContact.fallbackMessage || '',
@@ -729,11 +736,14 @@
     const hrEmail = settings.hrContact?.email?.trim() || '';
     const hrFallback = settings.hrContact?.fallbackMessage?.trim() || '';
     const contactValue = hrEmail || hrFallback || 'Sin definir';
+    const formattedKnowledgeUpdate = formatKnowledgeUpdatedAt(knowledgeUpdatedAt);
 
     renderDashboardSummary(
       summaryUpdate,
       summaryContact,
-      knowledgeContent.trim().length > 0 ? 'Hoy' : 'Sin contenido',
+      knowledgeContent.trim().length > 0
+        ? formattedKnowledgeUpdate || 'Actualizado'
+        : 'Sin contenido',
       contactValue
     );
   }
@@ -787,13 +797,18 @@
 
     const toggleFeedback = document.querySelector('#toggleFeedback');
     const saveFeedback = document.querySelector('#saveFeedback');
-    const createFeedbackController = (element) => {
+    const saveErrorFeedback = document.querySelector('#saveErrorFeedback');
+    const panelSaveState = document.querySelector('#panelSaveState');
+    const createFeedbackController = (element, callback) => {
       let timeout = null;
       return () => {
         if (!element) {
           return;
         }
         element.classList.add('is-visible');
+        if (callback) {
+          callback();
+        }
         if (timeout) {
           clearTimeout(timeout);
         }
@@ -803,8 +818,40 @@
       };
     };
 
+    const createPanelSaveState = (element) => {
+      let timeout = null;
+      return (message, state) => {
+        if (!element) {
+          return;
+        }
+        if (message) {
+          element.textContent = message;
+        }
+        if (state) {
+          element.dataset.state = state;
+        } else {
+          delete element.dataset.state;
+        }
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        if (state === 'success' || state === 'error') {
+          timeout = setTimeout(() => {
+            delete element.dataset.state;
+          }, 4000);
+        }
+      };
+    };
+
+    setPanelSaveState = createPanelSaveState(panelSaveState);
+
     showToggleFeedback = createFeedbackController(toggleFeedback);
-    showSaveFeedback = createFeedbackController(saveFeedback);
+    showSaveFeedback = createFeedbackController(saveFeedback, () => {
+      setPanelSaveState('Cambios guardados', 'success');
+    });
+    showSaveErrorFeedback = createFeedbackController(saveErrorFeedback, () => {
+      setPanelSaveState('Error al guardar, reintenta', 'error');
+    });
 
     const toggleInputs = document.querySelectorAll('.toggle-input');
     toggleInputs.forEach((toggle) => {
@@ -833,16 +880,61 @@
       dashboardCta.addEventListener('click', dashboardCtaHandler);
     }
 
+    const saveAllButton = document.querySelector('#saveAllChanges');
+    if (saveAllButton) {
+      const labelElement = saveAllButton.querySelector('span');
+      const defaultLabel = labelElement?.textContent || saveAllButton.textContent;
+      let saveTimeout = null;
+
+      saveAllButton.addEventListener('click', () => {
+        if (saveTimeout) {
+          clearTimeout(saveTimeout);
+        }
+        setPanelSaveState('Guardando cambios…');
+        if (labelElement) {
+          labelElement.textContent = 'Guardando…';
+        } else {
+          saveAllButton.textContent = 'Guardando…';
+        }
+        saveAllButton.disabled = true;
+
+        document.querySelector('#saveKnowledge')?.click();
+        document.querySelector('#saveContact')?.click();
+        document.querySelector('#saveLimits')?.click();
+
+        saveTimeout = setTimeout(() => {
+          if (labelElement) {
+            labelElement.textContent = defaultLabel;
+          } else {
+            saveAllButton.textContent = defaultLabel;
+          }
+          saveAllButton.disabled = false;
+          showSaveFeedback();
+        }, 900);
+      });
+    }
+
     hasInitialized = true;
   }
 
   function startAdminSession() {
     stopConfigSubscription();
+    hasConfigLoaded = false;
+    const configLoading = document.querySelector('#configLoading');
+    if (configLoading) {
+      configLoading.hidden = false;
+    }
     const handleConfigUpdate = (config) => {
       applyConfigToData(config);
       updateActivationSummary();
       updateDashboardStatus();
       initAdminUIOnce();
+      if (!hasConfigLoaded) {
+        hasConfigLoaded = true;
+        if (configLoading) {
+          configLoading.hidden = true;
+        }
+      }
     };
 
     configUnsubscribe = subscribeConfigFromFirebase(handleConfigUpdate);
