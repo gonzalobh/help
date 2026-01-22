@@ -127,13 +127,13 @@
     const settings = data.settings || {};
     const knowledgeContent = data.knowledgeContent || '';
     const hrEmail = settings.hrContact?.email?.trim() || '';
-    const hrUrl = settings.hrContact?.url?.trim() || '';
+    const hrFallback = settings.hrContact?.fallbackMessage?.trim() || '';
     const boundaries = settings.assistantBoundaries || {};
     const boundariesEnabled = Object.values(boundaries).some(Boolean);
 
     return {
       knowledge: knowledgeContent.trim().length > 0,
-      hr: Boolean(hrEmail || hrUrl),
+      hr: Boolean(hrEmail || hrFallback),
       activation: Boolean(settings.assistantActive),
       boundaries: boundariesEnabled
     };
