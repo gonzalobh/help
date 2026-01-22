@@ -502,6 +502,39 @@ body.admin-ui::after {
   box-shadow: 0 8px 16px rgba(31, 20, 88, 0.12);
 }
 
+#assistantStatusCard {
+  width: min(200px, 88vw);
+  padding: 10px 12px;
+  gap: 6px;
+}
+
+#assistantStatusCard .status-title {
+  font-size: 10px;
+}
+
+#assistantStatusCard .checklist {
+  margin-top: 8px;
+  gap: 6px;
+}
+
+#assistantStatusCard .checklist-item {
+  padding: 6px 8px;
+  font-size: 12px;
+  border: none;
+  box-shadow: none;
+}
+
+#assistantStatusCard .checklist-item:hover {
+  border: none;
+  box-shadow: none;
+}
+
+#assistantStatusCard .checkmark {
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+}
+
 .status-card-header {
   display: flex;
   justify-content: space-between;
