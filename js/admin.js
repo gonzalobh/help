@@ -29,7 +29,6 @@
   let knowledgeDraft = '';
   let knowledgeUpdatedAt = null;
   let contactDraft = null;
-  let hasConfigLoaded = false;
   let setPanelSaveState = () => {};
   const settingsTabs = new Set(['settings-contact', 'settings-limits']);
   let adminAccessGranted = false;
@@ -107,7 +106,6 @@
   }
 
   function cacheAuthElements() {
-    ui.bootLoading = document.querySelector('#bootLoading');
     ui.loginView = document.querySelector('#loginView');
     ui.loginForm = document.querySelector('#loginForm');
     ui.loginEmail = document.querySelector('#loginEmail');
@@ -121,9 +119,6 @@
   }
 
   function setViewState(state) {
-    if (ui.bootLoading) {
-      ui.bootLoading.hidden = state !== 'loading';
-    }
     if (ui.loginView) {
       ui.loginView.hidden = state !== 'login';
     }
@@ -919,22 +914,11 @@
 
   function startAdminSession() {
     stopConfigSubscription();
-    hasConfigLoaded = false;
-    const configLoading = document.querySelector('#configLoading');
-    if (configLoading) {
-      configLoading.hidden = false;
-    }
     const handleConfigUpdate = (config) => {
       applyConfigToData(config);
       updateActivationSummary();
       updateDashboardStatus();
       initAdminUIOnce();
-      if (!hasConfigLoaded) {
-        hasConfigLoaded = true;
-        if (configLoading) {
-          configLoading.hidden = true;
-        }
-      }
     };
 
     configUnsubscribe = subscribeConfigFromFirebase(handleConfigUpdate);
@@ -960,7 +944,6 @@
       resetLoginForm();
       return;
     }
-    setViewState('loading');
     checkAdminAllowlist(user).then((hasAccess) => {
       resetLoginForm();
       adminAccessGranted = hasAccess;
@@ -976,7 +959,7 @@
   function init() {
     cacheAuthElements();
     attachAuthListeners();
-    setViewState('loading');
+    setViewState('login');
 
     if (typeof auth === 'undefined') {
       setLoginError('No se pudo cargar la autenticación.');
