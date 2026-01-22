@@ -8,28 +8,30 @@
 </head>
 <body class="admin-ui">
   <main class="page admin-layout">
-    <aside class="admin-sidebar">
-      <div class="sidebar-logo">Helpin</div>
-      <nav class="sidebar-nav" aria-label="Pestañas de administración">
-        <button class="tab-button active" type="button" data-tab-target="dashboard">
-          <i data-lucide="layout-dashboard" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Panel</span>
-        </button>
-        <button class="tab-button" type="button" data-tab-target="knowledge">
-          <i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Contenido oficial</span>
-        </button>
-        <button class="tab-button sidebar-parent" type="button" data-submenu-toggle="settings" aria-expanded="false" aria-controls="settingsSubmenu">
-          <i data-lucide="settings" class="nav-icon" aria-hidden="true"></i>
-          <span class="nav-label">Configuración</span>
-        </button>
-        <div class="sidebar-submenu" id="settingsSubmenu" role="group" aria-label="Opciones de configuración">
-          <button class="tab-button subtab-button" type="button" data-tab-target="settings-contact">Contacto RR. HH.</button>
-          <button class="tab-button subtab-button" type="button" data-tab-target="settings-limits">Límites</button>
-        </div>
-        <a class="sidebar-cta sidebar-chat" id="employeeChatLink" href="chat.html">Probar como colaborador</a>
-      </nav>
-    </aside>
+    <div class="admin-sidebar-wrapper">
+      <aside class="admin-sidebar">
+        <div class="sidebar-logo">Helpin</div>
+        <nav class="sidebar-nav" aria-label="Pestañas de administración">
+          <button class="tab-button active" type="button" data-tab-target="dashboard">
+            <i data-lucide="layout-dashboard" class="nav-icon" aria-hidden="true"></i>
+            <span class="nav-label">Panel</span>
+          </button>
+          <button class="tab-button" type="button" data-tab-target="knowledge">
+            <i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i>
+            <span class="nav-label">Contenido oficial</span>
+          </button>
+          <button class="tab-button sidebar-parent" type="button" data-submenu-toggle="settings" aria-expanded="false" aria-controls="settingsSubmenu">
+            <i data-lucide="settings" class="nav-icon" aria-hidden="true"></i>
+            <span class="nav-label">Configuración</span>
+          </button>
+          <div class="sidebar-submenu" id="settingsSubmenu" role="group" aria-label="Opciones de configuración">
+            <button class="tab-button subtab-button" type="button" data-tab-target="settings-contact">Contacto RR. HH.</button>
+            <button class="tab-button subtab-button" type="button" data-tab-target="settings-limits">Límites</button>
+          </div>
+        </nav>
+      </aside>
+      <a class="sidebar-cta sidebar-chat" id="employeeChatLink" href="chat.html">Probar como colaborador</a>
+    </div>
     <div class="admin-content">
       <section class="section tab-panel active" data-tab-panel="dashboard">
         <div class="section-header">
