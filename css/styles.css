@@ -102,13 +102,13 @@ body.admin-ui::after {
 }
 
 .admin-sidebar {
-  width: 280px;
+  width: 240px;
   flex-shrink: 0;
   border-right: none;
-  padding: 18px 12px;
+  padding: 16px 10px;
   background: rgba(255, 255, 255, 0.95);
-  font-size: 18px;
-  line-height: 26px;
+  font-size: 16px;
+  line-height: 24px;
   backdrop-filter: blur(18px);
   height: fit-content;
   box-shadow: 0 24px 45px rgba(28, 22, 46, 0.18);
@@ -117,9 +117,9 @@ body.admin-ui::after {
 }
 
 .sidebar-logo {
-  padding: 6px 14px 12px;
-  font-size: 18px;
-  line-height: 26px;
+  padding: 6px 12px 10px;
+  font-size: 17px;
+  line-height: 24px;
   font-weight: 600;
   color: var(--title);
   font-family: var(--font-display);
@@ -128,7 +128,7 @@ body.admin-ui::after {
 .admin-content {
   flex: 1;
   min-width: 0;
-  margin-left: 300px;
+  margin-left: 260px;
 }
 
 .admin-content .section {
@@ -250,7 +250,7 @@ body.admin-ui::after {
 .sidebar-submenu {
   display: grid;
   gap: 6px;
-  padding-left: 50px;
+  padding-left: 42px;
   margin-top: -2px;
   margin-bottom: 6px;
 }
@@ -272,21 +272,21 @@ body.admin-ui::after {
   border: 1px solid transparent;
   border-left: none;
   box-shadow: none;
-  padding: 12px 16px;
+  padding: 10px 12px;
   border-radius: 12px;
-  font-size: 18px;
-  line-height: 26px;
+  font-size: 16px;
+  line-height: 24px;
   color: var(--text);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   justify-content: flex-start;
 }
 
 .tab-button.subtab-button {
-  padding: 8px 12px;
-  font-size: 17px;
-  line-height: 24px;
+  padding: 6px 10px;
+  font-size: 15px;
+  line-height: 22px;
   gap: 0;
 }
 
@@ -364,14 +364,14 @@ body.admin-ui::after {
 }
 
 .nav-icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   color: var(--muted);
 }
 
 .nav-label {
   opacity: 1;
-  max-width: 190px;
+  max-width: 160px;
   overflow: hidden;
   white-space: nowrap;
 }
