@@ -1,6 +1,13 @@
 (function () {
   const defaultWelcome =
-    'Usted puede realizar consultas sobre políticas internas, beneficios o procedimientos de RR. HH.';
+    'Puedes preguntar sobre políticas internas, beneficios o procesos de RR. HH.';
+  const premiumWelcome = '¿Qué necesitas hoy?';
+  const premiumPlaceholder = 'Pregunta lo que necesites…';
+  const premiumTyping = 'Pensando';
+  const premiumFollowUps = [
+    '¿Quieres que revise otro tema?',
+    'Puedo ayudarte con beneficios, licencias o pagos.'
+  ];
   const data = window.HelpinData;
   const DEFAULT_CONFIG = {
     assistantActive: data?.settings?.assistantActive ?? false,
@@ -92,6 +99,9 @@
     if (options.isTyping) {
       message.classList.add('typing');
     }
+    if (options.className) {
+      message.classList.add(options.className);
+    }
     return message;
   }
 
@@ -129,7 +139,7 @@
     return (
       data.settings?.noInfoMessage ||
       data.sampleResponses?.fallback ||
-      'Por favor, contacte a RR. HH. para confirmación.'
+      'Para evitar errores, es mejor confirmarlo con RR. HH.'
     );
   }
 
@@ -176,12 +186,15 @@
     }
   }
 
-  function initChat({ container, data, mode }) {
+  async function initChat({ container, data, mode }) {
     if (!container || !data) {
       return;
     }
 
     container.innerHTML = '';
+    const isPremium = container.dataset.variant === 'premium';
+    const welcomeText = isPremium ? premiumWelcome : defaultWelcome;
+    const typingText = isPremium ? premiumTyping : 'Respondiendo…';
 
     const shell = document.createElement('div');
     shell.className = 'chat-shell';
@@ -198,7 +211,9 @@
 
     const input = document.createElement('textarea');
     input.rows = 1;
-    input.placeholder = 'Escribe tu consulta con el mayor detalle posible.';
+    input.placeholder = isPremium
+      ? premiumPlaceholder
+      : 'Escribe tu consulta con el mayor detalle posible.';
 
     const sendButton = document.createElement('button');
     sendButton.type = 'button';
@@ -207,14 +222,41 @@
 
     const status = document.createElement('div');
     status.className = 'chat-status';
-    status.textContent = 'Respondiendo…';
+    status.textContent = typingText;
     status.hidden = true;
 
     inputRow.append(input, sendButton, status);
     shell.append(header, body, inputRow);
     container.appendChild(shell);
 
-    body.appendChild(createMessage(defaultWelcome, 'assistant', { isNew: true }));
+    const welcomeMessage = createMessage('', 'assistant', { isNew: true });
+    body.appendChild(welcomeMessage);
+    if (isPremium) {
+      typeIntoElement(welcomeMessage, welcomeText, {
+        mode: 'char',
+        minDelay: 120,
+        maxDelay: 180,
+        onUpdate: () => scrollToBottom()
+      });
+    } else {
+      welcomeMessage.textContent = welcomeText;
+    }
+
+    if (isPremium) {
+      const quickActions = document.createElement('div');
+      quickActions.className = 'quick-actions';
+      ['Vacaciones', 'Licencias', 'Beneficios', 'Contrato', 'Pago / sueldo'].forEach(
+        (label) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'quick-action';
+          button.textContent = label;
+          button.addEventListener('click', () => sendMessage(label));
+          quickActions.appendChild(button);
+        }
+      );
+      body.appendChild(quickActions);
+    }
     if (mode === 'preview') {
       const previewQuestion =
         '¿Qué debo saber sobre vacaciones, beneficios o políticas internas?';
@@ -258,7 +300,7 @@
         return;
       }
       body.appendChild(createMessage(trimmed, 'user'));
-      const typingIndicator = createMessage('Respondiendo…', 'assistant', {
+      const typingIndicator = createMessage(typingText, 'assistant', {
         isTyping: true
       });
       body.appendChild(typingIndicator);
@@ -269,6 +311,9 @@
       status.hidden = false;
       input.value = '';
       adjustTextareaHeight();
+      if (isPremium) {
+        await sleep(350);
+      }
       const replyText = await sendToAIMessage(trimmed, data);
       typingIndicator.remove();
       status.hidden = true;
@@ -283,6 +328,30 @@
       inputRow.classList.remove('is-disabled');
       scrollToBottom();
       input.focus();
+      if (isPremium && mode !== 'preview') {
+        const hrEmail = data.settings?.hrContact?.email;
+        if (hrEmail) {
+          const actionRow = document.createElement('div');
+          actionRow.className = 'assistant-action';
+          const actionButton = document.createElement('button');
+          actionButton.type = 'button';
+          actionButton.className = 'assistant-action-button';
+          actionButton.textContent = 'Contactar RR. HH.';
+          actionButton.addEventListener('click', () => {
+            window.location.href = `mailto:${hrEmail}`;
+          });
+          actionRow.appendChild(actionButton);
+          body.appendChild(actionRow);
+        }
+        const followUp =
+          premiumFollowUps[Math.floor(Math.random() * premiumFollowUps.length)];
+        const followUpMessage = createMessage(followUp, 'assistant', {
+          isNew: true,
+          className: 'follow-up'
+        });
+        body.appendChild(followUpMessage);
+        scrollToBottom();
+      }
       if (mode === 'preview') {
         input.focus();
       }
