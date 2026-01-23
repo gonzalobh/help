@@ -82,10 +82,16 @@
     }
   }
 
-  function createMessage(content, role) {
+  function createMessage(content, role, options = {}) {
     const message = document.createElement('div');
     message.className = `message ${role}`;
     message.textContent = content;
+    if (options.isNew) {
+      message.classList.add('is-new');
+    }
+    if (options.isTyping) {
+      message.classList.add('typing');
+    }
     return message;
   }
 
@@ -130,10 +136,18 @@
         })
       });
       const result = await response.json();
-      body.appendChild(createMessage(result.reply, 'assistant'));
+      const responseMessage = createMessage(result.reply, 'assistant', {
+        isNew: true
+      });
+      body.appendChild(responseMessage);
+      return responseMessage;
     } catch (error) {
       logError('No se pudo obtener respuesta del asistente.', error);
-      body.appendChild(createMessage(fallbackMessage, 'assistant'));
+      const fallback = createMessage(fallbackMessage, 'assistant', {
+        isNew: true
+      });
+      body.appendChild(fallback);
+      return fallback;
     }
   }
 
@@ -157,20 +171,25 @@
     const inputRow = document.createElement('div');
     inputRow.className = 'chat-input';
 
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.placeholder = 'Escriba una consulta';
+    const input = document.createElement('textarea');
+    input.rows = 1;
+    input.placeholder = 'Escribe tu consulta con el mayor detalle posible.';
 
     const sendButton = document.createElement('button');
     sendButton.type = 'button';
     sendButton.className = 'primary';
     sendButton.textContent = 'Enviar';
 
-    inputRow.append(input, sendButton);
+    const status = document.createElement('div');
+    status.className = 'chat-status';
+    status.textContent = 'Respondiendo…';
+    status.hidden = true;
+
+    inputRow.append(input, sendButton, status);
     shell.append(header, body, inputRow);
     container.appendChild(shell);
 
-    body.appendChild(createMessage(defaultWelcome, 'assistant'));
+    body.appendChild(createMessage(defaultWelcome, 'assistant', { isNew: true }));
     if (mode === 'preview') {
       const previewQuestion =
         '¿Qué debo saber sobre vacaciones, beneficios o políticas internas?';
@@ -179,28 +198,60 @@
         body.appendChild(
           createMessage(
             `${getContextPrefix(data)}${data.knowledgeContent.trim()}`,
-            'assistant'
+            'assistant',
+            { isNew: true }
           )
         );
       } else {
         body.appendChild(
           createMessage(
             getFallbackMessage(data),
-            'assistant'
+            'assistant',
+            { isNew: true }
           )
         );
       }
     }
 
-    function sendMessage(message) {
+    function scrollToBottom(behavior = 'smooth') {
+      body.scrollTo({
+        top: body.scrollHeight,
+        behavior
+      });
+    }
+
+    function adjustTextareaHeight() {
+      input.style.height = 'auto';
+      const nextHeight = Math.min(input.scrollHeight, 160);
+      input.style.height = `${nextHeight}px`;
+      input.style.overflowY = input.scrollHeight > 160 ? 'auto' : 'hidden';
+    }
+
+    async function sendMessage(message) {
       const trimmed = message.trim();
       if (!trimmed) {
         return;
       }
       body.appendChild(createMessage(trimmed, 'user'));
-      sendToAIMessage(trimmed, body, data);
-      body.scrollTop = body.scrollHeight;
+      const typingIndicator = createMessage('Respondiendo…', 'assistant', {
+        isTyping: true
+      });
+      body.appendChild(typingIndicator);
+      scrollToBottom();
+      input.disabled = true;
+      sendButton.disabled = true;
+      inputRow.classList.add('is-disabled');
+      status.hidden = false;
       input.value = '';
+      adjustTextareaHeight();
+      await sendToAIMessage(trimmed, body, data);
+      typingIndicator.remove();
+      input.disabled = false;
+      sendButton.disabled = false;
+      inputRow.classList.remove('is-disabled');
+      status.hidden = true;
+      scrollToBottom();
+      input.focus();
       if (mode === 'preview') {
         input.focus();
       }
@@ -208,16 +259,20 @@
 
     sendButton.addEventListener('click', () => sendMessage(input.value));
     input.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
         sendMessage(input.value);
       }
     });
+    input.addEventListener('input', adjustTextareaHeight);
+    adjustTextareaHeight();
 
     if (mode === 'preview') {
       input.disabled = true;
       sendButton.disabled = true;
       input.placeholder = 'Escriba una consulta';
     }
+    scrollToBottom('auto');
 
     if (mode === 'preview') {
       const footer = document.createElement('div');

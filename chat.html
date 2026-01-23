@@ -6,23 +6,30 @@
   <title>Chat de Helpin</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
-  <main class="page">
-    <header class="section">
-      <div class="header-title">Helpin</div>
-      <div class="header-subtitle">Preguntas frecuentes y autoservicio para colaboradores (Chat)</div>
-      <div class="helper-text">
-        Use el asistente para obtener respuestas desde el conocimiento interno aprobado.
-      </div>
-      <div class="page-links">
-        <a href="admin.html">Volver a la configuración</a>
+<body class="chat-ui">
+  <div class="chat-page">
+    <header class="chat-page-header">
+      <div class="chat-header-content">
+        <div>
+          <div class="chat-brand">Helpin</div>
+          <div class="chat-tagline">
+            Preguntas frecuentes y autoservicio para colaboradores
+          </div>
+        </div>
+        <a class="chat-back-link" href="admin.html">Volver a la configuración</a>
       </div>
     </header>
 
-    <section class="section">
-      <div id="chatApp"></div>
-    </section>
-  </main>
+    <main class="chat-content">
+      <section class="chat-card">
+        <div class="chat-card-header">
+          <h1>Asistente de Helpin</h1>
+          <p>Use el asistente para obtener respuestas desde el conocimiento interno aprobado.</p>
+        </div>
+        <div id="chatApp" class="chat-app"></div>
+      </section>
+    </main>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
