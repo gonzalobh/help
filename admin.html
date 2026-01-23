@@ -158,13 +158,6 @@
       display: none;
     }
 
-    .assistant-status-message {
-      margin: 8px 0 0;
-      font-size: 16px;
-      color: var(--title);
-      font-weight: 600;
-    }
-
     .assistant-toggle .toggle-switch--hero {
       width: 84px;
       height: 42px;
@@ -182,19 +175,6 @@
 
     .toggle-input:checked + .toggle-switch--hero::after {
       transform: translateX(40px);
-    }
-
-    .assistant-primary-cta {
-      width: min(420px, 100%);
-      font-size: 18px;
-      padding: 18px 32px;
-      box-shadow: 0 18px 40px rgba(59, 42, 152, 0.3);
-    }
-
-    .assistant-primary-helper {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 14px;
     }
 
     .assistant-meta {
@@ -414,13 +394,6 @@
                   <input id="assistantActive" class="toggle-input" type="checkbox" />
                   <span class="toggle-switch toggle-switch--lg toggle-switch--hero" aria-hidden="true"></span>
                 </label>
-              </div>
-              <p class="assistant-status-message" id="assistantStateMessage">El asistente está desactivado</p>
-              <div class="assistant-primary-action">
-                <button class="cta-button primary assistant-primary-cta" type="button" id="dashboardCta" data-cta-type="chat">
-                  Probar como colaborador
-                </button>
-                <p class="assistant-primary-helper">Abre el asistente tal como lo verá un colaborador.</p>
               </div>
             </div>
             <div class="assistant-meta">
