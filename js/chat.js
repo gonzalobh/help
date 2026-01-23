@@ -236,21 +236,6 @@
       welcomeMessage.textContent = welcomeText;
     }
 
-    if (isPremium) {
-      const quickActions = document.createElement('div');
-      quickActions.className = 'quick-actions';
-      ['Vacaciones', 'Licencias', 'Beneficios', 'Contrato', 'Pago / sueldo'].forEach(
-        (label) => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'quick-action';
-          button.textContent = label;
-          button.addEventListener('click', () => sendMessage(label));
-          quickActions.appendChild(button);
-        }
-      );
-      body.appendChild(quickActions);
-    }
     if (mode === 'preview') {
       const previewQuestion =
         '¿Qué debo saber sobre vacaciones, beneficios o políticas internas?';
