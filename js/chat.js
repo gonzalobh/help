@@ -4,10 +4,6 @@
   const premiumWelcome = '¿Qué necesitas hoy?';
   const premiumPlaceholder = 'Pregunta lo que necesites…';
   const premiumTyping = 'Pensando';
-  const premiumFollowUps = [
-    '¿Quieres que revise otro tema?',
-    'Puedo ayudarte con beneficios, licencias o pagos.'
-  ];
   const data = window.HelpinData;
   const DEFAULT_CONFIG = {
     assistantActive: data?.settings?.assistantActive ?? false,
@@ -329,30 +325,6 @@
       scrollToBottom();
       input.focus();
       if (isPremium && mode !== 'preview') {
-        const hrEmail = data.settings?.hrContact?.email;
-        if (hrEmail) {
-          const actionMessage = document.createElement('div');
-          actionMessage.className = 'message assistant cta';
-          const actionRow = document.createElement('div');
-          actionRow.className = 'assistant-action';
-          const actionButton = document.createElement('button');
-          actionButton.type = 'button';
-          actionButton.className = 'assistant-action-button';
-          actionButton.textContent = 'Contactar RR. HH.';
-          actionButton.addEventListener('click', () => {
-            window.location.href = `mailto:${hrEmail}`;
-          });
-          actionRow.appendChild(actionButton);
-          actionMessage.appendChild(actionRow);
-          body.appendChild(actionMessage);
-        }
-        const followUp =
-          premiumFollowUps[Math.floor(Math.random() * premiumFollowUps.length)];
-        const followUpMessage = createMessage(followUp, 'assistant', {
-          isNew: true,
-          className: 'follow-up'
-        });
-        body.appendChild(followUpMessage);
         scrollToBottom('smooth');
       }
       if (mode === 'preview') {
@@ -382,14 +354,6 @@
       footer.className = 'preview-footer';
       const actions = document.createElement('div');
       actions.className = 'preview-actions';
-      if (data.settings?.assistantBoundaries?.alwaysEscalate) {
-        const hrButton = document.createElement('button');
-        hrButton.type = 'button';
-        hrButton.className = 'secondary small';
-        hrButton.textContent = 'Contactar a RR. HH.';
-        actions.appendChild(hrButton);
-      }
-
       const disclaimerText = data.settings?.disclaimer;
       if (actions.children.length) {
         footer.appendChild(actions);
