@@ -95,6 +95,36 @@
     return message;
   }
 
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function typeIntoElement(
+    el,
+    fullText,
+    { mode = 'word', minDelay = 12, maxDelay = 28, onUpdate } = {}
+  ) {
+    const text = fullText || '';
+    const tokens =
+      mode === 'char'
+        ? Array.from(text)
+        : text.split(/(\s+)/).filter((token) => token.length > 0);
+    let currentText = '';
+    for (const token of tokens) {
+      currentText += token;
+      el.textContent = currentText;
+      if (onUpdate) {
+        onUpdate();
+      }
+      if (maxDelay > 0) {
+        const delay =
+          minDelay + Math.random() * Math.max(0, maxDelay - minDelay);
+        await sleep(delay);
+      }
+    }
+    el.textContent = text;
+  }
+
   function getFallbackMessage(data) {
     return (
       data.settings?.noInfoMessage ||
@@ -114,7 +144,7 @@
     return `Según las políticas internas de la empresa, alineadas con la legislación de ${country}:\n`;
   }
 
-  async function sendToAIMessage(userMessage, body, data) {
+  async function sendToAIMessage(userMessage, data) {
     const fallbackMessage =
       data.settings?.noInfoMessage || getFallbackMessage(data);
 
@@ -135,19 +165,14 @@
           }
         })
       });
+      if (!response.ok) {
+        throw new Error(`Respuesta inválida: ${response.status}`);
+      }
       const result = await response.json();
-      const responseMessage = createMessage(result.reply, 'assistant', {
-        isNew: true
-      });
-      body.appendChild(responseMessage);
-      return responseMessage;
+      return result?.reply || fallbackMessage;
     } catch (error) {
       logError('No se pudo obtener respuesta del asistente.', error);
-      const fallback = createMessage(fallbackMessage, 'assistant', {
-        isNew: true
-      });
-      body.appendChild(fallback);
-      return fallback;
+      return fallbackMessage;
     }
   }
 
@@ -244,12 +269,18 @@
       status.hidden = false;
       input.value = '';
       adjustTextareaHeight();
-      await sendToAIMessage(trimmed, body, data);
+      const replyText = await sendToAIMessage(trimmed, data);
       typingIndicator.remove();
+      status.hidden = true;
+      const responseMessage = createMessage('', 'assistant', { isNew: true });
+      body.appendChild(responseMessage);
+      await typeIntoElement(responseMessage, replyText, {
+        mode: 'word',
+        onUpdate: () => scrollToBottom()
+      });
       input.disabled = false;
       sendButton.disabled = false;
       inputRow.classList.remove('is-disabled');
-      status.hidden = true;
       scrollToBottom();
       input.focus();
       if (mode === 'preview') {
