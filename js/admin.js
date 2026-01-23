@@ -651,6 +651,44 @@
       });
     }
 
+    const saveAdvancedButton = document.querySelector('#saveAdvanced');
+    const saveAdvancedStatus = document.querySelector('#saveAdvancedStatus');
+    if (saveAdvancedButton) {
+      const defaultLabel = saveAdvancedButton.textContent.trim();
+      let statusTimeout = null;
+      let statusResetTimeout = null;
+
+      saveAdvancedButton.addEventListener('click', () => {
+        if (statusTimeout) {
+          clearTimeout(statusTimeout);
+        }
+        if (statusResetTimeout) {
+          clearTimeout(statusResetTimeout);
+        }
+
+        settings.disclaimer = contactDraft.disclaimer;
+
+        saveAdvancedButton.textContent = 'Guardando…';
+        saveAdvancedButton.disabled = true;
+        updateRemoteConfig({
+          disclaimer: settings.disclaimer,
+          tone: settings.tone || ''
+        });
+
+        statusTimeout = setTimeout(() => {
+          saveAdvancedButton.textContent = defaultLabel;
+          saveAdvancedButton.disabled = false;
+          if (saveAdvancedStatus) {
+            saveAdvancedStatus.classList.add('is-visible');
+            statusResetTimeout = setTimeout(() => {
+              saveAdvancedStatus.classList.remove('is-visible');
+            }, 2600);
+          }
+          showSaveFeedback();
+        }, 700);
+      });
+    }
+
     const saveContactButton = document.querySelector('#saveContact');
     const saveContactStatus = document.querySelector('#saveContactStatus');
     if (saveContactButton) {
