@@ -236,7 +236,7 @@
         mode: 'char',
         minDelay: 120,
         maxDelay: 180,
-        onUpdate: () => scrollToBottom()
+        onUpdate: () => scrollToBottom('auto')
       });
     } else {
       welcomeMessage.textContent = welcomeText;
@@ -280,7 +280,7 @@
       }
     }
 
-    function scrollToBottom(behavior = 'smooth') {
+    function scrollToBottom(behavior = 'auto') {
       body.scrollTo({
         top: body.scrollHeight,
         behavior
@@ -321,7 +321,7 @@
       body.appendChild(responseMessage);
       await typeIntoElement(responseMessage, replyText, {
         mode: 'word',
-        onUpdate: () => scrollToBottom()
+        onUpdate: () => scrollToBottom('auto')
       });
       input.disabled = false;
       sendButton.disabled = false;
@@ -332,7 +332,7 @@
         const hrEmail = data.settings?.hrContact?.email;
         if (hrEmail) {
           const actionMessage = document.createElement('div');
-          actionMessage.className = 'message assistant follow-up';
+          actionMessage.className = 'message assistant cta';
           const actionRow = document.createElement('div');
           actionRow.className = 'assistant-action';
           const actionButton = document.createElement('button');
@@ -353,7 +353,7 @@
           className: 'follow-up'
         });
         body.appendChild(followUpMessage);
-        scrollToBottom();
+        scrollToBottom('smooth');
       }
       if (mode === 'preview') {
         input.focus();
