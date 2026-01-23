@@ -893,6 +893,7 @@ label {
 }
 
 input[type="text"],
+input[type="email"],
 select,
 textarea {
   width: 100%;
@@ -906,6 +907,7 @@ textarea {
 }
 
 input[type="text"]:focus,
+input[type="email"]:focus,
 select:focus,
 textarea:focus {
   border-color: rgba(59, 42, 152, 0.45);
