@@ -229,9 +229,7 @@
     body.appendChild(welcomeMessage);
     if (isPremium) {
       typeIntoElement(welcomeMessage, welcomeText, {
-        mode: 'char',
-        minDelay: 120,
-        maxDelay: 180,
+        mode: 'word',
         onUpdate: () => scrollToBottom('auto')
       });
     } else {
