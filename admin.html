@@ -520,16 +520,12 @@
                 GB
               </button>
               <div class="profile-dropdown" id="profileDropdown" role="menu" aria-label="Opciones de perfil">
-                <a class="profile-dropdown-item" href="#profileSection" role="menuitem">Ver perfil</a>
+                <a class="profile-dropdown-item" href="#profileSection" role="menuitem">Perfil</a>
                 <button class="profile-dropdown-item" id="logoutButton" type="button" role="menuitem">Cerrar sesión</button>
               </div>
             </div>
           </div>
           <nav class="sidebar-nav" aria-label="Secciones del panel">
-            <a class="sidebar-link" href="#profileSection">
-              <i data-lucide="user-circle" class="nav-icon" aria-hidden="true"></i>
-              Perfil
-            </a>
             <a class="sidebar-link" href="#assistantStatus">
               <i data-lucide="shield" class="nav-icon" aria-hidden="true"></i>
               Estado del asistente
@@ -589,7 +585,7 @@
                   <input id="profileName" type="text" placeholder="Nombre y apellido" required />
                 </div>
                 <div>
-                  <label for="profileContactEmail">Email de contacto</label>
+                  <label for="profileContactEmail">Email del administrador</label>
                   <input
                     id="profileContactEmail"
                     type="email"
@@ -597,7 +593,9 @@
                     required
                   />
                   <p class="field-help">
-                    Email de contacto visible en el panel. No modifica el email de acceso.
+                    Visible solo en el panel administrativo.
+                    No se utiliza para escalar consultas de RR. HH.
+                    No modifica el email de acceso.
                   </p>
                 </div>
               </div>
@@ -743,8 +741,12 @@ Ejemplo:
             </div>
             <div class="form-grid">
               <div>
-                <label for="hrEmail">Correo RR. HH.</label>
+                <label for="hrEmail">Email oficial de RR. HH. (escalamiento)</label>
                 <input id="hrEmail" type="text" placeholder="ejemplo@empresa.com" />
+                <p class="field-help">
+                  Este email será mostrado a los colaboradores
+                  cuando el asistente no pueda responder.
+                </p>
               </div>
               <div>
                 <label for="hrFallback">Mensaje alternativo RR. HH.</label>
