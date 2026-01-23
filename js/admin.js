@@ -20,6 +20,11 @@
     },
     updatedAt: null
   };
+  const DEFAULT_PROFILE = {
+    name: '',
+    contactEmail: '',
+    avatar: ''
+  };
   let activeTab = 'dashboard';
   let setActiveTab = () => {};
   let showToggleFeedback = () => {};
@@ -34,6 +39,7 @@
   let hasInitialized = false;
   let configUnsubscribe = null;
   const ui = {};
+  let profileDraft = { ...DEFAULT_PROFILE };
 
   function logError(message, error) {
     console.error(`[Helpin] ${message}`, error);
@@ -102,6 +108,90 @@
         showSaveErrorFeedback();
         setPanelSaveState('Error al guardar, reintenta', 'error');
       });
+  }
+
+  function getInitials(name) {
+    if (typeof name !== 'string') {
+      return 'AD';
+    }
+    const parts = name
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (!parts.length) {
+      return 'AD';
+    }
+    const initials = parts
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join('');
+    return initials || 'AD';
+  }
+
+  function renderProfileAvatar(avatarUrl, name) {
+    const avatar = document.querySelector('#profileAvatar');
+    const menuButton = document.querySelector('#profileMenuButton');
+    const initials = getInitials(name);
+
+    if (avatar) {
+      avatar.textContent = initials;
+      if (avatarUrl) {
+        avatar.style.backgroundImage = `url(${avatarUrl})`;
+        avatar.classList.add('has-image');
+      } else {
+        avatar.style.backgroundImage = '';
+        avatar.classList.remove('has-image');
+      }
+    }
+
+    if (menuButton) {
+      menuButton.textContent = initials;
+    }
+  }
+
+  function loadAdminProfile() {
+    if (
+      typeof db === 'undefined' ||
+      typeof auth === 'undefined' ||
+      !auth.currentUser ||
+      !adminAccessGranted
+    ) {
+      return Promise.resolve({ ...DEFAULT_PROFILE });
+    }
+    return db
+      .ref('adminProfile')
+      .once('value')
+      .then((snapshot) => {
+        if (!snapshot.exists()) {
+          return { ...DEFAULT_PROFILE };
+        }
+        const value = snapshot.val() || {};
+        return {
+          name: value.name || '',
+          contactEmail: value.contactEmail || '',
+          avatar: value.avatar || ''
+        };
+      })
+      .catch((error) => {
+        logError('No se pudo cargar el perfil.', error);
+        return { ...DEFAULT_PROFILE };
+      });
+  }
+
+  function saveAdminProfile(profile) {
+    if (
+      typeof db === 'undefined' ||
+      typeof auth === 'undefined' ||
+      !auth.currentUser ||
+      !adminAccessGranted
+    ) {
+      return Promise.reject(new Error('Sin acceso a la base de datos.'));
+    }
+    return db.ref('adminProfile').set({
+      name: profile.name || '',
+      contactEmail: profile.contactEmail || '',
+      avatar: profile.avatar || ''
+    });
   }
 
   function cacheAuthElements() {
@@ -398,6 +488,119 @@
         showSaveFeedback();
       });
     }
+  }
+
+  function initProfileForm() {
+    const nameInput = document.querySelector('#profileName');
+    const emailInput = document.querySelector('#profileContactEmail');
+    const saveButton = document.querySelector('#saveProfile');
+    const alert = document.querySelector('#profileFormAlert');
+    const uploadButton = document.querySelector('#profileUploadButton');
+    const uploadInput = document.querySelector('#profileAvatarInput');
+
+    if (!nameInput || !emailInput || !saveButton) {
+      return;
+    }
+
+    const showAlert = (message) => {
+      if (!alert) {
+        return;
+      }
+      if (message) {
+        alert.textContent = message;
+        alert.hidden = false;
+      } else {
+        alert.textContent = '';
+        alert.hidden = true;
+      }
+    };
+
+    const applyProfile = (profile) => {
+      profileDraft = {
+        ...DEFAULT_PROFILE,
+        ...profile
+      };
+      nameInput.value = profileDraft.name;
+      emailInput.value = profileDraft.contactEmail;
+      renderProfileAvatar(profileDraft.avatar, profileDraft.name);
+    };
+
+    loadAdminProfile().then((profile) => {
+      applyProfile(profile);
+    });
+
+    nameInput.addEventListener('input', (event) => {
+      profileDraft.name = event.target.value;
+      renderProfileAvatar(profileDraft.avatar, profileDraft.name);
+      showAlert('');
+    });
+
+    emailInput.addEventListener('input', (event) => {
+      profileDraft.contactEmail = event.target.value;
+      showAlert('');
+    });
+
+    if (uploadButton && uploadInput) {
+      uploadButton.addEventListener('click', () => {
+        uploadInput.click();
+      });
+
+      uploadInput.addEventListener('change', (event) => {
+        const file = event.target.files?.[0];
+        if (!file) {
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = typeof reader.result === 'string' ? reader.result : '';
+          profileDraft.avatar = result;
+          renderProfileAvatar(profileDraft.avatar, profileDraft.name);
+        };
+        reader.onerror = () => {
+          logError('No se pudo leer la imagen del avatar.', reader.error);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    const defaultLabel = saveButton.textContent.trim();
+    let resetTimeout = null;
+
+    saveButton.addEventListener('click', () => {
+      const nameValue = profileDraft.name.trim();
+      const emailValue = profileDraft.contactEmail.trim();
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!nameValue || !emailPattern.test(emailValue)) {
+        showAlert('Completa nombre y un email válido.');
+        return;
+      }
+
+      showAlert('');
+      if (resetTimeout) {
+        clearTimeout(resetTimeout);
+      }
+      saveButton.textContent = 'Guardando…';
+      saveButton.disabled = true;
+
+      saveAdminProfile({
+        name: nameValue,
+        contactEmail: emailValue,
+        avatar: profileDraft.avatar
+      })
+        .then(() => {
+          saveButton.textContent = 'Perfil guardado';
+          resetTimeout = setTimeout(() => {
+            saveButton.textContent = defaultLabel;
+            saveButton.disabled = false;
+          }, 1800);
+        })
+        .catch((error) => {
+          logError('No se pudo guardar el perfil.', error);
+          saveButton.textContent = defaultLabel;
+          saveButton.disabled = false;
+        });
+    });
   }
 
   function initTabs() {
@@ -811,6 +1014,7 @@
       return;
     }
     initTabs();
+    initProfileForm();
     initKnowledgeEditor();
     renderSettings();
     renderActivity();
