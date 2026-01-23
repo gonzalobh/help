@@ -343,13 +343,6 @@ body.admin-ui::after {
   font-size: 16px;
 }
 
-.assistant-primary-cta {
-  width: min(320px, 100%);
-  font-size: 16px;
-  padding: 14px 28px;
-  box-shadow: 0 18px 30px rgba(43, 27, 155, 0.3);
-}
-
 .assistant-meta {
   display: grid;
   gap: 8px;

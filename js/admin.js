@@ -22,7 +22,6 @@
   };
   let activeTab = 'dashboard';
   let setActiveTab = () => {};
-  let dashboardCtaHandler = null;
   let showToggleFeedback = () => {};
   let showSaveFeedback = () => {};
   let showSaveErrorFeedback = () => {};
@@ -313,30 +312,18 @@
       '#assistantStatusSubtitle'
     );
     const assistantStateTitle = document.querySelector('#assistantStateTitle');
-    const assistantStateMessage = document.querySelector('#assistantStateMessage');
-    const ctaButton = document.querySelector('#dashboardCta');
     const completion = getSetupCompletion();
     const assistantActive = completion.activation;
 
     let statusLabel = '🟡 No activo';
     let statusMessage = 'Falta completar la configuración';
-    let ctaLabel = 'Probar como colaborador';
-    let ctaTarget = '';
-    let ctaType = 'chat';
 
     if (assistantActive) {
       statusLabel = '🟢 Activo';
       statusMessage = 'Disponible para colaboradores';
-      ctaLabel = 'Probar como colaborador';
-      ctaType = 'chat';
     } else if (completion.knowledge && completion.hr) {
       statusLabel = '🔴 Desactivado';
       statusMessage = 'El asistente está apagado';
-      ctaType = 'chat';
-    } else if (!completion.knowledge) {
-      ctaType = 'chat';
-    } else if (!completion.hr) {
-      ctaType = 'chat';
     }
 
     if (assistantStatusValue) {
@@ -360,17 +347,6 @@
       assistantStateTitle.dataset.status = assistantActive
         ? 'active'
         : 'inactive';
-    }
-    if (assistantStateMessage) {
-      assistantStateMessage.textContent = assistantActive
-        ? 'El asistente está activo'
-        : 'El asistente está desactivado';
-    }
-
-    if (ctaButton) {
-      ctaButton.textContent = ctaLabel;
-      ctaButton.dataset.ctaType = ctaType;
-      ctaButton.dataset.tabLink = ctaType === 'tab' ? ctaTarget : '';
     }
   }
 
@@ -854,26 +830,6 @@
         showToggleFeedback();
       });
     });
-
-    const dashboardCta = document.querySelector('#dashboardCta');
-    if (dashboardCta) {
-      if (dashboardCtaHandler) {
-        dashboardCta.removeEventListener('click', dashboardCtaHandler);
-      }
-      dashboardCtaHandler = (event) => {
-        const ctaType = dashboardCta.dataset.ctaType;
-        if (ctaType === 'chat') {
-          window.location.href = 'chat.html';
-          return;
-        }
-        const target = dashboardCta.dataset.tabLink;
-        if (target) {
-          event.preventDefault();
-          setActiveTab(target);
-        }
-      };
-      dashboardCta.addEventListener('click', dashboardCtaHandler);
-    }
 
     const saveAllButton = document.querySelector('#saveAllChanges');
     if (saveAllButton) {
