@@ -20,6 +20,88 @@
       box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
     }
 
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 18px 8px;
+    }
+
+    .profile-menu {
+      position: relative;
+    }
+
+    .profile-menu-button {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: #f4f4f5;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--title);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .profile-menu-button:hover {
+      border-color: rgba(59, 42, 152, 0.3);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .profile-menu-button:focus-visible {
+      outline: 2px solid rgba(59, 42, 152, 0.4);
+      outline-offset: 3px;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 180px;
+      padding: 8px;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      display: grid;
+      gap: 4px;
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      z-index: 20;
+    }
+
+    .profile-dropdown.is-open {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .profile-dropdown-item {
+      border: none;
+      background: transparent;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text);
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .profile-dropdown-item:hover {
+      background: rgba(59, 42, 152, 0.08);
+      color: var(--accent-strong);
+    }
+
     .sidebar-nav {
       display: grid;
       gap: 8px;
@@ -135,6 +217,52 @@
       box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
       display: grid;
       gap: 20px;
+    }
+
+    .profile-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .profile-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 28px;
+      background: #f1f5f9;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 28px;
+      color: var(--title);
+    }
+
+    .profile-details {
+      display: grid;
+      gap: 6px;
+    }
+
+    .profile-details h3 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--title);
+    }
+
+    .profile-details p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .profile-upload {
+      margin-top: 8px;
+      width: fit-content;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
     }
 
     .section-card + .section-card {
@@ -312,6 +440,10 @@
       .admin-header-actions {
         align-items: flex-start;
       }
+
+      .profile-card {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -349,8 +481,30 @@
     <main class="page admin-layout">
       <div class="admin-sidebar-wrapper">
         <aside class="admin-sidebar">
-          <div class="sidebar-logo">Helpin</div>
+          <div class="sidebar-header">
+            <div class="sidebar-logo">Helpin</div>
+            <div class="profile-menu">
+              <button
+                class="profile-menu-button"
+                id="profileMenuButton"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-controls="profileDropdown"
+              >
+                GB
+              </button>
+              <div class="profile-dropdown" id="profileDropdown" role="menu" aria-label="Opciones de perfil">
+                <a class="profile-dropdown-item" href="#profileSection" role="menuitem">Ver perfil</a>
+                <button class="profile-dropdown-item" id="logoutButton" type="button" role="menuitem">Cerrar sesión</button>
+              </div>
+            </div>
+          </div>
           <nav class="sidebar-nav" aria-label="Secciones del panel">
+            <a class="sidebar-link" href="#profileSection">
+              <i data-lucide="user-circle" class="nav-icon" aria-hidden="true"></i>
+              Perfil
+            </a>
             <a class="sidebar-link" href="#assistantStatus">
               <i data-lucide="shield" class="nav-icon" aria-hidden="true"></i>
               Estado del asistente
@@ -372,7 +526,6 @@
               Opciones avanzadas
             </a>
           </nav>
-          <button class="secondary admin-logout" id="logoutButton" type="button">Cerrar sesión</button>
         </aside>
         <a class="sidebar-cta sidebar-chat" id="employeeChatLink" href="chat.html">Abrir vista colaborador</a>
       </div>
@@ -391,6 +544,21 @@
               </button>
             </div>
           </header>
+        </section>
+
+        <section class="section" id="profileSection">
+          <div class="section-header">
+            <h2>Perfil</h2>
+            <p>Administre la información visible para su cuenta administrativa.</p>
+          </div>
+          <div class="section-card profile-card">
+            <div class="profile-avatar" aria-hidden="true">GB</div>
+            <div class="profile-details">
+              <h3>Gonzalo Barrera</h3>
+              <p>g.barrera@helpin.cl</p>
+              <button class="secondary profile-upload" type="button">Subir imagen</button>
+            </div>
+          </div>
         </section>
 
         <section class="section" id="assistantStatus">
@@ -610,6 +778,33 @@ const firebaseConfig = {
     window.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) {
         window.lucide.createIcons();
+      }
+
+      const profileMenuButton = document.querySelector('#profileMenuButton');
+      const profileDropdown = document.querySelector('#profileDropdown');
+
+      if (profileMenuButton && profileDropdown) {
+        const closeMenu = () => {
+          profileDropdown.classList.remove('is-open');
+          profileMenuButton.setAttribute('aria-expanded', 'false');
+        };
+
+        profileMenuButton.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const isOpen = profileDropdown.classList.toggle('is-open');
+          profileMenuButton.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        profileDropdown.addEventListener('click', (event) => {
+          event.stopPropagation();
+        });
+
+        document.addEventListener('click', closeMenu);
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            closeMenu();
+          }
+        });
       }
     });
   </script>
