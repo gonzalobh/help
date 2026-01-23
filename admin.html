@@ -310,8 +310,9 @@
 <body class="admin-ui">
   <section class="auth-screen" id="loginView" hidden>
     <div class="auth-card">
+      <span class="auth-brand">Helpin · RR. HH.</span>
       <h1>Acceso RR. HH.</h1>
-      <p class="auth-subtitle">Ingresa con tu correo corporativo.</p>
+      <p class="auth-subtitle">Accede con tu cuenta corporativa para administrar el panel.</p>
       <form id="loginForm" class="auth-form" novalidate>
         <label for="loginEmail">Email</label>
         <input id="loginEmail" name="email" type="email" autocomplete="email" placeholder="tu@empresa.com" required />
@@ -319,6 +320,7 @@
         <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required />
         <p class="auth-error" id="loginError" role="alert" aria-live="polite" hidden></p>
         <button class="primary auth-submit" id="loginSubmit" type="submit">Ingresar</button>
+        <p class="auth-footnote">Acceso exclusivo para personal autorizado.</p>
       </form>
     </div>
   </section>
@@ -329,6 +331,12 @@
       <button class="secondary auth-submit" id="noAccessLogout" type="button">Cerrar sesión</button>
     </div>
   </section>
+  <div class="auth-loader" id="authLoader" hidden>
+    <div class="auth-loader-content" role="status" aria-live="polite">
+      <span class="auth-spinner" aria-hidden="true"></span>
+      <p class="auth-loader-text">Cargando…</p>
+    </div>
+  </div>
   <div id="adminApp" hidden>
     <main class="page admin-layout">
       <div class="admin-sidebar-wrapper">

@@ -115,9 +115,11 @@
     ui.logoutButton = document.querySelector('#logoutButton');
     ui.noAccessView = document.querySelector('#noAccessView');
     ui.noAccessLogout = document.querySelector('#noAccessLogout');
+    ui.authLoader = document.querySelector('#authLoader');
   }
 
   function setViewState(state) {
+    document.body.classList.toggle('auth-mode', state !== 'admin');
     if (ui.loginView) {
       ui.loginView.hidden = state !== 'login';
     }
@@ -127,6 +129,13 @@
     if (ui.noAccessView) {
       ui.noAccessView.hidden = state !== 'no-access';
     }
+  }
+
+  function setAuthLoaderVisible(isVisible) {
+    if (!ui.authLoader) {
+      return;
+    }
+    ui.authLoader.hidden = !isVisible;
   }
 
   function setLoginError(message) {
@@ -203,6 +212,7 @@
     }
     setLoginLoading(true);
     setLoginError('');
+    setAuthLoaderVisible(true);
     auth
       .signInWithEmailAndPassword(email, password)
       .then(() => {
@@ -210,6 +220,7 @@
       })
       .catch(() => {
         setLoginError('Email o contraseña incorrectos.');
+        setAuthLoaderVisible(false);
       })
       .finally(() => {
         setLoginLoading(false);
@@ -870,11 +881,16 @@
 
   function startAdminSession() {
     stopConfigSubscription();
+    let hasLoadedConfig = false;
     const handleConfigUpdate = (config) => {
       applyConfigToData(config);
       updateActivationSummary();
       updateDashboardStatus();
       initAdminUIOnce();
+      if (!hasLoadedConfig) {
+        hasLoadedConfig = true;
+        setAuthLoaderVisible(false);
+      }
     };
 
     configUnsubscribe = subscribeConfigFromFirebase(handleConfigUpdate);
@@ -898,13 +914,16 @@
     if (!user) {
       setViewState('login');
       resetLoginForm();
+      setAuthLoaderVisible(false);
       return;
     }
+    setAuthLoaderVisible(true);
     checkAdminAllowlist(user).then((hasAccess) => {
       resetLoginForm();
       adminAccessGranted = hasAccess;
       if (!hasAccess) {
         setViewState('no-access');
+        setAuthLoaderVisible(false);
         return;
       }
       setViewState('admin');
