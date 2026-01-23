@@ -331,6 +331,8 @@
       if (isPremium && mode !== 'preview') {
         const hrEmail = data.settings?.hrContact?.email;
         if (hrEmail) {
+          const actionMessage = document.createElement('div');
+          actionMessage.className = 'message assistant follow-up';
           const actionRow = document.createElement('div');
           actionRow.className = 'assistant-action';
           const actionButton = document.createElement('button');
@@ -341,7 +343,8 @@
             window.location.href = `mailto:${hrEmail}`;
           });
           actionRow.appendChild(actionButton);
-          body.appendChild(actionRow);
+          actionMessage.appendChild(actionRow);
+          body.appendChild(actionMessage);
         }
         const followUp =
           premiumFollowUps[Math.floor(Math.random() * premiumFollowUps.length)];
