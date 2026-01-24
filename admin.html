@@ -448,6 +448,97 @@
       padding: 0 24px 24px;
     }
 
+    .topics-editor {
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      border-radius: 16px;
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+      background: #fff;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+    }
+
+    .topics-editor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .topics-editor-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--title);
+    }
+
+    .topics-editor-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .topic-row {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+      display: grid;
+      gap: 12px;
+    }
+
+    .topic-row-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .topic-row-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--title);
+    }
+
+    .topic-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .topic-actions button {
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: border 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .topic-actions button:hover {
+      border-color: rgba(59, 42, 152, 0.4);
+      color: var(--accent-strong);
+      background: rgba(59, 42, 152, 0.08);
+    }
+
+    .topic-fields {
+      display: grid;
+      gap: 12px;
+    }
+
+    .topic-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .topics-editor-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     #saveErrorFeedback {
       background: rgba(185, 28, 28, 0.12);
       border-color: rgba(185, 28, 28, 0.3);
@@ -799,6 +890,40 @@ Para casos particulares, confirme siempre con RR. HH.</textarea>
                   </label>
                 </div>
                 <p class="note">El tono es opcional y no modifica las políticas oficiales.</p>
+              </div>
+              <div class="topics-editor">
+                <div class="topics-editor-header">
+                  <div>
+                    <div class="topics-editor-title">Inicio del chat (temas)</div>
+                    <p class="note">Administre los temas sugeridos que se muestran antes de la primera consulta.</p>
+                  </div>
+                  <label class="assistant-toggle">
+                    <span class="sr-only">Mostrar tarjetas al inicio</span>
+                    <input id="startTopicsEnabled" class="toggle-input" type="checkbox" />
+                    <span class="toggle-switch toggle-switch--lg" aria-hidden="true"></span>
+                  </label>
+                </div>
+                <div class="form-grid">
+                  <div>
+                    <label for="startTopicsTitle">Título</label>
+                    <input id="startTopicsTitle" type="text" placeholder="Temas frecuentes" />
+                  </div>
+                  <div>
+                    <label for="startTopicsSubtitle">Subtítulo</label>
+                    <input id="startTopicsSubtitle" type="text" placeholder="Elige un tema o busca una pregunta" />
+                  </div>
+                </div>
+                <div class="topics-editor-list" id="startTopicsList"></div>
+                <div class="topics-editor-footer">
+                  <div class="topic-actions">
+                    <button type="button" id="startTopicsAdd">Añadir tema</button>
+                    <button type="button" id="startTopicsRestore">Restaurar por defecto</button>
+                  </div>
+                  <div class="knowledge-actions">
+                    <span class="save-status" id="saveStartTopicsStatus" role="status" aria-live="polite">Guardado</span>
+                    <button class="secondary section-save-button" type="button" id="saveStartTopics">Guardar sección</button>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="knowledge-actions">

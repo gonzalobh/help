@@ -2,9 +2,132 @@
   const defaultWelcome =
     'Puedes preguntar sobre políticas internas, beneficios o procesos de RR. HH.';
   const premiumWelcome = '¿Qué necesitas hoy?';
-  const premiumPlaceholder = 'Pregunta lo que necesites…';
+  const premiumPlaceholder = 'Ej: ¿Cómo solicito vacaciones?';
   const premiumTyping = 'Pensando';
   const data = window.HelpinData;
+  const START_TOPICS_MAX = 12;
+
+  function getDefaultStartTopicsForChat() {
+    return {
+      enabled: true,
+      title: 'Temas frecuentes',
+      subtitle: 'Elige un tema o busca una pregunta',
+      items: [
+        {
+          id: 'vacaciones',
+          title: 'Vacaciones',
+          icon: 'calendar',
+          prompt: '¿Cómo solicito vacaciones y cuántos días me corresponden?',
+          active: true
+        },
+        {
+          id: 'permisos',
+          title: 'Permisos',
+          icon: 'clock',
+          prompt: '¿Qué permisos existen y cómo se solicitan?',
+          active: true
+        },
+        {
+          id: 'licencias',
+          title: 'Licencias médicas',
+          icon: 'heart',
+          prompt: '¿Qué debo hacer si tengo una licencia médica?',
+          active: true
+        },
+        {
+          id: 'remuneraciones',
+          title: 'Remuneraciones',
+          icon: 'wallet',
+          prompt: '¿Cuándo se paga el sueldo y dónde veo mi liquidación?',
+          active: true
+        },
+        {
+          id: 'beneficios',
+          title: 'Beneficios',
+          icon: 'gift',
+          prompt: '¿Qué beneficios ofrece la empresa y cómo se accede?',
+          active: true
+        },
+        {
+          id: 'asistencia',
+          title: 'Asistencia y horarios',
+          icon: 'clock',
+          prompt: '¿Cómo funciona el registro de asistencia y los horarios?',
+          active: true
+        },
+        {
+          id: 'certificados',
+          title: 'Certificados',
+          icon: 'file',
+          prompt: '¿Cómo solicito un certificado laboral o de antigüedad?',
+          active: true
+        },
+        {
+          id: 'reglamento',
+          title: 'Reglamento interno',
+          icon: 'book',
+          prompt: '¿Dónde consulto el Reglamento Interno y qué puntos clave debo conocer?',
+          active: true
+        }
+      ]
+    };
+  }
+
+  function normalizeStartTopics(startTopics) {
+    const defaults = DEFAULT_START_TOPICS;
+    if (!startTopics || typeof startTopics !== 'object') {
+      return {
+        ...defaults,
+        items: [...defaults.items]
+      };
+    }
+    const normalized = {
+      enabled:
+        typeof startTopics.enabled === 'boolean'
+          ? startTopics.enabled
+          : defaults.enabled,
+      title:
+        typeof startTopics.title === 'string' && startTopics.title.trim()
+          ? startTopics.title
+          : defaults.title,
+      subtitle:
+        typeof startTopics.subtitle === 'string' && startTopics.subtitle.trim()
+          ? startTopics.subtitle
+          : defaults.subtitle,
+      items: []
+    };
+    const rawItems = Array.isArray(startTopics.items)
+      ? startTopics.items
+      : defaults.items;
+    normalized.items = rawItems
+      .filter((item) => item && typeof item === 'object')
+      .map((item, index) => {
+        const fallback = defaults.items[index] || {};
+        return {
+          id: String(item.id || fallback.id || `topic-${index}`),
+          title:
+            typeof item.title === 'string'
+              ? item.title
+              : fallback.title || '',
+          icon:
+            typeof item.icon === 'string'
+              ? item.icon
+              : fallback.icon || 'heart',
+          prompt:
+            typeof item.prompt === 'string'
+              ? item.prompt
+              : fallback.prompt || '',
+          active:
+            typeof item.active === 'boolean'
+              ? item.active
+              : fallback.active ?? true
+        };
+      })
+      .slice(0, START_TOPICS_MAX);
+    return normalized;
+  }
+
+  const DEFAULT_START_TOPICS = getDefaultStartTopicsForChat();
   const DEFAULT_CONFIG = {
     assistantActive: data?.settings?.assistantActive ?? false,
     knowledge: data?.knowledgeContent ?? '',
@@ -22,6 +145,7 @@
       noLegal: data?.settings?.assistantBoundaries?.noLegalQuestions ?? false,
       escalate: data?.settings?.assistantBoundaries?.alwaysEscalate ?? false
     },
+    startTopics: normalizeStartTopics(data?.settings?.startTopics),
     updatedAt: 0
   };
 
@@ -37,7 +161,8 @@
       limits: {
         ...DEFAULT_CONFIG.limits,
         ...(config.limits || {})
-      }
+      },
+      startTopics: normalizeStartTopics(config.startTopics)
     };
   }
 
@@ -70,6 +195,7 @@
       limits.noLegal
     );
     data.settings.assistantBoundaries.alwaysEscalate = Boolean(limits.escalate);
+    data.settings.startTopics = normalizeStartTopics(config.startTopics);
   }
 
   async function loadConfigFromFirebase() {
@@ -150,6 +276,149 @@
     return `Según las políticas internas de la empresa, alineadas con la legislación de ${country}:\n`;
   }
 
+  const ICONS = {
+    calendar:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>',
+    clock:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>',
+    wallet:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 7H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h16V7z"></path><path d="M17 7V5a2 2 0 0 0-2-2H5"></path><circle cx="16.5" cy="12" r="1.5"></circle></svg>',
+    heart:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>',
+    file:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg>',
+    book:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path></svg>',
+    users:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0z"></path><path d="M4 21v-1a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v1"></path></svg>'
+  };
+
+  function createStartSurface(startTopics, { onSendMessage } = {}) {
+    const surface = document.createElement('div');
+    surface.className = 'start-surface';
+
+    const head = document.createElement('div');
+    head.className = 'start-surface-head';
+    const title = document.createElement('div');
+    title.className = 'start-title';
+    title.textContent = startTopics.title || 'Temas frecuentes';
+    const subtitle = document.createElement('div');
+    subtitle.className = 'start-subtitle';
+    subtitle.textContent =
+      startTopics.subtitle || 'Elige un tema o busca una pregunta';
+    head.append(title, subtitle);
+
+    const search = document.createElement('div');
+    search.className = 'start-search';
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.className = 'start-search-input';
+    searchInput.placeholder = 'Busca: vacaciones, licencias, beneficios…';
+    const searchHint = document.createElement('div');
+    searchHint.className = 'start-search-hint';
+    search.append(searchInput, searchHint);
+
+    const grid = document.createElement('div');
+    grid.className = 'start-grid';
+
+    const emptyState = document.createElement('div');
+    emptyState.className = 'start-empty';
+    emptyState.textContent =
+      'No encuentro ese tema. Presiona Enter para preguntar igual.';
+    emptyState.hidden = true;
+
+    const activeItems = (startTopics.items || []).filter((item) => item.active);
+    let filteredItems = activeItems.slice();
+
+    const buildIcon = (item) => {
+      if (ICONS[item.icon]) {
+        return ICONS[item.icon];
+      }
+      if (item.icon === 'gift' && ICONS.heart) {
+        return ICONS.heart;
+      }
+      const letter = (item.title || '?').trim().charAt(0).toUpperCase() || '?';
+      return `<span class="start-card-letter">${letter}</span>`;
+    };
+
+    const renderGrid = (items, query = '') => {
+      grid.innerHTML = '';
+      if (!items.length && query) {
+        emptyState.hidden = false;
+      } else {
+        emptyState.hidden = true;
+      }
+      items.forEach((item) => {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'start-card';
+        const icon = document.createElement('div');
+        icon.className = 'start-card-icon';
+        icon.innerHTML = buildIcon(item);
+        const cardTitle = document.createElement('div');
+        cardTitle.className = 'start-card-title';
+        cardTitle.textContent = item.title;
+        const prompt = document.createElement('div');
+        prompt.className = 'start-card-prompt';
+        prompt.textContent = item.prompt;
+        card.append(icon, cardTitle, prompt);
+        card.addEventListener('click', () => {
+          if (typeof onSendMessage === 'function') {
+            onSendMessage(item.prompt);
+          }
+        });
+        grid.appendChild(card);
+      });
+      if (query) {
+        searchHint.textContent = `${items.length} tema${
+          items.length === 1 ? '' : 's'
+        } encontrado${items.length === 1 ? '' : 's'}.`;
+      } else {
+        searchHint.textContent = '';
+      }
+    };
+
+    renderGrid(filteredItems);
+
+    searchInput.addEventListener('input', (event) => {
+      const query = event.target.value.trim().toLowerCase();
+      if (!query) {
+        filteredItems = activeItems.slice();
+        renderGrid(filteredItems);
+        return;
+      }
+      filteredItems = activeItems.filter((item) => {
+        const titleMatch = item.title?.toLowerCase().includes(query);
+        const promptMatch = item.prompt?.toLowerCase().includes(query);
+        return titleMatch || promptMatch;
+      });
+      renderGrid(filteredItems, query);
+    });
+
+    searchInput.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') {
+        return;
+      }
+      event.preventDefault();
+      const query = searchInput.value.trim();
+      if (!query) {
+        return;
+      }
+      if (filteredItems.length === 1 && filteredItems[0]?.prompt) {
+        if (typeof onSendMessage === 'function') {
+          onSendMessage(filteredItems[0].prompt);
+        }
+        return;
+      }
+      if (typeof onSendMessage === 'function') {
+        onSendMessage(query);
+      }
+    });
+
+    surface.append(head, search, grid, emptyState);
+    return surface;
+  }
+
   async function sendToAIMessage(userMessage, data) {
     const fallbackMessage =
       data.settings?.noInfoMessage || getFallbackMessage(data);
@@ -191,6 +460,15 @@
     const isPremium = container.dataset.variant === 'premium';
     const welcomeText = isPremium ? premiumWelcome : defaultWelcome;
     const typingText = isPremium ? premiumTyping : 'Respondiendo…';
+    let startSurface = null;
+    let hasSentMessage = false;
+
+    const removeStartSurface = () => {
+      if (startSurface) {
+        startSurface.remove();
+        startSurface = null;
+      }
+    };
 
     const shell = document.createElement('div');
     shell.className = 'chat-shell';
@@ -236,6 +514,19 @@
       welcomeMessage.textContent = welcomeText;
     }
 
+    if (isPremium && mode !== 'preview') {
+      const startTopics = data.settings?.startTopics;
+      const activeItems = Array.isArray(startTopics?.items)
+        ? startTopics.items.filter((item) => item.active)
+        : [];
+      if (startTopics?.enabled && activeItems.length) {
+        startSurface = createStartSurface(startTopics, {
+          onSendMessage: (message) => sendMessage(message)
+        });
+        body.appendChild(startSurface);
+      }
+    }
+
     if (mode === 'preview') {
       const previewQuestion =
         '¿Qué debo saber sobre vacaciones, beneficios o políticas internas?';
@@ -277,6 +568,10 @@
       const trimmed = message.trim();
       if (!trimmed) {
         return;
+      }
+      if (!hasSentMessage) {
+        hasSentMessage = true;
+        removeStartSurface();
       }
       body.appendChild(createMessage(trimmed, 'user'));
       const typingIndicator = createMessage(typingText, 'assistant', {
