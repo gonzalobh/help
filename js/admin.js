@@ -1,5 +1,141 @@
 (function () {
   const data = window.HelpinData;
+  const START_TOPICS_MAX = 12;
+  const START_TOPICS_ICON_OPTIONS = [
+    'calendar',
+    'clock',
+    'wallet',
+    'heart',
+    'file',
+    'book',
+    'users',
+    'gift'
+  ];
+
+  function getDefaultStartTopics() {
+    return {
+      enabled: true,
+      title: 'Temas frecuentes',
+      subtitle: 'Elige un tema o busca una pregunta',
+      items: [
+        {
+          id: 'vacaciones',
+          title: 'Vacaciones',
+          icon: 'calendar',
+          prompt: '¿Cómo solicito vacaciones y cuántos días me corresponden?',
+          active: true
+        },
+        {
+          id: 'permisos',
+          title: 'Permisos',
+          icon: 'clock',
+          prompt: '¿Qué permisos existen y cómo se solicitan?',
+          active: true
+        },
+        {
+          id: 'licencias',
+          title: 'Licencias médicas',
+          icon: 'heart',
+          prompt: '¿Qué debo hacer si tengo una licencia médica?',
+          active: true
+        },
+        {
+          id: 'remuneraciones',
+          title: 'Remuneraciones',
+          icon: 'wallet',
+          prompt: '¿Cuándo se paga el sueldo y dónde veo mi liquidación?',
+          active: true
+        },
+        {
+          id: 'beneficios',
+          title: 'Beneficios',
+          icon: 'gift',
+          prompt: '¿Qué beneficios ofrece la empresa y cómo se accede?',
+          active: true
+        },
+        {
+          id: 'asistencia',
+          title: 'Asistencia y horarios',
+          icon: 'clock',
+          prompt: '¿Cómo funciona el registro de asistencia y los horarios?',
+          active: true
+        },
+        {
+          id: 'certificados',
+          title: 'Certificados',
+          icon: 'file',
+          prompt: '¿Cómo solicito un certificado laboral o de antigüedad?',
+          active: true
+        },
+        {
+          id: 'reglamento',
+          title: 'Reglamento interno',
+          icon: 'book',
+          prompt: '¿Dónde consulto el Reglamento Interno y qué puntos clave debo conocer?',
+          active: true
+        }
+      ]
+    };
+  }
+
+  function normalizeStartTopics(startTopics) {
+    const defaults = getDefaultStartTopics();
+    if (!startTopics || typeof startTopics !== 'object') {
+      return {
+        ...defaults,
+        items: [...defaults.items]
+      };
+    }
+    const normalized = {
+      enabled:
+        typeof startTopics.enabled === 'boolean'
+          ? startTopics.enabled
+          : defaults.enabled,
+      title:
+        typeof startTopics.title === 'string' && startTopics.title.trim()
+          ? startTopics.title
+          : defaults.title,
+      subtitle:
+        typeof startTopics.subtitle === 'string' && startTopics.subtitle.trim()
+          ? startTopics.subtitle
+          : defaults.subtitle,
+      items: []
+    };
+    const rawItems = Array.isArray(startTopics.items)
+      ? startTopics.items
+      : defaults.items;
+    normalized.items = rawItems
+      .filter((item) => item && typeof item === 'object')
+      .map((item, index) => {
+        const fallback = defaults.items[index] || {};
+        return {
+          id: String(item.id || fallback.id || `topic-${index}`),
+          title:
+            typeof item.title === 'string'
+              ? item.title
+              : fallback.title || '',
+          icon:
+            typeof item.icon === 'string'
+              ? item.icon
+              : fallback.icon || 'heart',
+          prompt:
+            typeof item.prompt === 'string'
+              ? item.prompt
+              : fallback.prompt || '',
+          active:
+            typeof item.active === 'boolean'
+              ? item.active
+              : fallback.active ?? true
+        };
+      })
+      .slice(0, START_TOPICS_MAX);
+    return normalized;
+  }
+
+  function cloneStartTopics(startTopics) {
+    return JSON.parse(JSON.stringify(startTopics));
+  }
+
   const DEFAULT_CONFIG = {
     assistantActive: data?.settings?.assistantActive ?? false,
     knowledge: data?.knowledgeContent ?? '',
@@ -18,6 +154,7 @@
       noLegal: data?.settings?.assistantBoundaries?.noLegalQuestions ?? false,
       escalate: data?.settings?.assistantBoundaries?.alwaysEscalate ?? false
     },
+    startTopics: normalizeStartTopics(data?.settings?.startTopics),
     updatedAt: null
   };
   const DEFAULT_PROFILE = {
@@ -33,6 +170,7 @@
   let knowledgeDraft = '';
   let knowledgeUpdatedAt = null;
   let contactDraft = null;
+  let startTopicsDraft = null;
   let setPanelSaveState = () => {};
   const settingsTabs = new Set(['settings-contact', 'settings-limits']);
   let adminAccessGranted = false;
@@ -53,7 +191,8 @@
       limits: {
         ...DEFAULT_CONFIG.limits,
         ...(config.limits || {})
-      }
+      },
+      startTopics: normalizeStartTopics(config.startTopics)
     };
   }
 
@@ -90,6 +229,7 @@
     knowledgeUpdatedAt = Number.isFinite(config.updatedAt)
       ? config.updatedAt
       : null;
+    data.settings.startTopics = normalizeStartTopics(config.startTopics);
   }
 
   function updateRemoteConfig(updatePayload) {
@@ -678,6 +818,9 @@
       hrFallback: settings.hrContact.fallbackMessage || '',
       disclaimer: settings.disclaimer || ''
     };
+    startTopicsDraft = cloneStartTopics(
+      normalizeStartTopics(settings.startTopics || getDefaultStartTopics())
+    );
 
     if (hrEmailInput) {
       hrEmailInput.value = contactDraft.hrEmail;
@@ -853,6 +996,250 @@
         contactDraft.disclaimer = event.target.value;
       });
     }
+
+    const startTopicsEnabledToggle =
+      document.querySelector('#startTopicsEnabled');
+    const startTopicsTitleInput = document.querySelector('#startTopicsTitle');
+    const startTopicsSubtitleInput =
+      document.querySelector('#startTopicsSubtitle');
+    const startTopicsList = document.querySelector('#startTopicsList');
+    const startTopicsAddButton = document.querySelector('#startTopicsAdd');
+    const startTopicsRestoreButton =
+      document.querySelector('#startTopicsRestore');
+    const saveStartTopicsButton = document.querySelector('#saveStartTopics');
+    const saveStartTopicsStatus =
+      document.querySelector('#saveStartTopicsStatus');
+
+    function buildTopicRow(item, index) {
+      const row = document.createElement('div');
+      row.className = 'topic-row';
+
+      const head = document.createElement('div');
+      head.className = 'topic-row-head';
+
+      const title = document.createElement('div');
+      title.className = 'topic-row-title';
+      title.textContent = `Tema ${index + 1}`;
+
+      const actions = document.createElement('div');
+      actions.className = 'topic-actions';
+
+      const moveUp = document.createElement('button');
+      moveUp.type = 'button';
+      moveUp.textContent = '↑';
+      moveUp.disabled = index === 0;
+      moveUp.addEventListener('click', () => {
+        if (index === 0) {
+          return;
+        }
+        const newIndex = index - 1;
+        const items = startTopicsDraft.items;
+        [items[newIndex], items[index]] = [items[index], items[newIndex]];
+        renderStartTopicsEditor();
+      });
+
+      const moveDown = document.createElement('button');
+      moveDown.type = 'button';
+      moveDown.textContent = '↓';
+      moveDown.disabled = index >= startTopicsDraft.items.length - 1;
+      moveDown.addEventListener('click', () => {
+        if (index >= startTopicsDraft.items.length - 1) {
+          return;
+        }
+        const newIndex = index + 1;
+        const items = startTopicsDraft.items;
+        [items[newIndex], items[index]] = [items[index], items[newIndex]];
+        renderStartTopicsEditor();
+      });
+
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.textContent = 'Eliminar';
+      removeButton.addEventListener('click', () => {
+        startTopicsDraft.items.splice(index, 1);
+        renderStartTopicsEditor();
+      });
+
+      actions.append(moveUp, moveDown, removeButton);
+      head.append(title, actions);
+
+      const fields = document.createElement('div');
+      fields.className = 'topic-fields';
+
+      const titleField = document.createElement('div');
+      const titleLabel = document.createElement('label');
+      titleLabel.textContent = 'Título del tema';
+      const titleInput = document.createElement('input');
+      titleInput.type = 'text';
+      titleInput.value = item.title || '';
+      titleInput.placeholder = 'Ej: Vacaciones';
+      titleInput.addEventListener('input', (event) => {
+        item.title = event.target.value;
+      });
+      titleField.append(titleLabel, titleInput);
+
+      const iconField = document.createElement('div');
+      const iconLabel = document.createElement('label');
+      iconLabel.textContent = 'Icono';
+      const iconSelect = document.createElement('select');
+      START_TOPICS_ICON_OPTIONS.forEach((icon) => {
+        const option = document.createElement('option');
+        option.value = icon;
+        option.textContent = icon;
+        if (item.icon === icon) {
+          option.selected = true;
+        }
+        iconSelect.appendChild(option);
+      });
+      iconSelect.addEventListener('change', (event) => {
+        item.icon = event.target.value;
+      });
+      iconField.append(iconLabel, iconSelect);
+
+      const promptField = document.createElement('div');
+      const promptLabel = document.createElement('label');
+      promptLabel.textContent = 'Pregunta sugerida';
+      const promptInput = document.createElement('input');
+      promptInput.type = 'text';
+      promptInput.value = item.prompt || '';
+      promptInput.placeholder = 'Ej: ¿Cómo solicito vacaciones?';
+      promptInput.addEventListener('input', (event) => {
+        item.prompt = event.target.value;
+      });
+      const promptMeta = document.createElement('div');
+      promptMeta.className = 'topic-meta';
+      promptMeta.textContent = 'Pregunta sugerida';
+      promptField.append(promptLabel, promptInput, promptMeta);
+
+      const activeField = document.createElement('label');
+      activeField.className = 'option-row';
+      const activeLabel = document.createElement('span');
+      activeLabel.className = 'option-label';
+      activeLabel.textContent = 'Activo';
+      const activeInput = document.createElement('input');
+      activeInput.type = 'checkbox';
+      activeInput.className = 'toggle-input';
+      activeInput.checked = item.active;
+      activeInput.addEventListener('change', (event) => {
+        item.active = event.target.checked;
+      });
+      const activeToggle = document.createElement('span');
+      activeToggle.className = 'toggle-switch';
+      activeToggle.setAttribute('aria-hidden', 'true');
+      activeField.append(activeLabel, activeInput, activeToggle);
+
+      fields.append(titleField, iconField, promptField, activeField);
+      row.append(head, fields);
+      return row;
+    }
+
+    function renderStartTopicsEditor() {
+      if (!startTopicsDraft) {
+        return;
+      }
+      if (startTopicsEnabledToggle) {
+        startTopicsEnabledToggle.checked = Boolean(startTopicsDraft.enabled);
+      }
+      if (startTopicsTitleInput) {
+        startTopicsTitleInput.value = startTopicsDraft.title || '';
+      }
+      if (startTopicsSubtitleInput) {
+        startTopicsSubtitleInput.value = startTopicsDraft.subtitle || '';
+      }
+      if (startTopicsList) {
+        startTopicsList.innerHTML = '';
+        startTopicsDraft.items.forEach((item, index) => {
+          startTopicsList.appendChild(buildTopicRow(item, index));
+        });
+      }
+    }
+
+    if (startTopicsEnabledToggle) {
+      startTopicsEnabledToggle.addEventListener('change', (event) => {
+        startTopicsDraft.enabled = event.target.checked;
+      });
+    }
+
+    if (startTopicsTitleInput) {
+      startTopicsTitleInput.addEventListener('input', (event) => {
+        startTopicsDraft.title = event.target.value;
+      });
+    }
+
+    if (startTopicsSubtitleInput) {
+      startTopicsSubtitleInput.addEventListener('input', (event) => {
+        startTopicsDraft.subtitle = event.target.value;
+      });
+    }
+
+    if (startTopicsAddButton) {
+      startTopicsAddButton.addEventListener('click', () => {
+        if (startTopicsDraft.items.length >= START_TOPICS_MAX) {
+          return;
+        }
+        startTopicsDraft.items.push({
+          id: `topic-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          title: '',
+          icon: START_TOPICS_ICON_OPTIONS[0],
+          prompt: '',
+          active: true
+        });
+        renderStartTopicsEditor();
+      });
+    }
+
+    if (startTopicsRestoreButton) {
+      startTopicsRestoreButton.addEventListener('click', () => {
+        startTopicsDraft = cloneStartTopics(getDefaultStartTopics());
+        renderStartTopicsEditor();
+      });
+    }
+
+    if (saveStartTopicsButton) {
+      const defaultLabel = saveStartTopicsButton.textContent.trim();
+      let statusTimeout = null;
+      let statusResetTimeout = null;
+
+      saveStartTopicsButton.addEventListener('click', () => {
+        if (statusTimeout) {
+          clearTimeout(statusTimeout);
+        }
+        if (statusResetTimeout) {
+          clearTimeout(statusResetTimeout);
+        }
+
+        const hasActiveItem = startTopicsDraft.items.some((item) => item.active);
+        const normalizedItems = startTopicsDraft.items.slice(0, START_TOPICS_MAX);
+        startTopicsDraft.items = normalizedItems;
+
+        saveStartTopicsButton.textContent = 'Guardando…';
+        saveStartTopicsButton.disabled = true;
+        updateRemoteConfig({
+          'startTopics/enabled': Boolean(startTopicsDraft.enabled),
+          'startTopics/title': startTopicsDraft.title || '',
+          'startTopics/subtitle': startTopicsDraft.subtitle || '',
+          'startTopics/items': normalizedItems
+        });
+
+        statusTimeout = setTimeout(() => {
+          saveStartTopicsButton.textContent = defaultLabel;
+          saveStartTopicsButton.disabled = false;
+          if (saveStartTopicsStatus) {
+            saveStartTopicsStatus.textContent = hasActiveItem
+              ? 'Guardado'
+              : 'Guardado (sin temas activos)';
+            saveStartTopicsStatus.classList.add('is-visible');
+            statusResetTimeout = setTimeout(() => {
+              saveStartTopicsStatus.classList.remove('is-visible');
+            }, 2600);
+          }
+          settings.startTopics = cloneStartTopics(startTopicsDraft);
+          showSaveFeedback();
+        }, 700);
+      });
+    }
+
+    renderStartTopicsEditor();
 
     const saveAdvancedButton = document.querySelector('#saveAdvanced');
     const saveAdvancedStatus = document.querySelector('#saveAdvancedStatus');
@@ -1105,6 +1492,7 @@
         document.querySelector('#saveKnowledge')?.click();
         document.querySelector('#saveContact')?.click();
         document.querySelector('#saveLimits')?.click();
+        document.querySelector('#saveStartTopics')?.click();
 
         saveTimeout = setTimeout(() => {
           if (labelElement) {

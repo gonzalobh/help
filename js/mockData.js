@@ -60,6 +60,69 @@ Su tono debe ser:
     countryContext: 'Genérico',
     assistantActive: false,
     disclaimer:
-      'Este asistente entrega información general basada en políticas internas.\nPara casos específicos, por favor contacte a RR. HH.'
+      'Este asistente entrega información general basada en políticas internas.\nPara casos específicos, por favor contacte a RR. HH.',
+    startTopics: {
+      enabled: true,
+      title: 'Temas frecuentes',
+      subtitle: 'Elige un tema o busca una pregunta',
+      items: [
+        {
+          id: 'vacaciones',
+          title: 'Vacaciones',
+          icon: 'calendar',
+          prompt: '¿Cómo solicito vacaciones y cuántos días me corresponden?',
+          active: true
+        },
+        {
+          id: 'permisos',
+          title: 'Permisos',
+          icon: 'clock',
+          prompt: '¿Qué permisos existen y cómo se solicitan?',
+          active: true
+        },
+        {
+          id: 'licencias',
+          title: 'Licencias médicas',
+          icon: 'heart',
+          prompt: '¿Qué debo hacer si tengo una licencia médica?',
+          active: true
+        },
+        {
+          id: 'remuneraciones',
+          title: 'Remuneraciones',
+          icon: 'wallet',
+          prompt: '¿Cuándo se paga el sueldo y dónde veo mi liquidación?',
+          active: true
+        },
+        {
+          id: 'beneficios',
+          title: 'Beneficios',
+          icon: 'gift',
+          prompt: '¿Qué beneficios ofrece la empresa y cómo se accede?',
+          active: true
+        },
+        {
+          id: 'asistencia',
+          title: 'Asistencia y horarios',
+          icon: 'clock',
+          prompt: '¿Cómo funciona el registro de asistencia y los horarios?',
+          active: true
+        },
+        {
+          id: 'certificados',
+          title: 'Certificados',
+          icon: 'file',
+          prompt: '¿Cómo solicito un certificado laboral o de antigüedad?',
+          active: true
+        },
+        {
+          id: 'reglamento',
+          title: 'Reglamento interno',
+          icon: 'book',
+          prompt: '¿Dónde consulto el Reglamento Interno y qué puntos clave debo conocer?',
+          active: true
+        }
+      ]
+    }
   }
 };
